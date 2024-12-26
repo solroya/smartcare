@@ -19,8 +19,8 @@ body {
 	font-family: 'Pretendard-Regular';
 }
 
-a, p, span, botton {
-	text-decoration: none;
+a, p, span, button {
+    text-decoration: none;
 }
 
 li {
