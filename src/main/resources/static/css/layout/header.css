@@ -1,110 +1,174 @@
 @charset "UTF-8";
 
-header {
-	background-color : #fff;
-	position: fixed;
-	top : 0;
-	max-width : 1920px;
-	width: 100%;
-	height: 120px;
-	box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.12);
-	margin : 0 auto;
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120px;
+    z-index: 1000;
+    overflow: hidden;
+    box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.12);
+    transition: height 0.3s ease;
+    background-color: #fff;
+}
+
+.header-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    z-index: -1;
+    transition: height 0.3s ease;
+}
+
+.header.expanded {
+    height: 300px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.12);
 }
 
 .navbar {
-	width: 100%;
-	max-width: 1620px;
-	height: 100%;
-	margin : 0 auto ;
-	display: flex;
-	align-items:  center;
-	justify-content: space-between;
-}
-
-.logo {
-	display :block;
-	width : 200px;
-	height: 60px;
+    position: relative; 
+    top: 0;
+    width: 100%;
+    height: 120px; 
+    max-width: 1620px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center; 
+    justify-content: space-between;
+    z-index: 10;
+    transition: padding-top 0.3s ease;
 }
 
 .logo img {
-	width : 200px;
-	height: 60px;
+    width: 200px;
+    height: 60px;
 }
 
 .menu {
-	gap : 100px;
-	display : flex;
+    display: flex;
 }
 
 .menu-item {
-	font-size : 20px;
-	cursor : pointer;
-	position : relative;
+    position: relative;
+    font-size: 20px;
+    cursor: pointer;
 }
 
-.menu-item:hover {
-	color : #1C3D5A;
-	font-weight: bold;
+.menu-item > a {
+    color: #333;
+    position: relative;
+    display: inline-block;
+    padding: 10px 0;
+    width: 200px;
+    text-align: center;
+}
+
+.menu-item > a::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background-color: #007bff;
+    transform: translateX(-50%);
+    margin-top: 10px;
+    transition: width 0.3s ease;
+}
+
+.menu-item:hover > a::after {
+    width: 80%;
 }
 
 .subMenu {
+    margin-top: 30px;
     position: absolute;
     top: 100%;
-    left: 0;
-    display: none;
-    background-color: white;
-    border: 1px solid #ddd;
-    z-index: 10;
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    background-color: #fff;
+    width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 100;
 }
 
-.menu-item.show .subMenu {
-    display: block;
+.header.expanded .subMenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.menu-item:hover .subMenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
 }
 
 .subMenu li {
-	padding : 10px;
-	cursor : pointer;
+    padding: 10px 0px;
 }
 
 .subMenu li a {
-	font-size: 18px;
-	color : #333;
+    text-decoration: none;
+    color: #333;
+    font-size: 18px;
+    display: block;
+    text-align: center;
 }
 
 .subMenu li a:hover {
-	color : #1C3D5A;
-	font-weight: bold;
+    font-weight: bold;
 }
 
 .user-info {
-	display : flex;
-	align-items: center;
-	gap : 30px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
 }
 
-.login {
-	width: 35px;
-	height: 35px;
+.login img {
+    width: 35px;
+    height: 35px;
 }
 
 .gnb-btn {
-	display : flex;
-	align-items: flex-end;
-	flex-direction: column;
-	justify-content: space-around;
-	width : 30px;
-	height: 30px;
-	cursor: pointer;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
 }
 
-.gnb-btn .bar{
-	background-color: #333;
-	width: 100%;
-	height: 3px;
+.gnb-btn .bar {
+    background-color: #333;
+    width: 100%;
+    height: 3px;
+    transition: background-color 0.3s ease;
 }
 
-.gnb-btn .bar:hover {
-	color : #1C3D5A;
+.gnb-btn:hover .bar {
+    background-color: #007bff;
 }
 
+.expanded-content {
+    position: absolute;
+    top: 120px;
+    left: 0;
+    width: 100%;
+    height: 180px;
+    background-color: #fff; 
+    display: none;
+    z-index: 5;
+}
+
+.header.expanded .expanded-content {
+    display: block;
+} 

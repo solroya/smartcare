@@ -4,58 +4,62 @@
     <link rel="stylesheet" th:href="@{/css/layout/header.css}">
     <link rel="stylesheet" th:href="@{/css/reset.css}">
     
-    <header>
-        <nav class="navbar">
-            <a href="#" class="logo">
-                <img alt="logo" th:src="@{/img/Logo.png}">
-            </a>
-            <ul class="menu">
-                <li class="menu-item">
-                    <a href="#">병원소개</a>
-                    <ul class="subMenu">
-                        <li><a href="#">회사소개</a></li>
-                        <li><a href="#">비전</a></li>
-                        <li><a href="#">오시는길</a></li>
-                    </ul>
-                </li>				
-                <li class="menu-item">
-                    <a href="#">진료과</a>
-                    <ul class="subMenu">
-                        <li><a href="#">외과</a></li>
-                        <li><a href="#">내과</a></li>
-                        <li><a href="#">정신과</a></li>
-                    </ul>
-                </li>				
-                <li class="menu-item">
-                    <a href="#">입•퇴원 안내</a>
-                    <ul class="subMenu">
-                        <li><a href="#">입퇴원 절차</a></li>
-                    </ul>
-                </li>				
-                <li class="menu-item">
-                    <a href="#">헬스케어</a>
-                    <ul class="subMenu">
-                        <li><a href="#">나의건강관리</a></li>
-                    </ul>
-                </li>				
-                <li class="menu-item">
-                    <a href="#">고객센터</a>
-                    <ul class="subMenu">
-                        <li><a href="#">병원소식</a></li>
-                        <li><a href="#">Q&amp;A</a></li>
-                    </ul>
-                </li>				
-            </ul>
-            <div class="user-info">
-                <a href="#" class="login">
-                    <img th:src="@{/img/login.png}">
-                </a>
-                <div class="gnb-btn" title="전체메뉴 열기">
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                </div>
-            </div>
-        </nav>
-    </header>
+    <header class="header">
+         <div class="header-bg"></div>
+         <nav class="navbar">
+             <a href="#" class="logo">
+                 <img alt="logo" th:src="@{/img/Logo.png}">
+             </a>
+             <ul class="menu">
+                 <li class="menu-item">
+                     <a href="#">병원소개</a>
+                     <ul class="subMenu">
+                         <li><a href="#">회사소개</a></li>
+                         <li><a href="#">비전</a></li>
+                         <li><a href="#">오시는길</a></li>
+                     </ul>
+                 </li>
+                 <li class="menu-item">
+                     <a href="#">진료과</a>
+                     <ul class="subMenu">
+                         <li><a href="#">외과</a></li>
+                         <li><a href="#">내과</a></li>
+                         <li><a href="#">정신과</a></li>
+                     </ul>
+                 </li>
+                 <li class="menu-item">
+                     <a href="#">입•퇴원 안내</a>
+                     <ul class="subMenu">
+                         <li><a href="#">입퇴원 절차</a></li>
+                     </ul>
+                 </li>
+                 <li class="menu-item">
+                     <a href="#">헬스케어</a>
+                     <ul class="subMenu">
+                         <li><a href="#">나의건강관리</a></li>
+                     </ul>
+                 </li>
+                 <li class="menu-item">
+                     <a href="#">고객센터</a>
+                     <ul class="subMenu">
+                         <li><a href="#">병원소식</a></li>
+                         <li><a href="#">Q&amp;A</a></li>
+                     </ul>
+                 </li>
+             </ul>
+             <div class="user-info">
+                 <a href="#" class="login">
+                     <img alt="login" th:src="@{/img/login.png}">
+                 </a>
+                 <div class="gnb-btn" title="전체메뉴 열기">
+                     <div class="bar"></div>
+                     <div class="bar"></div>
+                     <div class="bar"></div>
+                 </div>
+             </div>
+         </nav>
+         <div class="expanded-content">
+         </div>
+     </header>
+ 	 <script th:src="@{/js/header.js}"></script>
 </th:block>
