@@ -1,0 +1,307 @@
+@charset "UTF-8";
+
+.content {
+	width : 100%;
+	margin-top : 120px;
+}
+
+/* visual 영역 시작 */
+
+.visualwrap {
+	width: 100%;
+	height: 911px;
+	position: relative;
+	margin-bottom : 80px;
+}
+
+.visual-bg {
+	position : absolute;
+	background-color: #000;
+	width: 100%;
+	height: 100%;
+}
+
+.visualboxwrap {
+	position : relative;
+	width: 100%;
+	height: 100%;
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	animation : changeBackground 10s linear infinite;
+}
+
+.visualbox {
+	margin-top : 150px;
+	margin-left : 150px;
+	position : absolute;
+	display : flex;
+	flex-direction: column;
+}
+
+.titleText {
+	color : #fff;
+	font-size : 60px;
+	line-height: 80px;
+	letter-spacing: -25%;
+	margin-bottom : 40px;
+}
+
+.titleText b {
+	font-weight: bold;
+}
+
+.contentText {
+	color : #fff;
+	font-size : 24px;
+	line-height: 34px;
+	letter-spacing: -25%;
+	margin-bottom : 60px;
+}
+
+.contentText b {
+	font-weight: 600;
+}
+
+.showLineBar {
+	width : 710px;
+	height: 3px;
+	background-color: #fff;
+	position: relative;
+	overflow: hidden;
+}
+
+.loadingBar {
+	width: 0;
+	height: 100%;
+	background-color: #5BC0DE;
+	animation : loadingAnimation 5s linear infinite;
+}
+
+@keyframes changeBackground {
+    0%, 45% {
+        background-image: url("/img/main/visualimg.png");
+    }
+    46%, 50% {
+        background-image: url("/img/main/visualimg2.png");
+        transition: background-image 2s ease-in-out;
+    }
+    51%, 95% {
+        background-image: url("/img/main/visualimg2.png");
+    }
+    96%, 100% {
+        background-image: url("/img/main/visualimg.png");
+        transition: background-image 2s ease-in-out;
+    }
+}
+
+@keyframes loadingAnimation {
+    0% {
+        width: 0;
+        background-color: #5BC0DE;
+    }
+    80% {
+        width: 80%;
+        background-color: #5BC0DE;
+    }
+    100% {
+        width: 100%;
+        background-color: #5BC0DE;
+    }
+}
+
+/* visual 영역 끝 service 영역 시작 */
+
+.servicewrap {
+	width: 100%;
+	margin-bottom : 100px;
+}
+
+.service {
+	width : 100%;
+	max-width: 1620px;
+	margin : 0 auto;
+	display :flex;
+	align-items: center;
+}
+
+.serviceText {
+	height: 100%;
+	width : 30%;
+}
+
+.serviceContent {
+	font-size: 24px;
+	letter-spacing: -25%;
+	line-height: 40px;
+	color : #1C3D5A;
+	font-weight: bold;
+	margin-bottom : 15px;
+}
+
+.serviceTitle {
+	font-size : 40px;
+	line-height: 50px;
+	color : #333;
+}
+
+.serviceTitle b {
+	font-weight: bold;
+}
+
+
+.serviceMenu {
+	width: 70%;
+	height: 100%;
+	position: relative;
+	align-items: center;
+	display: flex;
+	gap : 100px;
+}
+
+.medicMenu {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	transition: transform 0.3s ease;
+	cursor: pointer;
+}
+
+.medicMenu:hover .menuIcon {
+	background-color: #1C3D5A;
+}
+
+.medicMenu:hover .menuIcon img {
+	filter : invert(1) brightness(100);
+}
+
+.medicMenu:hover .menuText {
+	font-weight: bold;
+}
+
+.menuIcon {
+	width: 100px;
+	height : 100px;
+	border-radius: 100%;
+	background-color: #f5f5f5;
+	position: relative;
+	display :flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom : 15px;
+	cursor: pointer;
+	transition: background-color 0.3s ease, transform 0.3s easeW;
+}
+
+.menuIcon img {
+	width : 40px;
+	height: 40px;
+	position: absolute;
+}
+
+.menuText {
+	font-size : 18px;
+	color : #333;
+}
+
+/* service 영역 끝 medical 영역 시작 */
+
+.medicalwrap {
+	width: 100%;
+	margin-bottom : 100px;
+}
+
+.medical {
+	width : 100%;
+	max-width: 1620px;
+	margin : 0 auto;
+	display :flex;
+	align-items: center;
+}
+
+.medicalimg {
+	position : relative;
+	width : 1000px;
+	height: 600px;
+	box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.25);
+}
+
+.medicalimg img {
+	width : 100%;
+	height: 100%;
+	background-repeat: no-repeat;
+}
+
+.medicalimg::before {
+	content : "";
+	position: absolute;
+	top : 70px;
+	left : 500px;
+	width: 1120px;
+	height: 600px;
+	background-color: #1C3D5A;
+	z-index : -1;
+}
+
+.medicalContent {
+	margin-left : 70px;
+	margin-top : 50px;
+}
+
+.medicalContentwrap {
+	display :flex;
+	flex-direction: column;
+}
+
+.medicalText {
+	font-size: 24px;
+	font-weight: bold;
+	letter-spacing: -25%;
+	line-height: 40px;
+	color : #8AE4FF;
+	margin-bottom : 15px;
+}
+
+.medicalTitle {
+	font-size : 40px;
+	line-height: 50px;
+	color : #fff;
+	margin-bottom : 30px;
+}
+
+.medicalTitle b {
+	font-weight: bold;
+}
+
+.medicalLine {
+	width: 550px;
+	height: 3px;
+	background-color: #fff;
+	opacity: 20%;
+	margin-bottom : 30px;
+}
+
+.medicalSubText {
+	font-size : 20px;
+	letter-spacing: -50%;
+	line-height: 30px;
+	color : #fff;
+	margin-bottom : 25px;
+}
+
+.medicalBtn {
+	width: 200px;
+	height: 60px;
+	background-color: #5BC0DE;
+	display :flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.medicalBtn span {
+	font-size : 20px;
+	letter-spacing: -25%;
+	line-height: 30px;
+	font-weight: bold;
+	color : #fff;
+}

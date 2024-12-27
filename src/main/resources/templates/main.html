@@ -5,10 +5,94 @@
 <title>Main Page</title>
 <link rel="stylesheet" th:href="@{/css/reset.css}">
 <link rel="stylesheet" th:href="@{/css/main.css}">
+<script th:src="@{/js/main.js}"></script>
 </head>
 <body>
 	<div th:replace="~{/layout/header :: header}"></div>
-
-
+	<div class="content">
+		<div class="visualwrap">
+			<div class="visual-bg"></div>
+			<div class="visualboxwrap">
+				<div class="visualbox">
+					<p class="titleText"><b>스마트케어로 실현하는</b><br>환자 맞춤형 의료 혁신</p>
+					<span class="contentText">환자 중심의 빠르고 체계적인 의료서비스를 위해 <b>스마트케어 시스템</b>을 도입하여<br>
+					진료, 검사, 치료, 사후 관리까지 전 과정을 효율적으로 운영합니다.<br><br>
+					
+					<b>실시간 정보 공유와 신속한 진단 서비스</b>를 통해 대기 시간을 줄이고,<br>
+					환자의 의료진 간의 소통을 강화합니다. 또한, <b>데이터 기반의 맞춤형 진료</b>로<br>
+					개인별 건강 상태에 최적화된 치료를 제공합니다.<br><br>
+					
+					<b>"더 빠른 진료, 더 체계적인 관리로 신뢰를 더합니다."</b></span>
+					<div class="showLineBar">
+						<div class="loadingBar"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="servicewrap">
+			<div class="service">
+				<div class="serviceText">
+					<span class="serviceContent">SMART CARE</span>
+					<p class="serviceTitle">원하시는 항목을<br><b>빠르게 찾아보세요.</b></p>
+				</div>
+				<div class="serviceMenu">
+					<a class="medicMenu" href="#">
+						<div class="menuIcon">
+							<img alt="외과" th:src="@{/img/main/menuIcon1.png}">
+						</div>
+						<span class="menuText">외과</span>
+					</a>
+					<a class="medicMenu" href="#">
+						<div class="menuIcon">
+							<img alt="내과" th:src="@{/img/main/menuIcon2.png}">
+						</div>
+						<span class="menuText">내과</span>
+					</a>
+					<a class="medicMenu" href="#">
+						<div class="menuIcon">
+							<img alt="정신과" th:src="@{/img/main/menuIcon3.png}">
+						</div>
+						<span class="menuText">정신과</span>
+					</a>
+					<a class="medicMenu" href="#">
+						<div class="menuIcon">
+							<img alt="나의건강관리" th:src="@{/img/main/menuIcon4.png}">
+						</div>
+						<span class="menuText">나의건강관리</span>
+					</a>
+					<a class="medicMenu" href="#">
+						<div class="menuIcon">
+							<img alt="나의예약관리" th:src="@{/img/main/menuIcon5.png}">
+						</div>
+						<span class="menuText">나의예약관리</span>
+					</a>
+					<a class="medicMenu" href="#">
+						<div class="menuIcon">
+							<img alt="병원소식" th:src="@{/img/main/menuIcon6.png}">
+						</div>
+						<span class="menuText">병원소식</span>
+					</a>
+				</div>
+			</div>
+		</div>
+		
+		<div class="medicalwrap">
+			<div class="medical">
+				<div class="medicalimg">
+					<img alt="의료진 사진" th:src="@{/img/main/medical.png}">
+				</div>
+				<div class="medicalContent">
+					<div class="medicalContentwrap">
+						<span class="medicalText">SMART CARE</span>
+						<p class="medicalTitle"><b>국내 최고의 전문 의료진</b>이<br>함께합니다.</p>
+						<div class="medicalLine"></div>
+						<span class="medicalSubText">광주 최대 규모의 SMART CARE는 30여명의<br>전문 의료진에 의한 최고의 의료서비스를 제공합니다.</span>
+						<a class="medicalBtn" href="#"><span>의료진 전체보기</span></a>
+					</div>
+				</div>
+			</div>			
+		</div>
+	</div>
 </body>
 </html>
