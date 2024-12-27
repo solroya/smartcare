@@ -1,10 +1,7 @@
 package com.nado.smartcare.member.domain;
 
 import com.nado.smartcare.config.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -18,12 +15,14 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long no;
 
+    @Column(nullable = false, unique = true)
     private String memberId;
 
     private String memberPass;
 
     private String memberName;
 
+    @Column(nullable = false, unique = true)
     private String memberEmail;
 
     private String memberPhoneNumber;
@@ -31,4 +30,32 @@ public class Member extends BaseEntity {
     private LocalDateTime memberBirthday;
 
     private boolean isSocial;
+
+    public Member() {
+    }
+
+    public Member(String memberId, String memberPass, String memberName, String memberEmail, String memberPhoneNumber, LocalDateTime memberBirthday, boolean isSocial) {
+        this.memberId = memberId;
+        this.memberPass = memberPass;
+        this.memberName = memberName;
+        this.memberEmail = memberEmail;
+        this.memberPhoneNumber = memberPhoneNumber;
+        this.memberBirthday = memberBirthday;
+        this.isSocial = isSocial;
+    }
+
+    public static Member of(String memberId, String memberPass, String memberName, String memberEmail,
+                            String memberPhoneNumber, LocalDateTime memberBirthDay, boolean isSocial) {
+        return new Member(memberId, memberPass, memberName, memberEmail, memberPhoneNumber, memberBirthDay, isSocial);
+    }
+
+    public Member updateMember(String newMemberPass, String newMemberPhoneNumber) {
+        if (newMemberPass != null && !newMemberPass.isBlank()) {
+            this.memberPass = newMemberPass;
+        }
+        if (newMemberPhoneNumber != null && !newMemberPhoneNumber.isBlank()) {
+            this.memberPhoneNumber = newMemberPhoneNumber;
+        }
+        return this; // 체이닝
+    }
 }
