@@ -3,14 +3,28 @@
 <th:block th:fragment="footer">
     <link rel="stylesheet" th:href="@{/css/layout/footer.css}">
     <link rel="stylesheet" th:href="@{/css/reset.css}">
-    
+
     <footer class="footer">
-         <div class="highinfo">
-         	
-         </div>
-         <div class="line"></div>
-         <div class="lowinfo">
-         	
-         </div>
+        <div class="footerwrap">
+            <div class="highinfo">
+                <a href="#" class="logo">
+                    <img class="footer-logo" alt="logo" th:src="@{/img/FooterLogo.png}">
+                </a>
+                <div class="line">
+                    <a href="#">이용약관</a>
+                    <a href="#">개인정보 처리방침</a>
+                    <a href="#">쿠키정책</a>
+                    <a href="#">환자의 권리와 의무</a>
+                </div>
+            </div>
+            <div class="footerLinebar"></div>
+            <div class="lowinfo">
+                <a href="#"><b>주소</b>광주광역시 서구 농성동 경열로 3</a>
+                <a href="#"><b>대표전화</b>062-362-7897</a>
+                <a href="#"><b>팩스</b>062-362-7798</a>
+                <a href="#"><b>이메일</b>hanul7797@naver.com</a>
+                <p class="copyRight">@ 2024 SMART CARE All Rights Reserved</p>
+            </div>
+        </div>
     </footer>
 </th:block>
