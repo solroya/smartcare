@@ -39,7 +39,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     public MemberDto updateMember(Long no, String newMemberPass, String newMemberPhoneNumber) {
-        Member member = memberRepository.findByMemberNo(no)
+        Member member = memberRepository.findByNo(no)
                 .orElseThrow(() -> new IllegalArgumentException("No member found with id: " + no));
 
         member.updateMember(newMemberPass, newMemberPhoneNumber);
@@ -49,7 +49,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     public void deleteMember(Long no) {
-        Member member = memberRepository.findByMemberNo(no)
+        Member member = memberRepository.findByNo(no)
                 .orElseThrow(() -> new IllegalArgumentException("No member found with id: " + no));
         memberRepository.delete(member);
     }
