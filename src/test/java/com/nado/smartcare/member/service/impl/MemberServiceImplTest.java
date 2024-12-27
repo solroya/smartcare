@@ -3,7 +3,6 @@ package com.nado.smartcare.member.service.impl;
 import com.nado.smartcare.member.domain.Member;
 import com.nado.smartcare.member.dto.MemberDto;
 import com.nado.smartcare.member.repository.MemberRepository;
-import com.nado.smartcare.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -130,7 +129,7 @@ class MemberServiceImplTest {
                 false
         );
 
-        given(memberRepository.findByMemberNo(no)).willReturn(Optional.of(existingMember));
+        given(memberRepository.findByNo(no)).willReturn(Optional.of(existingMember));
         given(memberRepository.save(any(Member.class))).willReturn(existingMember);
 
         // When
@@ -141,7 +140,7 @@ class MemberServiceImplTest {
         assertThat(result.memberPass()).isEqualTo(existingMember.getMemberPass());
         assertThat(result.memberPhoneNumber()).isEqualTo(existingMember.getMemberPhoneNumber());
 
-        then(memberRepository).should().findByMemberNo(no);
+        then(memberRepository).should().findByNo(no);
         then(memberRepository).should().save(any(Member.class));
     }
 
@@ -160,13 +159,13 @@ class MemberServiceImplTest {
                 LocalDateTime.of(1988, 1, 7, 0, 0),
                 false
         );
-        given(memberRepository.findByMemberNo(no)).willReturn(Optional.of(existingMember));
+        given(memberRepository.findByNo(no)).willReturn(Optional.of(existingMember));
 
         // When
         sut.deleteMember(no);
 
         // Then
-        then(memberRepository).should().findByMemberNo(no);
+        then(memberRepository).should().findByNo(no);
         then(memberRepository).should().delete(existingMember);
     }
 
@@ -175,11 +174,11 @@ class MemberServiceImplTest {
     void givenNonExistentMemberId_whenDeleting_thenThrowsException() {
         // Given
         Long no = 999L;
-        given(memberRepository.findByMemberNo(no)).willReturn(Optional.empty());
+        given(memberRepository.findByNo(no)).willReturn(Optional.empty());
 
         // When & Then
         assertThrows(IllegalArgumentException.class, () -> sut.deleteMember(no));
-        then(memberRepository).should().findByMemberNo(no);
+        then(memberRepository).should().findByNo(no);
         then(memberRepository).shouldHaveNoMoreInteractions();
     }
 
