@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Company Page</title>
+<link rel="stylesheet" th:href="@{/css/reset.css}">
+<link rel="stylesheet" th:href="@{/css/company/company.css}">
+</head>
+<body>
+	<div th:replace="~{/layout/header :: header}"></div>
+	<div class="content">
+		<div class="visualwrap">
+			<div class="visual-bg"></div>
+			<div class="visualboxwrap">
+				<img class="company-img" alt="company 이미지" th:src="@{/img/company/company/company.png}">
+				<div class="visualbox">
+					<p>회사소개</p>
+					<div class="subMenuTab">
+						<a class="homeIcon" href="main"><img alt="메인돌아가기" th:src="@{/img/company/company/home.png}"></a>
+						<img class="arrow" alt="arrow" th:src="@{/img/company/company/arrow.png}">
+						<a href="company">병원소개</a>
+						<img class="arrow" alt="arrow" th:src="@{/img/company/company/arrow.png}">
+						<a href="company">회사소개</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="companywrap">
+			<div class="company">
+				<div class="companyText">
+					<span>스마트한 의료, 스마트한 회사</span>
+					<p>스마트케어 <b>회사소개</b></p>
+				</div>
+			</div>
+		</div>
+		
+		<div class="subVisualwrap">
+			<div class="subVisual">
+				<div class="subVisual-bg"></div>
+				<div class="subVisualBox">
+					<img alt="subVisual 이미지" th:src="@{/img/company/company/subVisual1.png}">
+					<p>AI의 지능과 의료의 따뜻함이 함께하는 미래의 병원,<br><b>더 빠르고 더 정확한 진단과 맞춤형 케어로 지켜드리는 스마트 병원</b></p>
+				</div>
+			</div>
+		</div>
+		
+		<div class="company-bg"></div>
+		
+		<div class="companyContentwrap">
+			<div class="companyContent">
+				<div class="companyTitle">
+					<span>SMART CARE</span>
+					<div class="companySubTitle">
+						<p>AI가 함께하는<br><b>스마트케어의 미래</b></p>
+						<div class="companyLine"></div>
+					</div>
+				</div>
+				<div class="companySubContent">
+					<img alt="subContent 이미지" th:src="@{/img/company/company/companySubContent.png}">
+					<span>스마트케어의 미래는 단순한 의료 기술의 진보를 넘어, <b>AI와 의료의 완벽한 조화</b>를 통해 <b>더 빠르고,<br>
+					더 정확하며, 더 개인화된 의료 서비스</b>를 제공하는 혁신의 중심에 있습니다.<br>
+					<b>AI의 강력한 분석 능력과 빅데이터 기술</b>을 활용해 환자의 건강 상태를 실시간으로 모니터링하고,<br>
+					보다 <b>정밀한 진단과 예측</b>을 가능하게 합니다.<br><br>
+					이를 통해 환자는 <b>불필요한 대기 시간을 줄이고, 개인의 건강 상태에 최적화된 맞춤형 치료</b>를 받을 수 있습니다.<br>
+					스마트케어는 환자 한 사람 한 사람의 건강 여정에 동반자가 되어,<b>병원이 아닌 집에서도 의료 서비스를 경험할 수 있도록 지원</b>합니다.<br>
+					미래의 병원은 더 이상 먼 미래의 이야기가 아닙니다.<br><br>
+					스마트케어는 <b>AI의 지능과 의료의 따뜻함을 결합하여, 누구나 더 쉽고 편리하게 건강을 관리할 수 있는 세상</b>을 만들어 갑니다.<br>
+					<b>환자가 필요로 하기 전에 먼저 알아채고, 최적의 진료와 케어를 제공</b>하는 것, 그것이 바로 스마트케어가 꿈꾸는 의료의 미래입니다.</span>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	
+	
+</body>
+</html>

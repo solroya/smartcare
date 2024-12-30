@@ -43,7 +43,7 @@
 	color : #fff;
 	font-size : 60px;
 	line-height: 80px;
-	letter-spacing: -25%;
+	letter-spacing: -0.25px;
 	margin-bottom : 40px;
 }
 
@@ -55,7 +55,7 @@
 	color : #fff;
 	font-size : 24px;
 	line-height: 34px;
-	letter-spacing: -25%;
+	letter-spacing: -0.25px;
 	margin-bottom : 60px;
 }
 
@@ -132,7 +132,7 @@
 
 .serviceContent {
 	font-size: 24px;
-	letter-spacing: -25%;
+	letter-spacing: -0.25px;
 	line-height: 40px;
 	color : #1C3D5A;
 	font-weight: bold;
@@ -208,7 +208,7 @@
 
 .medicalwrap {
 	width: 100%;
-	margin-bottom : 100px;
+	margin-bottom : 170px;
 }
 
 .medical {
@@ -256,7 +256,7 @@
 .medicalText {
 	font-size: 24px;
 	font-weight: bold;
-	letter-spacing: -25%;
+	letter-spacing: -0.25px;
 	line-height: 40px;
 	color : #8AE4FF;
 	margin-bottom : 15px;
@@ -283,7 +283,7 @@
 
 .medicalSubText {
 	font-size : 20px;
-	letter-spacing: -50%;
+	letter-spacing: -0.5px;
 	line-height: 30px;
 	color : #fff;
 	margin-bottom : 25px;
@@ -300,8 +300,291 @@
 
 .medicalBtn span {
 	font-size : 20px;
-	letter-spacing: -25%;
+	letter-spacing: -0.25px;
 	line-height: 30px;
 	font-weight: bold;
 	color : #fff;
 }
+
+/* medical 영역 끝 department 영역 시작 */
+.department-bg {
+	width : 100%;
+	height: 1330px;
+	background-color : #f5f5f5;
+	position: absolute;
+	top : 1710px;
+	z-index : -10;
+}
+
+.departmentwrap {
+	width: 100%;
+}
+
+.department {
+	width : 100%;
+	max-width: 1620px;
+	margin : 0 auto;
+	display :flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.departmentText {
+	margin : 0 auto;
+	text-align : center;
+	display : flex;
+	flex-direction: column;
+	margin-bottom : 50px;
+}
+
+.departmentText span {
+	font-size : 24px;
+	letter-spacing: -0.25px;
+	color : #1C3D5A;
+	margin-bottom : 20px;
+	font-weight: bold;
+	margin-bottom : 15px;
+}
+
+.departmentText p {
+	font-size : 50px;
+	color : #333333;
+}
+
+.departmentText p b {
+	font-weight: bold;
+}
+
+.departmentContentwrap {
+	display: flex;
+	width: 100%;
+	margin : 0 auto;
+	gap : 45px;
+	margin-bottom : 100px;
+}
+
+.departmentContent {
+	width : 510px;
+	height: 650px;
+	background-color : #000;
+	position: relative;
+}
+
+.departmentContent-img {
+	display :flex;
+	position: relative;
+}
+
+.departmentContent:nth-child(1) .departmentContent-img {
+	background-image: url("/img/main/sugery.png");
+	width : 100%;
+	height: 100%;
+	background-repeat: no-repeat;
+}
+
+.departmentContent:nth-child(2) .departmentContent-img {
+	background-image: url("/img/main/medicine.png");
+	width : 100%;
+	height: 100%;
+	background-repeat: no-repeat;
+}
+
+.departmentContent:nth-child(3) .departmentContent-img {
+	background-image: url("/img/main/psychiatry.png");
+	width : 100%;
+	height: 100%;
+	background-repeat: no-repeat;
+}
+
+.departmentContent-text {
+	display :flex;
+	flex-direction: column;
+	position: absolute;
+	bottom : 0px;
+	margin-left : 50px;
+	margin-bottom : 80px;
+}
+
+.departmentContent-text span {
+	font-size : 24px;
+	color : #fff;
+	letter-spacing: -0.25px;
+	font-weight: bold;
+	margin-bottom : 10px;
+}
+
+.departmentContent-text p {
+	font-size : 40px;
+	color : #fff;
+	line-height: 50px;
+	margin-bottom : 25px;
+}
+
+.departmentContent-text p b {
+	font-weight: bold;
+}
+
+.departmentContent-text a {
+	width : 150px;
+	height: 50px;
+	border : 2px solid #fff;
+	border-radius: 100px;
+	color : #fff;
+	font-size : 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.3s ease, transform 0.3s easeW;
+}
+
+.departmentContent-text a:hover {
+	background-color : #fff;
+	color : #1C3D5A;
+	font-weight: bold;
+}
+
+/* department 영역 끝 smartCare 영역 시작 */
+
+.smartCarewrap {
+	width: 100%;
+	height : 800px;
+	background-color : #1C3D5A;
+	display : flex;
+	margin-bottom : 20px;
+}
+
+.smartCare {
+	display: flex;
+	width: 100%;
+	max-width: 1620px;
+	margin : 0 auto;
+}
+
+.smartCare-Text {
+	display : flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.smartCare-Text span:nth-child(1) {
+	font-size: 24px;
+	font-weight: bold;
+	letter-spacing: -0.25px;
+	color : #8AE4FF;
+	margin-bottom : 15px;
+}
+
+.smartCare-Text p {
+	font-size : 40px;
+	line-height: 50px;
+	color : #fff;
+	margin-bottom : 25px;
+}
+
+.smartCare-Text p b {
+	font-weight: bold;
+}
+
+.smartCare-Text span:nth-child(3) {
+	font-size: 20px;
+	letter-spacing: -0.5px;
+	color : #fff;
+	line-height: 30px;
+}
+
+.smartCare-Text span:nth-child(3) b {
+	font-weight: bold;
+}
+
+.smartCare-img {
+	margin-top : 100px; /* 추후에 바꿀 예정 우선 이렇게 삽입 */
+	display : flex;
+	position : absolute;
+	right : 0;
+	width : 950px;
+	height : 600px;
+	box-shadow: -6px 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.smartCare-img img {
+	width : 100%;
+	height: 100%;
+	background-repeat: no-repeat;
+}
+
+/* smartCare 영역 끝 showTextBar 영역 시작 */
+
+.textContainer {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 150px;
+  white-space: nowrap;
+  margin-bottom : 80px;
+}
+
+.showTextBar {
+  display: flex;
+  align-items: center;
+  animation: marquee 10s linear infinite;
+}
+
+.showTextBar span {
+  font-size: 150px;
+  font-weight: 900;
+  color: #000;
+  opacity: 0.03;
+  white-space: nowrap;
+  padding-right: 50px;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* showTextBar 영역 끝 notice 영역 시작 */
+
+.noticewrap {
+	width: 100%;
+	margin-bottom : 150px;
+}
+
+.notice {
+	display: flex;
+	width: 100%;
+	max-width: 1620px;
+	margin : 0 auto;
+}
+
+.noticeText {
+	margin : 0 auto;
+	text-align : center;
+	display : flex;
+	flex-direction: column;
+	margin-bottom : 50px;
+}
+
+.noticeText span {
+	font-size : 24px;
+	letter-spacing: -0.25px;
+	color : #1C3D5A;
+	margin-bottom : 20px;
+	font-weight: bold;
+	margin-bottom : 15px;
+}
+
+.noticeText p {
+	font-size : 50px;
+	color : #333333;
+}
+
+.noticeText p b {
+	font-weight: bold;
+}
+
+/* 병원소식 css 여기 아래부터 시작하시면 됩니다. */
