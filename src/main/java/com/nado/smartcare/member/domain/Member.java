@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 @Entity
 public class Member extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "member_seq")
     private Long no;
 
     @Column(nullable = false, unique = true)
