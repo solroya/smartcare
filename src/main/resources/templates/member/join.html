@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartCare</title>
+
+    <style>
+        .content {
+            width: 100%;
+            margin-top: 120px;
+        }
+
+        /* 컨텐츠 시작 영역*/
+
+        .validation-message {
+            color: red;
+            font-size: 0.9em;
+        }
+
+        .success-message {
+            color: green;
+            font-size: 0.9em;
+        }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div th:replace="~{/layout/header :: header}"></div>
+
+<div class="content">
+    <form action="/member/join" method="post">
+        <label for="memberId">ID:</label>
+        <input type="text" id="memberId" name="memberId" required>
+        <button type="button" id="checkIdBtn">중복 확인</button>
+        <span id="idValidationMessage" class="validation-message"></span>
+        <br>
+
+        <label for="memberPass">Password:</label>
+        <input type="password" id="memberPass" name="memberPass" required>
+        <br>
+
+        <label for="confirmMemberPass">Confirm Password:</label>
+        <input type="password" id="confirmMemberPass" name="confirmMemberPass" required>
+        <span id="passwordValidationMessage" class="validation-message"></span>
+        <br>
+
+        <label for="memberName">Name:</label>
+        <input type="text" id="memberName" name="memberName" required>
+        <br>
+
+        <label for="memberEmail">Email:</label>
+        <input type="email" id="memberEmail" name="memberEmail" required>
+        <button type="button" id="checkEmailBtn">중복 확인</button>
+        <span id="emailValidationMessage" class="validation-message"></span>
+        <br>
+
+        <label for="memberPhoneNumber">Phone Number:</label>
+        <input type="tel" id="memberPhoneNumber" name="memberPhoneNumber" required>
+        <button type="button" id="sendSmsBtn">인증 코드 발송</button>
+        <br>
+        <label for="smsCode">SMS Code:</label>
+        <input type="text" id="smsCode" name="smsCode" required>
+        <button type="button" id="verifySmsBtn">인증 코드 확인</button>
+        <span id="smsValidationMessage" class="validation-message"></span>
+        <br>
+
+        <label for="memberBirthday">생년월일: </label>
+        <input type="date" id="memberBirthday" name="memberBirthday" required>
+        <span id="birthdayValidationMessage" class="validation-message"></span>
+        <br>
+
+        <input type="hidden" name="isSocial" value="false">
+        <button type="submit">등록</button>
+        <button type="button" id="cancelButton">취소</button>
+    </form>
+
+</div>
+
+<script>
+    document.querySelector('button[type="submit"]').disabled = true;
+
+    let isIdValid = false;
+    let isPasswordValid = false;
+    let isEmailValid = false;
+    let isSmsVerified = false;
+    let isBirthdateVerified = false;
+
+    // ID 중복 체크
+    $('#checkIdBtn').on('click', function () {
+        const memberId = $('#memberId').val();
+
+        if (!memberId) {
+            $('#idValidationMessage').text('ID를 입력해주세요.');
+            isIdValid = false;
+            updateSubmitButtonState();
+            return;
+        }
+
+        $.ajax({
+            url: '/member/search-memberId',
+            method: 'GET',
+            data: { memberId },
+            success: function (response) {
+                if (response.result) {
+                    $('#idValidationMessage').text('이미 사용 중인 ID입니다.');
+                    isIdValid = false;
+                } else {
+                    $('#idValidationMessage').text('사용 가능한 ID입니다.').addClass('success-message');
+                    isIdValid = true;
+                }
+                updateSubmitButtonState();
+            },
+            error: function () {
+                $('#idValidationMessage').text('ID 확인 중 오류가 발생했습니다.');
+                isIdValid = false;
+                updateSubmitButtonState();
+            }
+        });
+    });
+
+    // 이벤트 리스너 추가
+    document.getElementById("memberPass").addEventListener("input", validatePasswords);
+    document.getElementById("confirmMemberPass").addEventListener("input", validatePasswords);
+
+
+    // 비밀번호 중복 확인
+    function validatePasswords() {
+        const password = document.getElementById("memberPass").value;
+        const confirmPassword = document.getElementById("confirmMemberPass").value;
+        const messageElement = document.getElementById("passwordValidationMessage");
+
+        if (confirmPassword.length === 0) {
+            messageElement.textContent = ""; // 초기 상태에서는 메시지 비우기
+            isPasswordValid = false;
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            messageElement.textContent = "비밀번호가 일치하지 않습니다.";
+            messageElement.style.color = "red";
+            isPasswordValid = false;
+        } else {
+            messageElement.textContent = "비밀번호가 일치합니다.";
+            messageElement.style.color = "green";
+            isPasswordValid = true;
+        }
+        updateSubmitButtonState();
+    }
+
+
+
+    // 이메일 중복 체크
+    $('#checkEmailBtn').on('click', function () {
+        const memberEmail = $('#memberEmail').val();
+
+        if (!memberEmail) {
+            $('#emailValidationMessage').text('이메일을 입력해주세요.');
+            return;
+        }
+
+        $.ajax({
+            url: '/member/search-memberEmail',
+            method: 'GET',
+            data: { memberEmail },
+            success: function (response) {
+                if (response.result) {
+                    $('#emailValidationMessage').text('이미 사용 중인 이메일입니다.');
+                    isEmailValid = false;
+                } else {
+                    $('#emailValidationMessage').text('사용 가능한 이메일입니다.').addClass('success-message');
+                    isEmailValid = true;
+                }
+                updateSubmitButtonState();
+            },
+            error: function () {
+                $('#emailValidationMessage').text('이메일 확인 중 오류가 발생했습니다.');
+                isEmailValid = false;
+                updateSubmitButtonState();
+            }
+        });
+    });
+
+    // 휴대폰 인증 검증
+    document.getElementById("memberPhoneNumber").addEventListener("input", function () {
+        let phoneNumber = this.value.replace(/\D/g, ''); // 숫자만 남기기
+        const phoneValidationMessage = document.getElementById("phoneValidationMessage");
+        updateSubmitButtonState();
+
+        if (phoneNumber.length <= 3) {
+            this.value = phoneNumber;
+        } else if (phoneNumber.length <= 7) {
+            this.value = `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`;
+        } else {
+            this.value = `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`;
+        }
+
+        // 유효성 검증
+        const phonePattern = /^\d{3}-\d{3,4}-\d{4}$/;
+
+        if (phonePattern.test(this.value)) {
+            phoneValidationMessage.textContent = "유효한 형식입니다.";
+            phoneValidationMessage.style.color = "green";
+        } else {
+            phoneValidationMessage.textContent = "휴대폰 번호는 010-1234-5678 형식이어야 합니다.";
+            phoneValidationMessage.style.color = "red";
+        }
+        updateSubmitButtonState();
+    });
+
+    // SMS 인증 코드 발송
+    $('#sendSmsBtn').on('click', function () {
+        const phoneNumber = $('#memberPhoneNumber').val();
+        isSmsVerified = false;
+        updateSubmitButtonState();
+
+        if (!phoneNumber) {
+            $('#smsValidationMessage').text('휴대폰 번호를 입력해주세요.');
+            return;
+        }
+
+        $.ajax({
+            url: '/sms/send',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ phone: phoneNumber.replace(/-/g, '') }),
+            success: function () {
+                $('#smsValidationMessage').text('인증 코드가 발송되었습니다.').css('color', 'green');
+            },
+            error: function () {
+                $('#smsValidationMessage').text('인증 코드 발송 중 오류가 발생했습니다.').css('color', 'red');
+            }
+        });
+    });
+
+    // SMS 인증 코드 확인
+    $('#verifySmsBtn').on('click', function () {
+        const phoneNumber = $('#memberPhoneNumber').val().replace(/-/g, '');
+        const smsCode = $('#smsCode').val();
+
+        if (!smsCode) {
+            $('#smsValidationMessage').text('인증 코드를 입력해주세요.');
+            return;
+        }
+
+        $.ajax({
+            url: '/sms/verify',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ phone: phoneNumber, code: smsCode }),
+            success: function (response) {
+                $('#smsValidationMessage').text('인증이 성공적으로 완료되었습니다.').css('color', 'green');
+                isSmsVerified = true;
+                updateSubmitButtonState();
+            },
+            error: function () {
+                $('#smsValidationMessage').text('인증 코드가 유효하지 않습니다.').css('color', 'red');
+                isSmsVerified = false;
+                updateSubmitButtonState();
+            }
+        });
+    });
+
+
+    document.getElementById("memberBirthday").addEventListener("change", function () {
+        const inputDate = new Date(this.value); // 사용자가 선택한 날짜
+        const today = new Date(); // 현재 날짜
+        const minDate = new Date(today.getFullYear() - 120, today.getMonth(), today.getDate()); // 120년 전
+        const maxDate = new Date(today.getFullYear() - 14, today.getMonth(), today.getDate()); // 14년 전
+
+        const messageElement = document.getElementById("birthdayValidationMessage");
+
+        isBirthdateVerified = false;
+
+        // 날짜 검증
+        if (inputDate > today) {
+            messageElement.textContent = "생년월일은 미래 날짜일 수 없습니다.";
+            messageElement.style.color = "red";
+            isBirthdateVerified = false;
+        } else if (inputDate < minDate) {
+            messageElement.textContent = "생년월일이 너무 오래되었습니다. (최대 120년 전)";
+            messageElement.style.color = "red";
+            isBirthdateVerified = false;
+        } else if (inputDate > maxDate) {
+            messageElement.textContent = "서비스 이용을 위해 만 14세 이상이어야 합니다.";
+            messageElement.style.color = "red";
+            isBirthdateVerified = false;
+        } else {
+            messageElement.textContent = "유효한 생년월일입니다.";
+            messageElement.style.color = "green";
+            isBirthdateVerified = true;
+        }
+        updateSubmitButtonState();
+    });
+
+    // 이전 상태를 저장할 객체
+    let previousState = {
+        isIdValid: false,
+        isPasswordValid: false,
+        isEmailValid: false,
+        isSmsVerified: false,
+        isBirthdateVerified: false,
+    };
+
+    function updateSubmitButtonState() {
+        // 변경 감지
+        const currentState = {
+            isIdValid,
+            isPasswordValid,
+            isEmailValid,
+            isSmsVerified,
+            isBirthdateVerified,
+        };
+
+        // 변경된 항목만 로그 출력
+        for (const key in currentState) {
+            if (currentState[key] !== previousState[key]) {
+                console.log(`${key} changed:`, currentState[key]);
+            }
+        }
+
+        // 이전 상태 업데이트
+        previousState = { ...currentState };
+
+        // 버튼 활성화 상태 업데이트
+        const isFormValid = isIdValid && isPasswordValid && isEmailValid && isSmsVerified && isBirthdateVerified;
+        document.querySelector('button[type="submit"]').disabled = !isFormValid;
+    }
+
+    // 취소 버튼
+    document.getElementById("cancelButton").addEventListener("click", function () {
+        window.location.href = "/main"; // 메인 페이지
+    });
+</script>
+</body>
+</html>

@@ -7,7 +7,7 @@
     <header class="header">
          <div class="header-bg"></div>
          <nav class="navbar">
-             <a href="main" class="logo">
+             <a th:href="@{/main}" class="logo">
                  <img alt="logo" th:src="@{/img/Logo.png}">
              </a>
              <ul class="menu">
@@ -48,7 +48,7 @@
                  </li>
              </ul>
              <div class="user-info">
-                 <a href="#" class="login">
+                 <a th:href="@{/member/memberIndex}" class="login">
                      <img alt="login" th:src="@{/img/login.png}">
                  </a>
                  <div class="gnb-btn" title="전체메뉴 열기">

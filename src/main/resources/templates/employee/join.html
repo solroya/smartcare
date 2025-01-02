@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Employee Registration</title>
+
+  <style>
+    .content {
+      width: 100%;
+      margin-top: 120px;
+    }
+
+    .validation-message {
+      color: red;
+      font-size: 0.9em;
+    }
+
+    .success-message {
+      color: green;
+      font-size: 0.9em;
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div th:replace="~{/layout/header :: header}"></div>
+
+<div class="content">
+  <form action="/employee/register" method="post">
+    <label for="employeeId">ID:</label>
+    <input type="text" id="employeeId" name="employeeId" required>
+    <button type="button" id="checkIdBtn">중복 확인</button>
+    <span id="idValidationMessage" class="validation-message"></span>
+    <br>
+
+    <label for="employeeName">Name:</label>
+    <input type="text" id="employeeName" name="employeeName" required>
+    <br>
+
+    <label for="employeePass">Password:</label>
+    <input type="password" id="employeePass" name="employeePass" required>
+    <br>
+
+    <label for="confirmEmployeePass">Confirm Password:</label>
+    <input type="password" id="confirmEmployeePass" name="confirmEmployeePass" required>
+    <span id="passwordValidationMessage" class="validation-message"></span>
+    <br>
+
+    <label for="employeeEmail">Email:</label>
+    <input type="email" id="employeeEmail" name="employeeEmail" required>
+    <button type="button" id="checkEmailBtn">중복 확인</button>
+    <span id="emailValidationMessage" class="validation-message"></span>
+    <br>
+
+    <label for="employeePhoneNumber">Phone Number:</label>
+    <input type="tel" id="employeePhoneNumber" name="employeePhoneNumber" required>
+    <button type="button" id="sendSmsBtn">인증 코드 발송</button>
+    <br>
+    <label for="smsCode">SMS Code:</label>
+    <input type="text" id="smsCode" name="smsCode" required>
+    <button type="button" id="verifySmsBtn">인증 코드 확인</button>
+    <span id="smsValidationMessage" class="validation-message"></span>
+    <br>
+
+    <label for="employeeBirthday">생년월일: </label>
+    <input type="date" id="employeeBirthday" name="employeeBirthday" required>
+    <span id="birthdayValidationMessage" class="validation-message"></span>
+    <br>
+
+    <input type="hidden" name="employeeStatus" value="PENDING">
+    <input type="hidden" name="workingStatus" value="WORKING">
+
+    <input type="hidden" name="isSocial" value="false">
+    <button type="submit">등록</button>
+    <button type="button" id="cancelButton">취소</button>
+  </form>
+</div>
+
+<script>
+  // JavaScript validation and interaction logic here (similar to member page)
+</script>
+
+</body>
+</html>
