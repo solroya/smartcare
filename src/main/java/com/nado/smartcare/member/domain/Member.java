@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -28,14 +29,14 @@ public class Member extends BaseEntity {
 
     private String memberPhoneNumber;
 
-    private LocalDateTime memberBirthday;
+    private LocalDate memberBirthday;
 
     private boolean isSocial;
 
     public Member() {
     }
 
-    public Member(String memberId, String memberPass, String memberName, String memberEmail, String memberPhoneNumber, LocalDateTime memberBirthday, boolean isSocial) {
+    public Member(String memberId, String memberPass, String memberName, String memberEmail, String memberPhoneNumber, LocalDate memberBirthday, boolean isSocial) {
         this.memberId = memberId;
         this.memberPass = memberPass;
         this.memberName = memberName;
@@ -46,7 +47,7 @@ public class Member extends BaseEntity {
     }
 
     public static Member of(String memberId, String memberPass, String memberName, String memberEmail,
-                            String memberPhoneNumber, LocalDateTime memberBirthDay, boolean isSocial) {
+                            String memberPhoneNumber, LocalDate memberBirthDay, boolean isSocial) {
         return new Member(memberId, memberPass, memberName, memberEmail, memberPhoneNumber, memberBirthDay, isSocial);
     }
 

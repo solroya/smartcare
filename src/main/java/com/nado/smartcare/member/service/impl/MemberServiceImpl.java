@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -30,11 +31,18 @@ public class MemberServiceImpl implements MemberService {
                 .map(MemberDto::from);
     }
 
-    public MemberDto saveMember(String memberId, String memberPass, String memberName, String memberEmail,
-                                String memberPhoneNumber, LocalDateTime memberBirthDay, boolean isSocial) {
-        return MemberDto.from(
-                memberRepository.save(Member.of(memberId, memberPass, memberName, memberEmail, memberPhoneNumber, memberBirthDay, isSocial))
+    public MemberDto saveMember(MemberDto memberDto) {
+        Member member = Member.of(
+                memberDto.memberId(),
+                memberDto.memberPass(),
+                memberDto.memberName(),
+                memberDto.memberEmail(),
+                memberDto.memberPhoneNumber(),
+                memberDto.memberBirthday(),
+                memberDto.isSocial()
         );
+
+        return MemberDto.from(memberRepository.save(member));
     }
 
     @Transactional
