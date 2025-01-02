@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -25,7 +26,8 @@ import static org.mockito.BDDMockito.then;
 @ExtendWith(MockitoExtension.class)
 class MemberServiceImplTest {
 
-    @InjectMocks private MemberServiceImpl sut;
+    @InjectMocks
+    private MemberServiceImpl sut;
 
     @Mock
     private MemberRepository memberRepository;
@@ -71,7 +73,7 @@ class MemberServiceImplTest {
         String memberName = "New User";
         String memberEmail = "newuser@test.com";
         String memberPhoneNumber = "010-1234-1234";
-        LocalDateTime memberBirthday = LocalDateTime.of(1988, 1, 7, 0, 0);
+        LocalDate memberBirthday = LocalDate.of(1988, 1, 7);
         boolean isSocial = false;
 
         Member mocMember = new Member(
@@ -87,13 +89,7 @@ class MemberServiceImplTest {
 
         // When
         MemberDto result = sut.saveMember(
-                memberId,
-                memberPass,
-                memberName,
-                memberEmail,
-                memberPhoneNumber,
-                memberBirthday,
-                isSocial
+                MemberDto.from(mocMember)
         );
 
         // Then
@@ -125,7 +121,7 @@ class MemberServiceImplTest {
                 "Old Name",
                 "old@test.com",
                 "010-1234-5678",
-                LocalDateTime.of(1988, 1, 7, 0, 0),
+                LocalDate.of(1988, 1, 7),
                 false
         );
 
@@ -156,7 +152,7 @@ class MemberServiceImplTest {
                 "User Name",
                 "user@test.com",
                 "010-1234-5678",
-                LocalDateTime.of(1988, 1, 7, 0, 0),
+                LocalDate.of(1988, 1, 7),
                 false
         );
         given(memberRepository.findByNo(no)).willReturn(Optional.of(existingMember));
@@ -190,7 +186,7 @@ class MemberServiceImplTest {
                 "ChulHee",             // memberName
                 memberId + "@test.com",// memberEmail
                 "010-1234-1234",       // memberPhoneNumber
-                LocalDateTime.of(1988, 1, 7, 0, 0), // memberBirthday
+                LocalDate.of(1988, 1, 7), // memberBirthday
                 false                  // isSocial
         );
     }
