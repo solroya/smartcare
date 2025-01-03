@@ -16,7 +16,7 @@
 				<div class="visualbox">
 					<p>회사소개</p>
 					<div class="subMenuTab">
-						<a class="homeIcon" href="main"><img alt="메인돌아가기" th:src="@{/img/company/company/home.png}"></a>
+						<a class="homeIcon" th:href="@{/main}"><img alt="메인돌아가기" th:src="@{/img/company/company/home.png}"></a>
 						<img class="arrow" alt="arrow" th:src="@{/img/company/company/arrow.png}">
 						<a href="company">병원소개</a>
 						<img class="arrow" alt="arrow" th:src="@{/img/company/company/arrow.png}">
@@ -72,7 +72,6 @@
 		</div>
 		
 	</div>
-	
-	
+	<div th:replace="~{/layout/footer :: footer}"></div>
 </body>
 </html>

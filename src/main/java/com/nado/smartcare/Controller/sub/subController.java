@@ -2,13 +2,15 @@ package com.nado.smartcare.Controller.sub;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping("/company")
 public class subController {
 
-	@GetMapping("company")
+	@GetMapping("/company")
 	public String companyForm() {
-		return "/company/company";
+		return "company/company";
 	}
 	
 }
