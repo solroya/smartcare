@@ -1,5 +1,6 @@
 package com.nado.smartcare.employee.domain;
 
+import com.nado.smartcare.config.BaseEntity;
 import com.nado.smartcare.employee.domain.type.EmployeeStatus;
 import com.nado.smartcare.employee.domain.type.TypeOfEmployee;
 import com.nado.smartcare.employee.domain.type.WorkingStatus;
@@ -7,12 +8,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
 @ToString
 @Entity
-public class Employee {
+public class Employee extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
@@ -28,7 +30,7 @@ public class Employee {
 
     private String employeeEmail;
 
-    private LocalDateTime employeeBirthday;
+    private LocalDate employeeBirthday;
 
     private String employeePhoneNumber;
 
