@@ -42,14 +42,14 @@ public class MemberController {
 
     @ResponseBody
     @GetMapping("search-memberId")
-    public Map<String, Boolean> checkId(@RequestParam String memberId) {
+    public Map<String, Boolean> checkId(@RequestParam("memberId") String memberId) {
         boolean result = memberService.searchMember(memberId).isPresent();
         return Map.of("result", result);
     }
 
     @ResponseBody
     @GetMapping("search-memberEmail")
-    public Map<String, Boolean> searchMemberEmail(@RequestParam String memberEmail) {
+    public Map<String, Boolean> searchMemberEmail(@RequestParam("memberEmail") String memberEmail) {
         boolean result = memberService.searchMemberEmail(memberEmail).isPresent();
         return Map.of("result", result);
     }
