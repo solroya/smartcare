@@ -3,6 +3,7 @@ package com.nado.smartcare.member.verifysms.service.impl;
 import com.nado.smartcare.member.verifysms.domain.SmsDto;
 import com.nado.smartcare.member.verifysms.service.SmsService;
 import com.nado.smartcare.member.verifysms.util.CoolSMSConfig;
+import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.message.model.Balance;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
 
-@Slf4j
+@Log4j2
 @Service
 public class SmsServiceImpl implements SmsService {
 
