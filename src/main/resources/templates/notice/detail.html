@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .content {
+            width: 100%;
+            margin-top: 120px;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{/layout/header :: header}"></div>
+<div class="content">
+    <div th:text="${notice.title}">공지사항 제목</div>
+    <br>
+    <div>
+        작성자: <span th:text="${notice.employee.employeeName}">작성자 이름</span> |
+        작성일: <span th:text="${notice.createdAt}">2025-01-05</span> |
+        조회수: <span th:text="${notice.viewCount}">0</span>
+    </div>
+    <br>
+    <div th:text="${notice.content}">공지사항 내용</div>
+    <br>
+    <div th:if="${notice.imagePaths != null}">
+        <h4>첨부 이미지</h4>
+        <div th:each="imagePath : ${notice.imagePaths}">
+            <img th:src="${imagePath}" alt="첨부 이미지" style="max-width: 100%; margin-bottom: 10px;">
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

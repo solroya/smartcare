@@ -168,6 +168,17 @@
 					<p>스마트케어 <b>병원소식</b></p>
 				</div>
 				<!-- 병원소식 개발 및 html 여기에 작업하시면 됩니다. -->
+				<div class="news-grid">
+					<div class="news-item" th:each="notice : ${noticeList}">
+						<h3 th:text="${notice.title}">공지사항 제목</h3>
+						<p th:text="${notice.content}">공지사항 내용 미리보기</p>
+						<div class="news-footer">
+							<div class="news-date" th:text="${#temporals.format(notice.createdAt, 'yyyy년 MM월 dd일')}">2025년 1월 7일</div>
+							<a th:href="@{'/erp/notice/' + ${notice.noticeNo}}">자세히 보기 →</a>
+						</div>
+					</div>
+				</div>
+
 			</div>
 		</div>
 	</div>

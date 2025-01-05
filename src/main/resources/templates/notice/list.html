@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .content {
+            width: 100%;
+            margin-top: 120px;
+        }
+
+    </style>
+</head>
+<body>
+<div th:replace="~{/layout/header :: header}"></div>
+<div class="content">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>제목</th>
+                <th>내용</th>
+                <th>작성일시</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr th:each="notice : ${noticeList}">
+            <td th:text="${notice.title}"></td>
+            <td th:text="${notice.content}"></td>
+            <td th:text="${notice.createdAt}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
