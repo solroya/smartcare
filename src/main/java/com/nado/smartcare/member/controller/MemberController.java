@@ -28,16 +28,16 @@ public class MemberController {
     }
 
     @GetMapping("join")
-    public String join(ModelMap map) {
+    public String join() {
         return "member/join";
     }
 
     @PostMapping("join")
-    public String join(ModelMap map,@Valid MemberDto memberDto) {
-        log.info(memberDto);
+    public String join(@Valid MemberDto memberDto) {
+        log.info("memberDto join : {} ", memberDto);
 
         memberService.saveMember(memberDto);
-        return "member/join";
+        return "redirect:/main";
     }
 
     @ResponseBody

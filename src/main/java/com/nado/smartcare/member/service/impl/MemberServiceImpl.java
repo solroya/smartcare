@@ -20,17 +20,20 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
+    @Override
     public Optional<MemberDto> searchMember(String memberId) {
         return memberRepository.findByMemberId(memberId)
                 .map(MemberDto::from);
     }
 
     @Transactional(readOnly = true)
+    @Override
     public Optional<MemberDto> searchMemberEmail(String memberEmail) {
         return memberRepository.findByMemberEmail(memberEmail)
                 .map(MemberDto::from);
     }
 
+    @Override
     public MemberDto saveMember(MemberDto memberDto) {
         Member member = Member.of(
                 memberDto.memberId(),
@@ -46,6 +49,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Transactional
+    @Override
     public MemberDto updateMember(Long no, String newMemberPass, String newMemberPhoneNumber) {
         Member member = memberRepository.findByNo(no)
                 .orElseThrow(() -> new IllegalArgumentException("No member found with id: " + no));
@@ -56,6 +60,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Transactional
+    @Override
     public void deleteMember(Long no) {
         Member member = memberRepository.findByNo(no)
                 .orElseThrow(() -> new IllegalArgumentException("No member found with id: " + no));

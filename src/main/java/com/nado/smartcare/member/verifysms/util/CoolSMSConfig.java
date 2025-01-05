@@ -39,7 +39,7 @@ public class CoolSMSConfig {
     /**
      * 단일 메시지 발송 예제
      */
-    public SingleMessageSentResponse sendOne(String to, String certificationCode) {
+    public void sendOne(String to, String certificationCode) {
         try {
             Message message = new Message();
             // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
@@ -49,7 +49,6 @@ public class CoolSMSConfig {
 
             SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
             log.info("CoolSMS 발신 결과 : {}", response);
-            return response;
         } catch (Exception e) {
             log.error("SMS 전송 중 오류 발생: {}", e.getMessage());
             throw new RuntimeException("SMS 전송에 실패했습니다.");
