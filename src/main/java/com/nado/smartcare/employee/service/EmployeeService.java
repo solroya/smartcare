@@ -12,7 +12,7 @@ public interface EmployeeService {
 
     EmployeeDto saveEmployee(EmployeeDto employeeDto);
 
-    EmployeeDto updateEmployee(Long no, String newEmployeePass, String newEmployeePhoneNumber);
+    EmployeeDto updateEmployee(Long EmployeeNo, String newEmployeePass, String newEmployeePhoneNumber);
 
     void deleteEmployee(Long employeeNo);
 }
