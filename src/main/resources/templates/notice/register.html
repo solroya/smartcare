@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+  <style>
+    .content {
+      width: 100%;
+      margin-top: 120px;
+    }
+    form {
+        /*display: flex;*/
+    }
+  </style>
+</head>
+<body>
+<div th:replace="~{/layout/header :: header}"></div>
+<div class="content">
+    <h2>공지사항 등록</h2>
+    <form action="/erp/notice/register" method="post" enctype="multipart/form-data">
+        <!-- 제목 입력 -->
+        <label for="title">제목</label>
+        <input type="text" id="title" name="title" placeholder="공지사항 제목을 입력하세요" required>
+        <br>
+        <!-- 내용 입력 -->
+        <label for="content">내용</label>
+        <textarea id="content" name="content" rows="5" placeholder="공지사항 내용을 입력하세요" required></textarea>
+        <br>
+        <!-- 작성자 선택 -->
+        <label for="employee">작성자 번호</label>
+        <textarea id="employee" name="employee" ></textarea>
+        <br>
+        <!-- 이미지 업로드 -->
+        <label for="images">이미지 업로드</label>
+        <input type="file" id="images" name="images" multiple>
+        <br>
+        <!-- 등록 버튼 -->
+        <button type="submit">등록</button>
+        <button type="button" id="cancelButton">취소</button>
+    </form>
+
+</div>
+
+</body>
+</html>

@@ -555,7 +555,7 @@
 }
 
 .notice {
-	display: flex;
+	display: block;
 	width: 100%;
 	max-width: 1620px;
 	margin : 0 auto;
@@ -588,3 +588,97 @@
 }
 
 /* 병원소식 css 여기 아래부터 시작하시면 됩니다. */
+
+.news-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 530px);
+	grid-auto-rows: 300px;
+	gap: 15px; /* 그리드 아이템 간의 간격 */
+	max-width: 1620px; /* 필요에 따라 최대 너비 설정 */
+	margin: 0 auto; /* 중앙 정렬 */
+	padding: 20px; /* 필요에 따라 패딩 추가 */
+}
+
+.news-item {
+	background-color: #F5F5F5; /* 박스 배경 */
+	padding: 50px;             /* 내부 여백 */
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+/* 게시글 제목 스타일 */
+.news-item h3 {
+	font-size: 28px;
+	font-weight: bold;
+	margin-bottom: 10px;
+	color: #333333;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap; /* 단일 라인 */
+}
+
+/* 게시글 내용 스타일 */
+.news-item p {
+	font-size: 20px;
+	color: #333333;
+	flex-grow: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box; /* flexbox와 호환되도록 설정 */
+	-webkit-line-clamp: 5; /* 표시할 라인 수 */
+	-webkit-box-orient: vertical;
+}
+
+/* 날짜 스타일 */
+.news-date {
+	font-size: 18px;
+	color: #AAAAAA;
+	margin-top: 10px;
+}
+
+/* "자세히 보기" 링크 스타일 */
+.news-item a {
+	font-size: 18px;
+	text-decoration: none;
+	color: #1C3D5A;
+	font-weight: bold;
+	margin-top: 10px;
+	align-self: flex-end;
+}
+
+.news-item a:hover {
+	text-decoration: underline;
+}
+
+.news-item:hover {
+	background-color: #1C3D5A; /* 호버 시 배경색 변경 */
+	transform: translateY(-5px); /* 호버 시 약간 위로 이동 */
+	transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* news-footer 컨테이너 설정 */
+.news-footer {
+	display: flex;
+	justify-content: space-between; /* 양 끝으로 요소 배치 */
+	align-items: center;            /* 수직 중앙 정렬 */
+	margin-top: 10px;               /* 상단 여백 조절 */
+}
+
+/* 호버 시 내부 텍스트 색상 변경 */
+.news-item:hover h3 {
+	color: #FFFFFF
+}
+
+.news-item:hover p {
+	color: #FFFFFF
+}
+
+.news-item:hover .news-date {
+	color: #FFFFFF
+}
+
+.news-item:hover a {
+	color: #FFFFFF
+}
+

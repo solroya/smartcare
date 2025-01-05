@@ -58,6 +58,7 @@
         <label for="memberPhoneNumber">Phone Number:</label>
         <input type="tel" id="memberPhoneNumber" name="memberPhoneNumber" required>
         <button type="button" id="sendSmsBtn">인증 코드 발송</button>
+        <span id="phoneValidationMessage" class="validation-message"></span>
         <br>
         <label for="smsCode">SMS Code:</label>
         <input type="text" id="smsCode" name="smsCode" required>
@@ -261,7 +262,7 @@
         });
     });
 
-
+    // 생년월일 검증
     document.getElementById("memberBirthday").addEventListener("change", function () {
         const inputDate = new Date(this.value); // 사용자가 선택한 날짜
         const today = new Date(); // 현재 날짜
