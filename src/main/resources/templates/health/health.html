@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Health Page</title>
+<link rel="stylesheet" th:href="@{/css/reset.css}">
+<link rel="stylesheet" th:href="@{/css/health/health.css}">
+</head>
+<body>
+	<div th:replace="~{/layout/header :: header}"></div>
+	<div class="content">
+		<div class="visualwrap">
+			<div class="visual-bg"></div>
+			<div class="visualboxwrap">
+				<img class="health-img" alt="health 이미지" th:src="@{/img/health/health.png}">
+				<div class="visualbox">
+					<p>나의건강관리</p>
+					<div class="subMenuTab">
+						<a class="homeIcon" th:href="@{/main}"><img alt="메인돌아가기" th:src="@{/img/company/company/home.png}"></a>
+						<img class="arrow" alt="arrow" th:src="@{/img/company/company/arrow.png}">
+						<a href="health">헬스케어</a>
+						<img class="arrow" alt="arrow" th:src="@{/img/company/company/arrow.png}">
+						<a href="health">나의건강관리</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="titlewrap">
+			<div class="title">
+				<div class="titleText">
+					<span>건강한 일상, 든든한 관리 나인광은 ㅄ이다!!</span>
+					<p>스마트케어 <b>나의건강관리</b></p>
+				</div>
+			</div>
+		</div>
+		
+		<div class="healthTable"></div>
+		
+		<div class="healthContentwrap">
+			<div class="healthContent">
+				<div class="healthTitle">
+					<span>SMART CARE</span>
+					<div class="healthSubTitle">
+						<p>건강한 일상<br><b>나의음식추천</b></p>
+						<div class="healthLine"></div>
+					</div>
+				</div>
+				
+				<div class="health">
+					<div class="healthbox">
+						<div class="healthboxText">
+							<p>대분류</p>
+							<button>음식점 보기 →</button>
+						</div>
+					</div>
+					<div class="healthbox">
+						<div class="healthboxText">
+							<p>대분류</p>
+							<button>음식점 보기 →</button>
+						</div>
+					</div>
+					<div class="healthbox">
+						<div class="healthboxText">
+							<p>대분류</p>
+							<button>음식점 보기 →</button>
+						</div>
+					</div>
+					<div class="healthbox">
+						<div class="healthboxText">
+							<p>대분류</p>
+							<button>음식점 보기 →</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	<div th:replace="~{/layout/footer :: footer}"></div>
+</body>
+</html>

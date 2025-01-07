@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>vision Page</title>
+<link rel="stylesheet" th:href="@{/css/reset.css}">
+<link rel="stylesheet" th:href="@{/css/company/vision.css}">
+</head>
+<body>
+	<div th:replace="~{/layout/header :: header}"></div>
+	<div class="content">
+		<div class="visualwrap">
+			<div class="visual-bg"></div>
+			<div class="visualboxwrap">
+				<img class="company-img" alt="company 이미지" th:src="@{/img/company/company/company.png}">
+				<div class="visualbox">
+					<p>회사소개</p>
+					<div class="subMenuTab">
+						<a class="homeIcon" th:href="@{/main}"><img alt="메인돌아가기" th:src="@{/img/company/company/home.png}"></a>
+						<img class="arrow" alt="arrow" th:src="@{/img/company/company/arrow.png}">
+						<a href="company">병원소개</a>
+						<img class="arrow" alt="arrow" th:src="@{/img/company/company/arrow.png}">
+						<a href="vision">비전</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="titlewrap">
+			<div class="title">
+				<div class="titleText">
+					<span>미래의 의료, 오늘의 혁신</span>
+					<p>스마트케어 <b>비전</b></p>
+				</div>
+			</div>
+		</div>
+		
+		<div class="visionwrap">
+			<div class="vision">
+				<div class="visionbox">
+					<img alt="visionbox1 이미지" th:src="@{/img/company/vision/visionbox1.png}">
+					<div class="visionboxText">
+						<p>AI로 앞서가는 의료, <b>사람을 위해 멈추지 않는 혁신</b></p>
+						<span>스마트케어는 단순한 진단과 치료의 도구가 아니라, <b>환자 맞춤형 의료의 동반자</b>입니다.<br>
+						AI의 강력한 데이터 분석과 예측 능력을 바탕으로 혼자의 건강상태를 미리 파악하고,<br>
+						최적의 치료 방법을 제안합니다. 또한, 기존의 대기와 불확실성을 없애고,<br>
+						<b>언제 어디서나 편리하게 의료 서비스를 제공</b>할 수 있도록 혁신하고 있습니다.<br>
+						스마트케어는 <b>예측 가능한 미래 의료를 실현</b>하며, 환자가 필요하기 전에 먼저 해결책을 제시합니다.</span>
+					</div>
+				</div>
+				
+				<div class="visionbox2">
+					<div class="visionbox2Text">
+						<p>모두를 위한 의료, <b>언제 어디서나 연결되는 스마트케어</b></p>
+						<span>스마트케어는 <b>접근 가능한 의료를 목표</b>로 합니다.<br>
+						병원에 가지 않고도 <b>집에서 편리하게 건강을 관리</b>할 수 있는 환경을 제공합니다.<br>
+						AI의 원격 진료 기술과 실시간 건강 모니터링 시스템을 통해 환자는 필요할 때 즉시 진료를 받을 수 있습니다.<br>
+						특히 <b>고령층, 어린이, 거동이 불편한 환자</b>들도 <b>의료 격차없이 편리한 진료</b>를 누릴 수 있습니다.<br>
+						이를 통해, 스마트케어는 환자와 병원 간의 경계를 허물고,<br>
+						모두가 평등하게 의료에 접근할 수 있는 <b>연결된 의료 환경</b>을 구축합니다.</span>
+					</div>
+					<img alt="visionbox2 이미지" th:src="@{/img/company/vision/visionbox2.png}">
+				</div>
+				
+				<div class="visionbox">
+					<img alt="visionbox3 이미지" th:src="@{/img/company/vision/visionbox3.png}">
+					<div class="visionboxText">
+						<p>더 빠르고, 더 정확하고, <b>더 따뜻한 스마트 의료</b></p>
+						<span>스마트케어는 <b>정확성과 신속성</b>을 핵심 가치로 삼고 있습니다. AI는 빅데이터 분석을 통해<br>
+						<b>더 빠르고 더 정확한 진단</b>을 가능하게 하며, 환자는 기다림 없이 최적의 진료를 받을 수 있습니다.<br>
+						기존의 "대기하고 진료받는" 의료의 패러다임을 깨고, <b>"예측하고 준비하는" 미래의 의료</b>를 실현합니다.<br>
+						하지만 기술만으로는 충분하지 않기에, 스마트케어는 <b>AI의 지능에 의료의 따뜻함을 더해</b><br>
+						사람 중심의 서비스를 제공합니다. 스마트케어의 <b>따뜻한 의료 서비스는 고객의 신뢰와 만족을 최우선</b>으로 합니다.</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:replace="~{/layout/footer :: footer}"></div>
+</body>
+</html>

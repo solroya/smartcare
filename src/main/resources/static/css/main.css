@@ -596,7 +596,6 @@
 	gap: 15px; /* 그리드 아이템 간의 간격 */
 	max-width: 1620px; /* 필요에 따라 최대 너비 설정 */
 	margin: 0 auto; /* 중앙 정렬 */
-	padding: 20px; /* 필요에 따라 패딩 추가 */
 }
 
 .news-item {
@@ -625,6 +624,7 @@
 	flex-grow: 1;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	letter-spacing : -0.5px;
 	display: -webkit-box; /* flexbox와 호환되도록 설정 */
 	-webkit-line-clamp: 5; /* 표시할 라인 수 */
 	-webkit-box-orient: vertical;
@@ -635,6 +635,7 @@
 	font-size: 18px;
 	color: #AAAAAA;
 	margin-top: 10px;
+	letter-spacing: -0.25px;
 }
 
 /* "자세히 보기" 링크 스타일 */
@@ -653,7 +654,6 @@
 
 .news-item:hover {
 	background-color: #1C3D5A; /* 호버 시 배경색 변경 */
-	transform: translateY(-5px); /* 호버 시 약간 위로 이동 */
 	transition: background-color 0.3s ease, transform 0.3s ease;
 }
 

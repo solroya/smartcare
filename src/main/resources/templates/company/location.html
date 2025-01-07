@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>location Page</title>
+<link rel="stylesheet" th:href="@{/css/reset.css}">
+<link rel="stylesheet" th:href="@{/css/company/location.css}">
+</head>
+<body>
+	<div th:replace="~{/layout/header :: header}"></div>
+	<div class="content">
+		<div class="visualwrap">
+			<div class="visual-bg"></div>
+			<div class="visualboxwrap">
+				<img class="company-img" alt="company 이미지" th:src="@{/img/company/company/company.png}">
+				<div class="visualbox">
+					<p>회사소개</p>
+					<div class="subMenuTab">
+						<a class="homeIcon" th:href="@{/main}"><img alt="메인돌아가기" th:src="@{/img/company/company/home.png}"></a>
+						<img class="arrow" alt="arrow" th:src="@{/img/company/company/arrow.png}">
+						<a href="company">병원소개</a>
+						<img class="arrow" alt="arrow" th:src="@{/img/company/company/arrow.png}">
+						<a href="location">오시는 길</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="titlewrap">
+			<div class="title">
+				<div class="titleText">
+					<span>스마트케어로 가는 길, 건강한 내일의 시작</span>
+					<p>스마트케어 <b>오시는 길</b></p>
+				</div>
+			</div>
+		</div>
+		
+		<div class="locationwrap">
+				<div class="locationimg">
+					<div class="locationvisualbox">
+						<div class="location-bg"></div>
+						<img alt="location 이미지" th:src="@{/img/company/location/locationimg.png}">
+					</div>
+					<div class="map">
+						<div id="daumRoughmapContainer1736229579296" class="root_daum_roughmap root_daum_roughmap_landing"></div>
+					</div>
+				</div>
+				<div class="location">
+					<div class="locationTitle">
+						<span>SMART CARE</span>
+						<div class="locationSubTitle">
+							<p>스마트케어<br><b>오시는 길</b></p>
+							<div class="locationLine"></div>
+						</div>
+					</div>
+					
+					<div class="infobox">
+						<div class="info-address">
+							<div class="info-address-text">
+								<p>주소 및 연락처</p>
+								<span><b>주소</b> : 광주광역시 서누 농성동 경열로 3</span>
+								<span><b>대표전화</b> : 062-362-7897</span>
+								<span><b>팩스</b> : 062-362-7799</span>
+							</div>
+						</div>
+						
+						<div class="info-bus">
+							<div class="info-bus-text">
+								<p>교통편</p>
+								<span><b>버스정류장</b></span>
+								<span>•서구청 : 금호36, 문흥39, 봉선37, 송정19, 송암68</span>
+								<span>•농성SK뷰 : 금호36, 문흥39, 봉선37, 송정19, 송암68</span>
+							</div>
+						</div>
+					</div>
+				</div>
+		</div>
+	</div>
+	<div th:replace="~{/layout/footer :: footer}"></div>
+	<script charset="UTF-8" class="daum_roughmap_loader_script" src="https://ssl.daumcdn.net/dmaps/map_js_init/roughmapLoader.js"></script>
+	<script charset="UTF-8">
+		new daum.roughmap.Lander({
+			"timestamp" : "1736229579296",
+			"key" : "2mprm",
+			"mapWidth" : "1620",
+			"mapHeight" : "600"
+		}).render();
+	</script>
+</body>
+</html>

@@ -5,13 +5,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/company")
-public class subController {
-
-	@GetMapping("/company")
-	public String companyForm() {
-		return "company/company";
-	}
+@RequestMapping("/discharge")
+public class dischargeController {
 	
+	@GetMapping("/discharge")
+	public String dischargeForm() {
+		return "discharge/discharge";
+	}
 }
-
