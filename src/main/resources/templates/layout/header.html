@@ -15,8 +15,8 @@
                      <a th:href="@{/company/company}">병원소개</a>
                      <ul class="subMenu">
                          <li><a th:href="@{/company/company}">회사소개</a></li>
-                         <li><a href="#">비전</a></li>
-                         <li><a href="#">오시는길</a></li>
+                         <li><a th:href="@{/company/vision}">비전</a></li>
+                         <li><a th:href="@{/company/location}">오시는길</a></li>
                      </ul>
                  </li>
                  <li class="menu-item">
@@ -28,15 +28,15 @@
                      </ul>
                  </li>
                  <li class="menu-item">
-                     <a href="#">입•퇴원 안내</a>
+                     <a th:href="@{/discharge/discharge}">입퇴원 안내</a>
                      <ul class="subMenu">
-                         <li><a href="#">입퇴원 절차</a></li>
+                         <li><a th:href="@{/discharge/discharge}">입퇴원 절차</a></li>
                      </ul>
                  </li>
                  <li class="menu-item">
-                     <a href="#">헬스케어</a>
+                     <a th:href="@{/health/health}">헬스케어</a>
                      <ul class="subMenu">
-                         <li><a href="#">나의건강관리</a></li>
+                         <li><a th:href="@{/health/health}">나의건강관리</a></li>
                      </ul>
                  </li>
                  <li class="menu-item">

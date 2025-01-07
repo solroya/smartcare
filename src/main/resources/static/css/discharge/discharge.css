@@ -27,7 +27,7 @@
 	height: 100%;
 }
 
-.visualboxwrap .company-img {
+.visualboxwrap .discharge-img {
 	position: absolute;
 	opacity: 50%;
 	background-repeat: no-repeat;
@@ -90,7 +90,7 @@
 	font-weight: bold;
 }
 
-/* visual 영역 끝 company 영역 시작 */
+/* visual 영역 끝 discharge 영역 시작 */
 
 .titlewrap {
 	width: 100%;
@@ -130,12 +130,12 @@
 	font-weight: bold;
 }
 
-/* company 영역 끝 subVisual 영역 시작 */
-
 .subVisualwrap {
 	width : 100%;
 	margin-bottom : 80px;
 }
+
+/* discharge 영역 끝 subVisual 영역 시작 */
 
 .subVisual {
 	width : 100%;
@@ -183,23 +183,23 @@
 	font-weight: bold;
 }
 
-/* subVisual 영역 끝 companyContent 영역 시작 */
-
-.company-bg {
+.discharge-bg {
 	width: 100%;
-	height: 1057px;
+	height: 1900px;
 	background-color: #F5F5F5;
 	position: absolute;
-	top : 1189px;
+	top : 1188px;
 	z-index: -10;
 }
 
-.companyContentwrap {
+/* subVisual 영역 끝 admission 영역 시작 */
+
+.admissionContentwrap {
 	width : 100%;
-	margin-bottom : 150px;
+	margin-bottom : 80px;
 }
 
-.companyContent {
+.admissionContent {
 	width : 100%;
 	max-width: 1620px;
 	margin : 0 auto;
@@ -208,12 +208,12 @@
 	flex-direction: column;
 }
 
-.companyTitle {
+.admissionTitle {
 	width: 100%;
 	margin-bottom : 35px;
 }
 
-.companyTitle span {
+.admissionTitle span {
 	display : flex;
 	font-size : 24px;
 	font-weight: bold;
@@ -222,52 +222,198 @@
 	margin-bottom : 15px;
 }
 
-.companySubTitle {
+.admissionSubTitle {
 	width : 100%;
 	display : flex;
 }
 
-.companySubTitle p {
+.admissionSubTitle p {
 	font-size : 40px;
 	line-height: 50px;
 	color : #333;
 }
 
-.companySubTitle p b {
+.admissionSubTitle p b {
 	font-weight: bold;
 }
 
-.companyLine {
+.admissionLine {
 	display : flex;
 	align-self : flex-end;
 	position : absolute;
 	right : 0;
-	width : 81%;
+	width : 86%;
 	height: 2px;
 	background-color: #DDDDDD;
 	margin-bottom : 6px;
 }
 
-.companySubContent {
+.admission {
 	width : 100%;
+	max-width: 1620px;
+	margin : 0 auto;
+	display :flex;
+	position: relative;
+	gap : 15px;
+}
+
+.admissionbox {
 	display : flex;
+	flex-direction : column;
 	align-items: center;
+	text-align : center;
+	justify-content: center;
+	width : 530px;
+	height: 400px;
+	background-color: #fff;
+	border : 1px solid #ddd;
+	transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s easeW;
 }
 
-.companySubContent img {
-	width : 580px;
-	height: 450px;
-	background-repeat: no-repeat;
-	margin-right : 60px;
+.admissionbox:hover {
+	background-color : #1C3D5A;
+	border : none;
 }
 
-.companySubContent span {
-	font-size: 20px;
+.admissionbox:hover .admissionboxText p,
+.admissionbox:hover .admissionboxText span {
+	color : #fff;
+}
+
+.admissionbox:hover .admissionboxText img {
+	filter : invert(1) brightness(100);
+}
+
+.admissionboxText img {
+	width: 100px;
+	height: 100px;
+	margin-bottom : 15px;
+}
+
+.admissionboxText p {
+	font-size : 30px;
+	font-weight: bold;
+	letter-spacing: -0.25px;
+	color : #1C3D5A;
+	margin-bottom : 10px;
+}
+
+.admissionboxText span {
+	font-size : 20px;
 	letter-spacing: -0.5px;
 	line-height: 30px;
 	color : #333;
 }
 
-.companySubContent span b {
+/* subVisual 영역 끝 discharge 영역 시작 */
+
+.dischargeContentwrap {
+	width : 100%;
+	margin-bottom : 150px;
+}
+
+.dischargeContent {
+	width : 100%;
+	max-width: 1620px;
+	margin : 0 auto;
+	display :flex;
+	position: relative;
+	flex-direction: column;
+}
+
+.dischargeTitle {
+	width: 100%;
+	margin-bottom : 35px;
+}
+
+.dischargeTitle span {
+	display : flex;
+	font-size : 24px;
 	font-weight: bold;
+	letter-spacing: -0.25px;
+	color : #1C3D5A;
+	margin-bottom : 15px;
+}
+
+.dischargeSubTitle {
+	width : 100%;
+	display : flex;
+}
+
+.dischargeSubTitle p {
+	font-size : 40px;
+	line-height: 50px;
+	color : #333;
+}
+
+.dischargeSubTitle p b {
+	font-weight: bold;
+}
+
+.dischargeLine {
+	display : flex;
+	align-self : flex-end;
+	position : absolute;
+	right : 0;
+	width : 86%;
+	height: 2px;
+	background-color: #DDDDDD;
+	margin-bottom : 6px;
+}
+
+.discharge {
+	width : 100%;
+	max-width: 1620px;
+	margin : 0 auto;
+	display :flex;
+	position: relative;
+	gap : 7px;
+}
+
+.dischargebox {
+	display : flex;
+	flex-direction : column;
+	align-items: center;
+	text-align : center;
+	justify-content: center;
+	width : 400px;
+	height: 400px;
+	background-color: #fff;
+	border : 1px solid #ddd;
+	transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s easeW;
+}
+
+.dischargebox:hover {
+	background-color : #1C3D5A;
+	border : none;
+}
+
+.dischargebox:hover .dischargeboxText p,
+.dischargebox:hover .dischargeboxText span {
+	color : #fff;
+}
+
+.dischargebox:hover .dischargeboxText img {
+	filter : invert(1) brightness(100);
+}
+
+.dischargeboxText img {
+	width: 100px;
+	height: 100px;
+	margin-bottom : 15px;
+}
+
+.dischargeboxText p {
+	font-size : 30px;
+	font-weight: bold;
+	letter-spacing: -0.25px;
+	color : #1C3D5A;
+	margin-bottom : 10px;
+}
+
+.dischargeboxText span {
+	font-size : 20px;
+	letter-spacing: -0.5px;
+	line-height: 30px;
+	color : #333;
 }

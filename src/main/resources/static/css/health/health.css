@@ -27,7 +27,7 @@
 	height: 100%;
 }
 
-.visualboxwrap .company-img {
+.visualboxwrap .health-img {
 	position: absolute;
 	opacity: 50%;
 	background-repeat: no-repeat;
@@ -90,7 +90,7 @@
 	font-weight: bold;
 }
 
-/* visual 영역 끝 company 영역 시작 */
+/* visual 영역 끝 health 영역 시작 */
 
 .titlewrap {
 	width: 100%;
@@ -130,76 +130,25 @@
 	font-weight: bold;
 }
 
-/* company 영역 끝 subVisual 영역 시작 */
+/* health 영역 끝 healthTable 영역 시작 */
 
-.subVisualwrap {
-	width : 100%;
+.healthTable {
+	width : 1620px;
+	height: 351px;
+	background-color : #000;
+	margin : 0 auto;
+	display : flex;
 	margin-bottom : 80px;
 }
 
-.subVisual {
-	width : 100%;
-	max-width: 1620px;
-	height : 400px;
-	margin : 0 auto;
-	display :flex;
-	position: relative;
-}
+/* healthTable 영역 끝 healthContent 영역 시작 */
 
-.subVisual-bg {
-	width : 100%;
-	height : 100%;
-	background-color : #000;
-	box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.16);
-	position: absolute;
-}
-
-.subVisualBox {
-	width: 100%;
-	height: 100%;
-	display: flex;
-	justify-content: center;
-	text-align: center;
-	align-items: center;
-}
-
-.subVisualBox img{
-	width: 100%;
-	height : 100%;
-	background-repeat: no-repeat;
-	opacity: 65%;
-	position: absolute;
-}
-
-.subVisualBox p {
-	color : #fff;
-	position: relative;
-	font-size : 40px;
-	line-height: 65px;
-	text-shadow: 0px 0px 50px rgba(0, 0, 0, 0.8);
-}
-
-.subVisualBox p b {
-	font-weight: bold;
-}
-
-/* subVisual 영역 끝 companyContent 영역 시작 */
-
-.company-bg {
-	width: 100%;
-	height: 1057px;
-	background-color: #F5F5F5;
-	position: absolute;
-	top : 1189px;
-	z-index: -10;
-}
-
-.companyContentwrap {
+.healthContentwrap {
 	width : 100%;
 	margin-bottom : 150px;
 }
 
-.companyContent {
+.healthContent {
 	width : 100%;
 	max-width: 1620px;
 	margin : 0 auto;
@@ -208,12 +157,12 @@
 	flex-direction: column;
 }
 
-.companyTitle {
+.healthTitle {
 	width: 100%;
 	margin-bottom : 35px;
 }
 
-.companyTitle span {
+.healthTitle span {
 	display : flex;
 	font-size : 24px;
 	font-weight: bold;
@@ -222,52 +171,72 @@
 	margin-bottom : 15px;
 }
 
-.companySubTitle {
+.healthSubTitle {
 	width : 100%;
 	display : flex;
 }
 
-.companySubTitle p {
+.healthTitle p {
 	font-size : 40px;
 	line-height: 50px;
 	color : #333;
 }
 
-.companySubTitle p b {
+.healthTitle p b {
 	font-weight: bold;
 }
 
-.companyLine {
+.healthLine {
 	display : flex;
 	align-self : flex-end;
 	position : absolute;
 	right : 0;
-	width : 81%;
+	width : 86%;
 	height: 2px;
 	background-color: #DDDDDD;
 	margin-bottom : 6px;
 }
 
-.companySubContent {
+.health {
 	width : 100%;
+	max-width: 1620px;
+	margin : 0 auto;
+	display :flex;
+	position: relative;
+	gap : 7px;
+}
+
+.healthbox {
 	display : flex;
+	flex-direction : column;
+	align-items: center;
+	text-align : center;
+	justify-content: center;
+	width : 400px;
+	height: 400px;
+	background-color: #000;
+}
+
+.healthboxText {
+	display : flex;
+	flex-direction: column;
+	justify-content: center;
 	align-items: center;
 }
 
-.companySubContent img {
-	width : 580px;
-	height: 450px;
-	background-repeat: no-repeat;
-	margin-right : 60px;
-}
-
-.companySubContent span {
-	font-size: 20px;
-	letter-spacing: -0.5px;
-	line-height: 30px;
-	color : #333;
-}
-
-.companySubContent span b {
+.healthboxText p {
+	font-size : 50px;
+	color : #fff;
 	font-weight: bold;
+	margin-bottom : 15px;
+}
+
+.healthboxText button {
+	width : 150px;
+	height : 50px;
+	font-size : 20px;
+	border-radius : 100px;
+	color : #fff;
+	border : 2px solid #fff;
+	background-color: inherit;
 }
