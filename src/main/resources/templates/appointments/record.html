@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>진료 기록 카드 작성</title>
+</head>
+<body>
+<h1>진료 기록 카드 작성</h1>
+
+<!-- 환자 정보 출력 -->
+<div>
+    <h3>환자 정보</h3>
+    <p>환자 번호: <span th:text="${patientInfo.memberNo}"></span></p>
+    <p>이름: <span th:text="${patientInfo.memberName}"></span></p>
+    <p>생년월일: <span th:text="${patientInfo.memberBirthday}"></span></p>
+    <p>전화번호: <span th:text="${patientInfo.memberPhoneNumber}"></span></p>
+</div>
+
+<!-- 진료 기록 카드 작성 폼 -->
+<form action="#" method="post">
+    <input type="hidden" name="appointmentId" th:value="${appointmentId}" />
+
+    <label for="diseaseCode">질병 코드:</label>
+    <input type="text" id="diseaseCode" name="diseaseCode" required /><br />
+
+    <label for="clinicName">진료명:</label>
+    <input type="text" id="clinicName" name="clinicName" required /><br />
+
+    <label for="clinicDate">진료 일자:</label>
+    <input type="date" id="clinicDate" name="clinicDate" required /><br />
+
+    <label for="clinicReservationDate">진료 예약 일자:</label>
+    <input type="datetime-local" id="clinicReservationDate" name="clinicReservationDate" required /><br />
+
+    <label for="clinicManifestation">진료 소견:</label>
+    <textarea id="clinicManifestation" name="clinicManifestation"></textarea><br />
+
+    <button type="submit">등록</button>
+</form>
+
+<a href="#">목록으로 돌아가기</a>
+</body>
+</html>
