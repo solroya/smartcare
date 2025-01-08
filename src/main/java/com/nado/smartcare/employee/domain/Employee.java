@@ -1,17 +1,16 @@
 package com.nado.smartcare.employee.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nado.smartcare.config.BaseEntity;
 import com.nado.smartcare.employee.domain.type.EmployeeStatus;
 import com.nado.smartcare.employee.domain.type.TypeOfEmployee;
 import com.nado.smartcare.employee.domain.type.WorkingStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.time.LocalDate;
 
 @Getter
-@ToString
 @Entity
 public class Employee extends BaseEntity {
 
@@ -44,7 +43,12 @@ public class Employee extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private WorkingStatus workingStatus;
 
-    public Employee(String employeeId, String employeeName, String employeePass, String employeeEmail, LocalDate employeeBirthday, String employeePhoneNumber, boolean isSocial, EmployeeStatus employeeStatus, TypeOfEmployee typeOfEmployee, WorkingStatus workingStatus) {
+    @ManyToOne
+    @JoinColumn(name = "department_id", nullable = false)
+    @JsonIgnore
+    private Department department;
+
+    public Employee(String employeeId, String employeeName, String employeePass, String employeeEmail, LocalDate employeeBirthday, String employeePhoneNumber, boolean isSocial, EmployeeStatus employeeStatus, TypeOfEmployee typeOfEmployee, WorkingStatus workingStatus, Department department) {
         this.employeeId = employeeId;
         this.employeeName = employeeName;
         this.employeePass = employeePass;
@@ -55,18 +59,19 @@ public class Employee extends BaseEntity {
         this.employeeStatus = employeeStatus;
         this.typeOfEmployee = typeOfEmployee;
         this.workingStatus = workingStatus;
+        this.department = department;
     }
 
     public Employee() {
     }
 
     public static Employee of(String employeeId, String employeeName, String employeePass, String employeeEmail, LocalDate employeeBirthday,
-                              String employeePhoneNumber, boolean isSocial) {
+                              String employeePhoneNumber, boolean isSocial, Department department) {
         EmployeeStatus employeeStatus = EmployeeStatus.PENDING;
         TypeOfEmployee typeOfEmployee = TypeOfEmployee.STAFF;
         WorkingStatus workingStatus = WorkingStatus.WORKING;
         return new Employee(employeeId, employeeName, employeePass, employeeEmail, employeeBirthday, employeePhoneNumber,
-                isSocial, employeeStatus, typeOfEmployee, workingStatus);
+                isSocial, employeeStatus, typeOfEmployee, workingStatus, department);
     }
 
     public Employee updateEmployee(String newEmployeePass, String newEmployeePhoneNumber) {

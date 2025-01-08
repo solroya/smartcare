@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,6 +18,12 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
+
+    @Override
+    public Optional<MemberDto> searchMemberNo(Long memberId) {
+        return memberRepository.findByMemberNo(memberId)
+                .map(MemberDto::from);
+    }
 
     @Transactional(readOnly = true)
     @Override
@@ -50,9 +56,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public MemberDto updateMember(Long no, String newMemberPass, String newMemberPhoneNumber) {
-        Member member = memberRepository.findByNo(no)
-                .orElseThrow(() -> new IllegalArgumentException("No member found with id: " + no));
+    public MemberDto updateMember(Long memberNo, String newMemberPass, String newMemberPhoneNumber) {
+        Member member = memberRepository.findByMemberNo(memberNo)
+                .orElseThrow(() -> new IllegalArgumentException("No member found with id: " + memberNo));
 
         member.updateMember(newMemberPass, newMemberPhoneNumber);
         Member updatedMember = memberRepository.save(member);
@@ -61,9 +67,16 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public void deleteMember(Long no) {
-        Member member = memberRepository.findByNo(no)
-                .orElseThrow(() -> new IllegalArgumentException("No member found with id: " + no));
+    public void deleteMember(Long memberNo) {
+        Member member = memberRepository.findByMemberNo(memberNo)
+                .orElseThrow(() -> new IllegalArgumentException("No member found with id: " + memberNo));
         memberRepository.delete(member);
+    }
+
+    @Override
+    public List<MemberDto> findByNameAndMemberBirthday(String memberName, LocalDate memberBirthday) {
+        return memberRepository.findByMemberNameAndMemberBirthday(memberName, memberBirthday).stream()
+                .map(member -> new MemberDto(member.memberNo(), member.memberId(), member.memberPass(), member.memberName(), member.memberEmail(), member.memberPhoneNumber(), member.memberBirthday(), member.isSocial(), member.createdAt(), member.updatedAt()))
+                .toList();
     }
 }

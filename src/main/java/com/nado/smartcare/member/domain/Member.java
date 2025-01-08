@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @ToString
@@ -15,7 +14,7 @@ public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "member_seq")
-    private Long no;
+    private Long memberNo;
 
     @Column(nullable = false, unique = true)
     private String memberId;

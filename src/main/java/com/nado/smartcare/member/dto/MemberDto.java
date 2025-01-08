@@ -10,6 +10,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record MemberDto(
+        Long memberNo,
+
         @NotBlank(message = "Member Id is Required")
         String memberId,
 
@@ -35,6 +37,7 @@ public record MemberDto(
 
     public static MemberDto from(Member member) {
         return new MemberDto(
+                member.getMemberNo(),
                 member.getMemberId(),
                 member.getMemberPass(),
                 member.getMemberName(),
