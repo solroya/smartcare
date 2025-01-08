@@ -1,5 +1,6 @@
 package com.nado.smartcare.employee.dto;
 
+import com.nado.smartcare.employee.domain.Department;
 import com.nado.smartcare.employee.domain.Employee;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -10,7 +11,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record EmployeeDto(
-        @NotBlank(message = "employeeId is Required")
+        Long employeeNo,
+
+        @NotBlank(message = "Employee ID is required.")
         String employeeId,
 
         @NotBlank(message = "Password is required.")
@@ -30,11 +33,14 @@ public record EmployeeDto(
 
         boolean isSocial,
 
+        Department departmentName,
+
         LocalDateTime createdAt,
         LocalDateTime updatedAt) {
 
         public static EmployeeDto from(Employee employee) {
                 return new EmployeeDto(
+                        employee.getEmployeeNo(),
                         employee.getEmployeeId(),
                         employee.getEmployeeName(),
                         employee.getEmployeePass(),
@@ -42,6 +48,7 @@ public record EmployeeDto(
                         employee.getEmployeeBirthday(),
                         employee.getEmployeePhoneNumber(),
                         employee.isSocial(),
+                        employee.getDepartment(),
                         employee.getCreatedAt(),
                         employee.getUpdatedAt()
                 );
