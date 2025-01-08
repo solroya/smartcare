@@ -1,18 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 
-  <style>
-    .content {
-      width: 100%;
-      margin-top: 120px;
-    }
-    form {
-        /*display: flex;*/
-    }
-  </style>
+    <style>
+        .content {
+            width: 100%;
+            margin-top: 120px;
+        }
+
+        form {
+            /*display: flex;*/
+        }
+    </style>
 </head>
 <body>
 <div th:replace="~{/layout/header :: header}"></div>
@@ -29,7 +30,7 @@
         <br>
         <!-- 작성자 선택 -->
         <label for="employee">작성자 번호</label>
-        <textarea id="employee" name="employee" ></textarea>
+        <textarea id="employee" name="employee"></textarea>
         <br>
         <!-- 이미지 업로드 -->
         <label for="images">이미지 업로드</label>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>진료 접수 목록</title>
+</head>
+<body>
+<h1>진료 접수 목록</h1>
+
+<!-- 접수자 목록이 없을 경우 메시지 표시 -->
+<div th:if="${#lists.isEmpty(appointments)}">
+    <p>현재 접수된 환자가 없습니다.</p>
+</div>
+
+<!-- 접수자 목록이 있을 경우 테이블 표시 -->
+<table border="1" th:if="${!#lists.isEmpty(appointments)}">
+    <thead>
+    <tr>
+        <th>접수 번호</th>
+        <th>환자 번호</th>
+        <th>환자 이름</th>
+        <th>접수 시간</th>
+        <th>상태</th>
+        <th>접수</th>
+        <th>비고</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="appointment : ${appointments}">
+        <td th:text="${appointment.appointmentId}"></td>
+        <td th:text="${appointment.memberNo}"></td>
+        <td th:text="${appointment.memberName}"></td>
+        <td th:text="${appointment.appointmentTime}"></td>
+        <td th:text="${appointment.status}"></td>
+        <td><a th:href="@{/erp/appointments/{appointmentId}/record(appointmentId=${appointment.appointmentId})}">진료</a></td>
+        <td>
+            <form th:action="@{/erp/appointments/{id}/status(id=${appointment.appointmentId})}" method="post">
+                <select name="status">
+                    <option th:each="status : ${T(com.nado.smartcare.patient.dto.type.AppointmentStatus).values()}"
+                            th:value="${status.name()}" th:text="${status.name()}"
+                            th:selected="${status.name() == appointment.status}">
+                    </option>
+                </select>
+                <button type="submit">업데이트</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<a th:href="@{/erp/patients/register}">새 진료 접수 등록</a>
+
+</body>
+</html>
