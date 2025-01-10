@@ -1,5 +1,6 @@
 package com.nado.smartcare.member.service;
 
+import com.nado.smartcare.member.domain.Member;
 import com.nado.smartcare.member.dto.MemberDto;
 
 import java.time.LocalDate;
@@ -21,4 +22,7 @@ public interface MemberService {
     void deleteMember(Long no);
 
     List<MemberDto> findByNameAndMemberBirthday(String memberName, LocalDate memberBirthday);
+    
+    Member login(String memberEmail, String memberPass);
+    
 }

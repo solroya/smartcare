@@ -76,7 +76,7 @@ public class NoticeController {
     }
 
     @GetMapping("/{noticeNo}")
-    public String getNoticeDetail(@PathVariable Long noticeNo, Model model) {
+    public String getNoticeDetail(@PathVariable("noticeNo") Long noticeNo, Model model) {
         NoticeDto notice = noticeService.findById(noticeNo);
         model.addAttribute("notice", notice);
         return "notice/detail";

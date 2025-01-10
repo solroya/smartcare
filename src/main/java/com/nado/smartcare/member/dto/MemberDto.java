@@ -23,6 +23,9 @@ public record MemberDto(
 
         @Email(message = "Email must be valid.")
         String memberEmail,
+        
+        @NotNull(message = "Gender is required.")
+        boolean memberGender,
 
         @Pattern(regexp = "\\d{3}-\\d{3,4}-\\d{4}", message = "Phone number must follow the format 010-1234-5678.")
         String memberPhoneNumber,
@@ -42,6 +45,7 @@ public record MemberDto(
                 member.getMemberPass(),
                 member.getMemberName(),
                 member.getMemberEmail(),
+                member.isMemberGender(),
                 member.getMemberPhoneNumber(),
                 member.getMemberBirthday(),
                 member.isSocial(),

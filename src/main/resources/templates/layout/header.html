@@ -48,15 +48,17 @@
                  </li>
              </ul>
              <div class="user-info">
-                 <a th:href="@{/member/memberIndex}" class="login">
-                     <img alt="login" th:src="@{/img/login.png}">
-                 </a>
-                 <div class="gnb-btn" title="전체메뉴 열기">
-                     <div class="bar"></div>
-                     <div class="bar"></div>
-                     <div class="bar"></div>
-                 </div>
-             </div>
+			    <a th:href="@{/member/login}" class="login-btn">로그인</a>
+			    <a th:href="@{/member/logout}" class="logout-btn" style="display: none;">로그아웃</a>
+			    <a href="#" class="my-page">
+			        <img alt="mypage" th:src="@{/img/mypage.png}">
+			    </a>
+			    <div class="gnb-btn" title="전체메뉴 열기">
+			        <div class="bar"></div>
+			        <div class="bar"></div>
+			        <div class="bar"></div>
+			    </div>
+			 </div>
          </nav>
          <div class="expanded-content">
          </div>

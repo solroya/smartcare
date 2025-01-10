@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Division Page</title>
+    <link rel="stylesheet" th:href="@{/css/reset.css}">
+    <link rel="stylesheet" th:href="@{/css/member/division.css}">
+</head>
+<body>
+    <div th:replace="~{/layout/header :: header}"></div>
+    <div class="content">
+        <div class="divisionwrap">
+            <div class="division">
+                <p>회원가입</p>
+                <div class="divisionbox">
+                	<a class="member-register" th:href="@{/member/register}">
+                		<img alt="일반사용자 이미지" th:src="@{/img/member/member.png}">
+                		<span>일반사용자</span>
+                	</a>
+                	<a class="employee-register" href="#">
+                		<img alt="내부사용자 이미지" th:src="@{/img/member/employee.png}">
+                		<span>내부사용자</span>
+                	</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{/layout/footer :: footer}"></div>
+</body>
+</html>

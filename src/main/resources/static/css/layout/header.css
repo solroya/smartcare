@@ -132,9 +132,34 @@
     gap: 30px;
 }
 
-.login img {
-    width: 35px;
-    height: 35px;
+.login-btn {
+	display : flex;
+	width : 80px;
+	height: 30px;
+	background-color: #1C3D5A;
+	border-radius: 20px;
+	font-size : 16px;
+	color : #fff;
+	justify-content: center;
+	align-items: center;
+}
+
+.logout-btn {
+	display : flex;
+	width : 80px;
+	height: 30px;
+	background-color: #1C3D5A;
+	border-radius: 20px;
+	font-size : 16px;
+	color : #fff;
+	justify-content: center;
+	align-items: center;
+}
+
+.my-page img {
+	display : block;
+    width: 30px;
+    height: 30px;
 }
 
 .gnb-btn {
@@ -142,8 +167,8 @@
     align-items: center;
     flex-direction: column;
     justify-content: space-around;
-    width: 35px;
-    height: 35px;
+    width: 40px;
+    height: 40px;
     cursor: pointer;
 }
 
@@ -155,7 +180,7 @@
 }
 
 .gnb-btn:hover .bar {
-    background-color: #007bff;
+    background-color: #1C3D5A;
 }
 
 .expanded-content {

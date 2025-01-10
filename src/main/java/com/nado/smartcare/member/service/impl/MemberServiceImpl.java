@@ -5,6 +5,8 @@ import com.nado.smartcare.member.dto.MemberDto;
 import com.nado.smartcare.member.repository.MemberRepository;
 import com.nado.smartcare.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +17,7 @@ import java.util.Optional;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Log4j2
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
@@ -46,6 +49,7 @@ public class MemberServiceImpl implements MemberService {
                 memberDto.memberPass(),
                 memberDto.memberName(),
                 memberDto.memberEmail(),
+                memberDto.memberGender(),
                 memberDto.memberPhoneNumber(),
                 memberDto.memberBirthday(),
                 memberDto.isSocial()
@@ -76,7 +80,22 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public List<MemberDto> findByNameAndMemberBirthday(String memberName, LocalDate memberBirthday) {
         return memberRepository.findByMemberNameAndMemberBirthday(memberName, memberBirthday).stream()
-                .map(member -> new MemberDto(member.memberNo(), member.memberId(), member.memberPass(), member.memberName(), member.memberEmail(), member.memberPhoneNumber(), member.memberBirthday(), member.isSocial(), member.createdAt(), member.updatedAt()))
+                .map(member -> new MemberDto(member.memberNo(), member.memberId(), member.memberPass(), member.memberName(), member.memberEmail(), member.memberGender(), member.memberPhoneNumber(), member.memberBirthday(), member.isSocial(), member.createdAt(), member.updatedAt()))
                 .toList();
     }
+
+    @Override
+    public Member login(String memberEmail, String memberPass) {
+        Member member = memberRepository.findByMemberEmail(memberEmail)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+
+        if (!memberPass.equals(member.getMemberPass())) {
+            log.info("비밀번호 불일치: 입력된 비밀번호 ==> {}", memberPass);
+            throw new IllegalArgumentException("Invalid email or password");
+        }
+
+        log.info("로그인 성공: 회원 이름 ==> {}", member.getMemberName());
+        return member;
+    }
+	
 }

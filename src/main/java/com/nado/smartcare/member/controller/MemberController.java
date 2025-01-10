@@ -2,16 +2,25 @@ package com.nado.smartcare.member.controller;
 
 import com.nado.smartcare.member.domain.Member;
 import com.nado.smartcare.member.dto.MemberDto;
+import com.nado.smartcare.member.repository.MemberRepository;
 import com.nado.smartcare.member.service.MemberService;
+
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Controller
@@ -20,21 +29,26 @@ import java.util.Map;
 public class MemberController {
 
     private final MemberService memberService;
-
+    
     @GetMapping("memberIndex")
     public String member(ModelMap map) {
         map.addAttribute("members", List.of());
         return "member/memberIndex";
     }
 
-    @GetMapping("join")
+    @GetMapping("register")
     public String join() {
-        return "member/join";
+        return "member/register";
     }
 
-    @PostMapping("join")
-    public String join(@Valid MemberDto memberDto) {
-        log.info("memberDto join : {} ", memberDto);
+    @PostMapping("/register")
+    public String join(@Valid MemberDto memberDto, BindingResult bindingResult) {
+    	 if (bindingResult.hasErrors()) {
+    	        log.error("Validation Errors: {}", bindingResult.getAllErrors());
+    	        return "redirect:/member/register";
+    	    }
+    	
+        log.info("memberDto register : {} ", memberDto);
 
         memberService.saveMember(memberDto);
         return "redirect:/main";
@@ -52,5 +66,32 @@ public class MemberController {
     public Map<String, Boolean> searchMemberEmail(@RequestParam("memberEmail") String memberEmail) {
         boolean result = memberService.searchMemberEmail(memberEmail).isPresent();
         return Map.of("result", result);
+    }
+    
+    @GetMapping("/login")
+	public String loginForm() {
+		return "member/login";
+	}
+	
+    @PostMapping("/login")
+    public String login(@RequestParam("memberEmail") String memberEmail,
+                        @RequestParam("memberPass") String memberPass,
+                        HttpSession session,
+                        Model model) {
+        try {
+        	Member member = memberService.login(memberEmail, memberPass);
+        	
+			session.setAttribute("member", member);
+			
+			return "redirect:/main";
+		} catch (IllegalArgumentException e) {
+			model.addAttribute("error", "아이디 또는 비밀번호가 다릅니다.");
+			return "member/login";
+		}
+    }
+    
+    @GetMapping("/division")
+    public String divisionForm() {
+    	return "member/division";
     }
 }
