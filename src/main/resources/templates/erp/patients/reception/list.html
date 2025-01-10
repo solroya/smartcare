@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>진료 접수 목록</title>
+</head>
+<body>
+<div th:replace="~{/erp/layout/header :: header}"></div>
+<h1>진료 접수 목록</h1>
+
+<!-- 접수자 목록이 없을 경우 메시지 표시 -->
+<div th:if="${#lists.isEmpty(receptions)}">
+    <p>현재 접수된 환자가 없습니다.</p>
+</div>
+
+<!-- 접수자 목록이 있을 경우 테이블 표시 -->
+<table border="1" th:if="${!#lists.isEmpty(receptions)}">
+    <thead>
+    <tr>
+        <th>접수 번호</th>
+        <th>환자 번호</th>
+        <th>환자 이름</th>
+        <th>접수 시간</th>
+        <th>상태</th>
+        <th>진료과</th>
+        <th>담당의사</th>
+        <th>접수</th>
+        <th>취소</th>
+        <th>비고</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="receptions : ${receptions}" th:if="${receptions.status.name() != 'COMPLETED'}">
+        <td th:text="${receptions.receptionNo()}"></td>
+        <td th:text="${receptions.member().memberNo}"></td>
+        <td th:text="${receptions.member().memberName}"></td>
+        <td th:text="${receptions.receptionTime}"></td>
+        <td th:text="${receptions.status}"></td>
+        <td th:text="${receptions.employee().getDepartment().getDepartmentName()}"></td>
+        <td th:text="${receptions.employee().employeeName}"></td>
+        <td><a th:href="@{/erp/patients/{receptionNo}/register(receptionNo=${receptions.receptionNo()})}">진료</a></td>
+        <td>
+            <form th:action="@{/erp/patients/{receptionNo}/cancel(receptionNo=${receptions.receptionNo()})}" method="post" onsubmit="return confirm('정말 취소하시겠습니까?');">
+                <button type="submit">접수 취소</button>
+            </form>
+        </td>
+        <td></td>
+    </tr>
+    </tbody>
+</table>
+
+<a th:href="@{/erp/patients/register}">새 진료 접수 등록</a>
+
+</body>
+</html>

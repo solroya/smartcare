@@ -1,0 +1,32 @@
+@charset "UTF-8";
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.pagination li {
+    display : flex;
+    margin: 0 5px;
+    list-style: none;
+}
+
+.pagination a {
+    text-decoration: none;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: #007bff;
+}
+
+.pagination a.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.pagination a.disabled {
+    pointer-events: none;
+    color: #ccc;
+}

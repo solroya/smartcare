@@ -1,6 +1,6 @@
 package com.nado.smartcare.employee.controller;
 
-import com.nado.smartcare.employee.dto.EmployeeDto;
+import com.nado.smartcare.employee.domain.dto.EmployeeDto;
 import com.nado.smartcare.employee.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

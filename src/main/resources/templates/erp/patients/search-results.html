@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>검색 결과</title>
+
+</head>
+<body>
+<h1>검색 결과</h1>
+<table>
+    <thead>
+    <tr>
+        <th>번호</th>
+        <th>이름</th>
+        <th>생년월일</th>
+        <th>이메일</th>
+        <th>전화번호</th>
+        <th>선택</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="member : ${members}">
+        <td th:text="${member.memberNo}"></td>
+        <td th:text="${member.memberName}"></td>
+        <td th:text="${member.memberBirthday}"></td>
+        <td th:text="${member.memberEmail}"></td>
+        <td th:text="${member.memberPhoneNumber}"></td>
+        <td>
+            <button
+                    th:attr="data-member-no=${member.memberNo}, data-member-name=${member.memberName}, data-member-birthday=${member.memberBirthday}, data-member-email=${member.memberEmail}, data-member-phone-number=${member.memberPhoneNumber}"
+                    onclick="selectMember(this)">
+                선택
+            </button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div th:replace="~{fragments/pagination :: pagination(${page}, ${size}, ${totalElements}, '/erp/patients/all')}"></div>
+
+<script>
+    function selectMember(button) {
+        const memberNo = button.getAttribute('data-member-no');
+        const memberName = button.getAttribute('data-member-name');
+        const memberBirthday = button.getAttribute('data-member-birthday');
+        const memberEmail = button.getAttribute('data-member-email');
+        const memberPhoneNumber = button.getAttribute('data-member-phone-number');
+
+        if (window.opener && typeof window.opener.setMemberData === 'function') {
+            window.opener.setMemberData(memberNo, memberName, memberBirthday, memberEmail, memberPhoneNumber);
+            window.close();
+        } else {
+            alert("환자 접수 창과의 연결이 끊어졌습니다.");
+        }
+    }
+</script>
+</body>
+</html>

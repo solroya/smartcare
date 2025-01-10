@@ -1,11 +1,13 @@
 package com.nado.smartcare.member.domain;
 
 import com.nado.smartcare.config.BaseEntity;
+import com.nado.smartcare.patient.domain.PatientRecordCard;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @ToString
@@ -33,6 +35,10 @@ public class Member extends BaseEntity {
     private LocalDate memberBirthday;
 
     private boolean isSocial;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<PatientRecordCard> patientRecordCards;
+
 
     public Member() {
     }

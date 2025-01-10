@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>환자 접수</title>
+</head>
+<body>
+<div th:replace="~{/erp/layout/header :: header}"></div>
+<h1>환자 접수</h1>
+
+<form th:onsubmit="return openSearchPopup()">
+    <label for="memberName">이름:</label>
+    <input type="text" id="memberName" name="memberName" required>
+
+    <label for="memberBirthday">생년월일:</label>
+    <input type="date" id="memberBirthday" name="memberBirthday" required>
+
+    <button type="submit">검색</button>
+    <button type="button" onclick="openAllMembersPopup()">모든 환자 검색</button>
+</form>
+
+<div>
+    <!-- 진료과 선택 -->
+    <label for="department">진료과</label>
+    <select id="department" name="department" required onchange="loadDoctors(this.value)">
+        <option value="">진료과 선택</option>
+        <option value="INTERNAL_MEDICINE">내과</option>
+        <option value="SURGERY">외과</option>
+        <option value="PSYCHIATRY">정신과</option>
+    </select>
+
+    <!-- 의사 선택 -->
+    <label for="doctor">의사</label>
+    <select id="doctor" name="doctor" required>
+        <option value="">의사 선택</option>
+    </select>
+    <div id="loading" style="display: none;">의사 정보를 불러오는 중...</div>
+    <div id="error" style="color: red; display: none;">의사 정보를 불러오는 데 실패했습니다.</div>
+    <br>
+</div>
+
+<!-- 선택된 회원 정보 출력 -->
+<div id="selectedMemberInfo" style="margin-top: 20px; display: none;">
+    <h3>선택된 회원 정보:</h3>
+    <p>번호: <span id="selectedMemberNo"></span></p>
+    <p>이름: <span id="selectedMemberName"></span></p>
+    <p>생년월일: <span id="selectedMemberBirthday"></span></p>
+    <p>이메일: <span id="selectedMemberEmail"></span></p>
+    <p>전화번호: <span id="selectedMemberPhoneNumber"></span></p>
+    <input type="hidden" id="selectedMemberId" name="selectedMemberId">
+</div>
+
+<div style="display: flex; align-items: center; gap: 10px;">
+    <form id="registrationForm" th:action="@{/erp/patients/register}" method="post" onsubmit="return validateForm()">
+        <input type="hidden" name="memberNo" id="memberNo">
+        <input type="hidden" name="employeeNo" id="employeeNo">
+        <button type="submit" id="registerButton" disabled>진료 등록</button>
+    </form>
+
+    <button onclick="resetSelection()">초기화</button>
+    <button th:href="@{/templates/erp/patients/register}" onclick="window.location='/patients/register'; return false;">환자등록</button>
+</div>
+
+<script>
+    async function fetchData(url) {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Network response was not ok');
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            throw error;
+        }
+    }
+
+    // 환자 등록전에 필수값 데이터 체크
+    function validateForm() {
+        const memberNo = document.getElementById('memberNo').value;
+        const employeeNo = document.getElementById('employeeNo').value;
+
+        if (!memberNo) {
+            alert("환자가 선택되지 않았습니다. 환자를 먼저 선택해주세요.");
+            return false;
+        }
+
+        if (!employeeNo) {
+            alert("의사가 선택되지 않았습니다. 진료과를 선택하고 의사를 선택해주세요.");
+            return false;
+        }
+
+        return true; // 모든 조건이 충족되면 폼 제출
+    }
+
+    function openSearchPopup() {
+        const name = document.getElementById('memberName').value;
+        const birthday = document.getElementById('memberBirthday').value;
+
+        if (!name || !birthday) {
+            alert("이름과 생년월일을 입력해주세요.");
+            return false;
+        }
+
+        const popup = window.open(`/erp/patients/search?memberName=${name}&memberBirthday=${birthday}`, 'popup', 'width=800,height=600');
+        popup.focus();
+        return false; // 폼 제출 방지
+    }
+
+    // 모든 환자 검색
+    function openAllMembersPopup() {
+        const popup = window.open('/erp/patients/all', 'popup', 'width=800,height=600');
+        popup.focus();
+    }
+
+    // 환자 데이터
+    function setMemberData(memberNo, memberName, memberBirthday, memberEmail, memberPhoneNumber) {
+        const infoDiv = document.getElementById('selectedMemberInfo');
+        const registerButton = document.getElementById('registerButton');
+
+        // 선택된 회원 정보 설정
+        document.getElementById('selectedMemberId').value = memberNo;
+        document.getElementById('selectedMemberNo').textContent = memberNo;
+        document.getElementById('selectedMemberName').textContent = memberName;
+        document.getElementById('selectedMemberBirthday').textContent = memberBirthday;
+        document.getElementById('selectedMemberEmail').textContent = memberEmail;
+        document.getElementById('selectedMemberPhoneNumber').textContent = memberPhoneNumber;
+
+        // 진료 등록 버튼 활성화 및 회원 정보 표시
+        document.getElementById('memberNo').value = memberNo; // 등록 폼에 memberNo 설정
+        registerButton.disabled = false; // 버튼 활성화
+        infoDiv.style.display = 'block'; // 회원 정보 표시
+    }
+
+    function resetSelection() {
+        const infoDiv = document.getElementById('selectedMemberInfo');
+        const registerButton = document.getElementById('registerButton');
+
+        // 선택된 회원 정보 초기화
+        document.getElementById('selectedMemberId').value = '';
+        document.getElementById('selectedMemberNo').textContent = '';
+        document.getElementById('selectedMemberName').textContent = '';
+        document.getElementById('selectedMemberBirthday').textContent = '';
+        document.getElementById('selectedMemberEmail').textContent = '';
+        document.getElementById('selectedMemberPhoneNumber').textContent = '';
+        document.getElementById('employeeNo').value = '';
+
+        // 진료 등록 버튼 비활성화 및 회원 정보 숨김
+        registerButton.disabled = true; // 버튼 비활성화
+        infoDiv.style.display = 'none'; // 회원 정보 숨김
+    }
+
+    async function loadDoctors(department) {
+        const loadingDiv = document.getElementById('loading');
+        const errorDiv = document.getElementById('error');
+        const doctorSelect = document.getElementById('doctor');
+
+        doctorSelect.innerHTML = '<option value="">의사 선택</option>';
+        loadingDiv.style.display = 'block';
+        errorDiv.style.display = 'none';
+
+        try {
+            const data = await fetchData(`/erp/patients/doctors?department=${department}`);
+            loadingDiv.style.display = 'none';
+            if (data.length === 0) {
+                errorDiv.textContent = '해당 진료과에 의사가 없습니다.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            data.forEach(doctor => {
+                const option = document.createElement('option');
+                option.value = doctor.employeeNo;
+                option.textContent = doctor.employeeName;
+                doctorSelect.appendChild(option);
+            });
+        } catch {
+            loadingDiv.style.display = 'none';
+            errorDiv.textContent = '의사 정보를 불러오는 중 오류가 발생했습니다.';
+            errorDiv.style.display = 'block';
+        }
+
+        // 불러온 의사 정보 저장
+        document.getElementById('doctor').addEventListener('change', function() {
+            const selectedDoctor = this.options[this.selectedIndex];
+            document.getElementById('employeeNo').value = selectedDoctor.value; // employeeNo 설정
+        })
+    }
+</script>
+</body>
+</html>

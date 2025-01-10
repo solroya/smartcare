@@ -2,7 +2,7 @@ package com.nado.smartcare.employee.service.impl;
 
 import com.nado.smartcare.employee.domain.Employee;
 import com.nado.smartcare.employee.domain.type.TypeOfEmployee;
-import com.nado.smartcare.employee.dto.EmployeeDto;
+import com.nado.smartcare.employee.domain.dto.EmployeeDto;
 import com.nado.smartcare.employee.repository.EmployeeRepository;
 import com.nado.smartcare.employee.service.EmployeeService;
 import lombok.RequiredArgsConstructor;

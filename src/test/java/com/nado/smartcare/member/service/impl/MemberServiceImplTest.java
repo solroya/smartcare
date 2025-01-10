@@ -1,7 +1,7 @@
 package com.nado.smartcare.member.service.impl;
 
 import com.nado.smartcare.member.domain.Member;
-import com.nado.smartcare.member.dto.MemberDto;
+import com.nado.smartcare.member.domain.dto.MemberDto;
 import com.nado.smartcare.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
