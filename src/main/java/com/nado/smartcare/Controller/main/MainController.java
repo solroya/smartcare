@@ -1,4 +1,4 @@
-package com.nado.smartcare.controller.main;
+package com.nado.smartcare.Controller.main;
 
 import com.nado.smartcare.notice.dto.NoticeDto;
 import com.nado.smartcare.notice.service.NoticeService;

@@ -70,12 +70,12 @@ public class MemberController {
 	}
 	
     @PostMapping("/login")
-    public String login(@RequestParam("memberEmail") String memberEmail,
+    public String login(@RequestParam("memberId") String memberId,
                         @RequestParam("memberPass") String memberPass,
                         HttpSession session,
                         Model model) {
         try {
-        	Member member = memberService.login(memberEmail, memberPass);
+        	Member member = memberService.login(memberId, memberPass);
         	
 			session.setAttribute("member", member);
 			

@@ -9,4 +9,6 @@ public interface SmsService {
     void getBalance();
 
     boolean verifySms(String phone, String code);
+    
+    Long getTime(String phone); // redis에서 남은 TTL 조회
 }

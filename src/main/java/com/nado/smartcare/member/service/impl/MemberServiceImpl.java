@@ -87,9 +87,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member login(String memberEmail, String memberPass) {
-        Member member = memberRepository.findByMemberEmail(memberEmail)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+    public Member login(String memberId, String memberPass) {
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Id or password"));
 
         if (!memberPass.equals(member.getMemberPass())) {
             log.info("비밀번호 불일치: 입력된 비밀번호 ==> {}", memberPass);

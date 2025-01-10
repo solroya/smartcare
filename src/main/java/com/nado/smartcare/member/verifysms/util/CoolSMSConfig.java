@@ -45,7 +45,7 @@ public class CoolSMSConfig {
             // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
             message.setFrom(fromNumber);
             message.setTo(to);
-            message.setText("본인확인 인증 번호는 [" + certificationCode + "]입니다.");
+            message.setText("SMARTCARE 본인확인 인증 번호는 [" + certificationCode + "]입니다.");
 
             SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
             log.info("CoolSMS 발신 결과 : {}", response);

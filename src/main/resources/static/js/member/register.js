@@ -202,9 +202,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const smsValidationMessage = document.getElementById("smsValidationMessage"); // 인증 코드 검증 메시지
     const sendSmsBtn = document.getElementById("sendSmsBtn"); // 인증 코드 발송 버튼
     const verifySmsBtn = document.getElementById("verifySmsBtn"); // 인증 코드 확인 버튼
+	const remainingTimeDisplay = document.getElementById("remainingTime"); // 남은 시간 표시
 
     let isPhoneValid = false; // 휴대전화 유효성 상태
     let isSmsVerified = false; // SMS 인증 상태
+	let interval;
 
     // 휴대전화 번호 입력 시 자동 포맷팅 및 검증
     phoneInput.addEventListener("input", function () {
@@ -249,19 +251,58 @@ document.addEventListener("DOMContentLoaded", () => {
 	        },
 	        body: JSON.stringify({ phone: phoneNumber }),
 	    })
-	        .then((response) => response.text()) // JSON 대신 단순 텍스트로 응답 처리
-	        .then((text) => {
-	            console.log("응답 본문:", text); // 응답 본문 확인
-	            phoneValidationMessage.textContent = text; // 서버 메시지 그대로 표시
-	            phoneValidationMessage.style.color = "green";
-	        })
+	    	.then((response) => response.json())
+			.then((data) => {
+				phoneValidationMessage.textContent = "인증 코드가 전송되었습니다.";
+				phoneValidationMessage.style.color = "green";
+				startTimer(phoneNumber); // 타이머 시작
+			})    
 	        .catch((error) => {
 	            console.error("인증 코드 발송 오류:", error);
 	            phoneValidationMessage.textContent = "인증 코드 발송 중 오류가 발생했습니다.";
 	            phoneValidationMessage.style.color = "red";
 	        });
 	});
-
+	
+	// 타이머 시작
+	function startTimer(phone) {
+		clearInterval(interval); // 기존 타이머 초기화
+		interval = setInterval(() => {
+			fetch("/sms/getTime", {
+				method : "POST",
+				headers : {
+					"Content-Type" : "application/json",
+				},
+				body: JSON.stringify({ phone: phone }),
+			})
+				.then((response) => {
+					if (!response.ok) {
+						throw new Error(`HTTP error! status: ${response.status}`);
+					}
+					
+					return response.json();
+				})
+				.then((ttl) => {
+					if (ttl <= 0) {
+						clearInterval(interval);
+						remainingTimeDisplay.textContent = "시간이 만료되었습니다.";
+						remainingTimeDisplay.style.color = "red";
+					} else {
+						const minutes = Math.floor(ttl / 60);
+						const seconds = ttl % 60;
+						remainingTimeDisplay.textContent = `${minutes}:${seconds}`;
+						remainingTimeDisplay.style.color = "green";
+					}
+				})
+				.catch((error) => {
+					console.error("시간 조회 오류 :", error);
+					clearInterval(interval);
+					remainingTimeDisplay.textContent = "시간 조회 중 오류가 발생했습니다.";
+					remainingTimeDisplay.style.color = "red";
+				});
+		}, 1000);
+	}
+	
     // SMS 인증 코드 확인 버튼 클릭 이벤트
 	verifySmsBtn.addEventListener("click", function () {
 	    const smsCode = smsCodeInput.value.trim();
@@ -285,17 +326,21 @@ document.addEventListener("DOMContentLoaded", () => {
 	        .then((response) => response.text()) // JSON 대신 단순 텍스트로 응답 처리
 	        .then((text) => {
 	            console.log("응답 본문:", text); // 디버깅용 콘솔 출력
-	            if (text === "인증 성공") {
+	            if (text.includes("인증 성공")) {
+					clearInterval(interval);
 	                smsValidationMessage.textContent = "인증에 성공했습니다.";
 	                smsValidationMessage.style.color = "green";
 	                isSmsVerified = true;
+					$('#remainingTime').css('display', 'none');
 	            } else {
-	                smsValidationMessage.textContent = text; // 서버 응답 그대로 표시
+					clearInterval(interval);
+	                smsValidationMessage.textContent = "인증에 실패하셨습니다."; // 서버 응답 그대로 표시
 	                smsValidationMessage.style.color = "red";
 	                isSmsVerified = false;
 	            }
 	        })
 	        .catch((error) => {
+				clearInterval(interval);
 	            console.error("인증 코드 확인 오류:", error);
 	            smsValidationMessage.textContent = "인증 확인 중 오류가 발생했습니다.";
 	            smsValidationMessage.style.color = "red";
