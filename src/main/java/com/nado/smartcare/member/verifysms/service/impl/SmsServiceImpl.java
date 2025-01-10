@@ -68,4 +68,23 @@ public class SmsServiceImpl implements SmsService {
             return false; // 인증 코드 불일치
         }
     }
+
+
+	@Override
+	public Long getTime(String phone) {
+		Long ttl = redisTemplate.getExpire(phone, TimeUnit.SECONDS);
+		
+		if (ttl == null) {
+	        log.error("Redis 키가 존재하지 않음. 전화번호 : {}", phone);
+	        throw new IllegalStateException("해당 전화번호의 인증 시간이 만료되었거나 존재하지 않습니다.");
+	    }
+
+	    if (ttl <= 0) {
+	        log.error("TTL 값이 만료됨. 전화번호 : {}", phone);
+	        throw new IllegalStateException("해당 전화번호의 인증 시간이 만료되었거나 존재하지 않습니다.");
+	    }
+
+	    log.info("TTL 조회 성공. 전화번호 : {}, 남은 TTL : {}초", phone, ttl);
+	    return ttl;
+	}
 }

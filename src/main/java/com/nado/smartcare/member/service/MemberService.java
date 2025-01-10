@@ -25,8 +25,7 @@ public interface MemberService {
 
     List<MemberDto> findByNameAndMemberBirthday(String memberName, LocalDate memberBirthday);
     
-    Member login(String memberEmail, String memberPass);
-    
+    Member login(String memberId, String memberPass);
 
     Page<MemberDto> getAllMembers(Pageable pageable);
 }

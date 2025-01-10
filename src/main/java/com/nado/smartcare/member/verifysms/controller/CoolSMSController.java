@@ -61,4 +61,16 @@ public class CoolSMSController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+    
+    @PostMapping("/getTime")
+    public ResponseEntity<Long> getTime(@RequestBody @Valid SmsDto smsDto) {
+    	log.info("TTL 조회 요청. 전화번호 : {}", smsDto.getPhone());
+    	try {
+			Long ttl = smsService.getTime(smsDto.getPhone());
+			return ResponseEntity.ok(ttl);
+		} catch (IllegalArgumentException e) {
+			log.error("인증 시간이 만료되었거나 존재하지 않음 : {}", e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(0L);
+		}
+    }
 }
