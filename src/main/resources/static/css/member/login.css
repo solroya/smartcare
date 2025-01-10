@@ -1,0 +1,100 @@
+@charset "UTF-8";
+
+.content {
+	width : 100%;
+	margin-top : 120px;
+}
+
+/* login 영역 시작 */
+
+.loginwrap {
+	width: 100%;
+	height : 642px;
+	display : flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.login {
+	width : 100%;
+	max-width: 1620px;
+	margin : 0 auto;
+	display :flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.login p {
+	font-size : 50px;
+	font-weight: bold;
+	color : #333;
+	letter-spacing: -0.2px;
+	margin-bottom : 50px;
+}
+
+.login form {
+	margin-bottom : 30px;
+}
+
+.form-group {
+	display: flex;
+	flex-direction : column;
+	justify-content : center;
+	width: 450px;
+	height: 52px;
+	border : 1px solid #ECECEC;
+}
+
+.form-group:nth-child(1) {
+	margin-bottom : 10px;
+}
+
+.form-group:nth-child(2) {
+	margin-bottom : 15px;
+}
+
+.form-group:nth-child(3) {
+	background-color : #1C3D5A;
+}
+
+.form-group input {
+	text-indent: 15px;
+	font-size : 16px;
+	color : #333;
+}
+
+.form-group input::placeholder {
+	opacity: 35%;
+}
+
+.form-group button {
+	font-size : 18px;
+	color : #fff;
+}
+
+.info-find {
+	display : flex;
+	gap : 15px;
+	font-size : 18px;
+	color : #333;
+	justify-content: center;
+	align-items: center;
+}
+
+.info-line {
+	width : 1px;
+	height: 18px;
+	background-color: #000;
+	opacity: 20%;
+}
+
+.error-message p {
+	margin-top : 10px !important;
+	font-size : 16px;
+	color : red;
+	width : 100%;
+	margin : 0;
+	font-weight: 500;
+	letter-spacing: -0.5px;
+}

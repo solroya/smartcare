@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+    <link rel="stylesheet" th:href="@{/css/reset.css}">
+    <link rel="stylesheet" th:href="@{/css/member/login.css}">
+</head>
+<body>
+    <div th:replace="~{/layout/header :: header}"></div>
+    <div class="content">
+        <div class="loginwrap">
+            <div class="login">
+                <p>로그인</p>
+                <form th:action="@{/member/login}" method="post">
+                    <div class="form-group">
+                        <input type="text" id="email" name="memberEmail" required placeholder="아이디">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="password" name="memberPass" required placeholder="비밀번호">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit">로그인</button>
+                    </div>
+                    <div th:if="${error}" class="error-message">
+                        <p th:text="${error}"></p>
+                    </div>
+                </form>
+                <div class="info-find">
+                    <a href="#" class="findStyle">아이디 찾기</a>
+                    <div class="info-line"></div>
+                    <a href="#" class="findStyle">비밀번호 찾기</a>
+                    <div class="info-line"></div>
+                    <a th:href="@{/member/division}" class="findStyle">회원가입</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{/layout/footer :: footer}"></div>
+    <script>
+        document.querySelector("form").addEventListener("submit", function (event) {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            if (!email.includes("@")) {
+                alert("올바른 이메일 주소를 입력해주세요.");
+                event.preventDefault();
+            }
+
+            if (password.length < 6) {
+                alert("비밀번호는 최소 6자 이상이어야 합니다.");
+                event.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>

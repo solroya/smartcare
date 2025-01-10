@@ -17,4 +17,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByMemberEmail(String memberEmail);
 
     List<MemberDto> findByMemberNameAndMemberBirthday(String memberName, LocalDate memberBirthday);
+    
 }

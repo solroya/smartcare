@@ -4,11 +4,12 @@ import com.nado.smartcare.member.verifysms.domain.SmsDto;
 import com.nado.smartcare.member.verifysms.service.SmsService;
 import com.nado.smartcare.member.verifysms.util.CoolSMSConfig;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.message.model.Balance;
+
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Log4j2
@@ -18,7 +19,7 @@ public class SmsServiceImpl implements SmsService {
     private final CoolSMSConfig coolSMSConfig;
 
     private final RedisTemplate<String, String> redisTemplate;
-
+    
     public SmsServiceImpl(CoolSMSConfig coolSMSConfig, RedisTemplate<String, String> redisTemplate) {
         this.coolSMSConfig = coolSMSConfig;
         this.redisTemplate = redisTemplate;
@@ -34,8 +35,15 @@ public class SmsServiceImpl implements SmsService {
 
         // Reids 인증 코드 저장
         redisTemplate.opsForValue().set(phone, certificationCode, 5, TimeUnit.MINUTES);
-
-        log.info("전화번호: " + phone + ", 인증 코드: " + certificationCode);
+        
+        String storedCode = redisTemplate.opsForValue().get(phone);
+        log.info("Redis에 저장된 인증 코드 : {}", storedCode);
+        
+        Set<String> keys = redisTemplate.keys("*");
+        log.info("Redis에서 현재 저장된 키 : {}", keys);
+        
+        log.info("전화번호 : {}, 인증 코드 : {}", phone, certificationCode);
+        
     }
 
     @Override

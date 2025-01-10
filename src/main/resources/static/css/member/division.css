@@ -1,0 +1,91 @@
+@charset "UTF-8";
+
+.content {
+	width : 100%;
+	margin-top : 120px;
+}
+
+/* login 영역 시작 */
+
+.divisionwrap {
+	width: 100%;
+	height : 642px;
+	display : flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.division {
+	width : 100%;
+	max-width: 1620px;
+	margin : 0 auto;
+	display :flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.division p {
+	font-size : 50px;
+	font-weight: bold;
+	color : #333;
+	letter-spacing: -0.2px;
+	margin-bottom : 50px;
+}
+
+.divisionbox {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap : 20px;
+}
+
+.member-register {
+	width : 500px;
+	height: 300px;
+	background-color: #1C3D5A;
+	display : flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.member-register img {
+	width : 100px;
+	height: 100px;
+	background-repeat: no-repeat;
+	display: block;
+	margin-bottom : 20px;
+}
+
+.member-register span {
+	font-size : 30px;
+	font-weight: bold;
+	letter-spacing: -0.25px;
+	color : #fff;
+}
+
+.employee-register {
+	width : 500px;
+	height: 300px;
+	background-color: #223049;
+	display : flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.employee-register img {
+	width : 100px;
+	height: 100px;
+	background-repeat: no-repeat;
+	display: block;
+	margin-bottom : 20px;
+}
+
+.employee-register span {
+	font-size : 30px;
+	font-weight: bold;
+	letter-spacing: -0.25px;
+	color : #fff;
+}

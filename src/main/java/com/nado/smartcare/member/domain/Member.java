@@ -26,6 +26,8 @@ public class Member extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String memberEmail;
 
+    private boolean memberGender;
+    
     private String memberPhoneNumber;
 
     private LocalDate memberBirthday;
@@ -35,19 +37,20 @@ public class Member extends BaseEntity {
     public Member() {
     }
 
-    public Member(String memberId, String memberPass, String memberName, String memberEmail, String memberPhoneNumber, LocalDate memberBirthday, boolean isSocial) {
+    public Member(String memberId, String memberPass, String memberName, String memberEmail, boolean memberGender, String memberPhoneNumber, LocalDate memberBirthday, boolean isSocial) {
         this.memberId = memberId;
         this.memberPass = memberPass;
         this.memberName = memberName;
         this.memberEmail = memberEmail;
+        this.memberGender = memberGender;
         this.memberPhoneNumber = memberPhoneNumber;
         this.memberBirthday = memberBirthday;
         this.isSocial = isSocial;
     }
 
-    public static Member of(String memberId, String memberPass, String memberName, String memberEmail,
+    public static Member of(String memberId, String memberPass, String memberName, String memberEmail, boolean memberGender,
                             String memberPhoneNumber, LocalDate memberBirthDay, boolean isSocial) {
-        return new Member(memberId, memberPass, memberName, memberEmail, memberPhoneNumber, memberBirthDay, isSocial);
+        return new Member(memberId, memberPass, memberName, memberEmail, memberGender, memberPhoneNumber, memberBirthDay, isSocial);
     }
 
     public Member updateMember(String newMemberPass, String newMemberPhoneNumber) {
