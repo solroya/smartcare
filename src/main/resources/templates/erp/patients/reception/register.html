@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>진료 기록 카드 작성</title>
+</head>
+<body>
+<div th:replace="~{/erp/layout/header :: header}"></div>
+<h1>진료 기록 카드 작성</h1>
+
+<!-- 접수 정보 출력 -->
+<div>
+    <h3>접수 정보</h3>
+    <p>진료과: <span th:text="${reception.employee().getDepartment().getDepartmentName()}"></span></p>
+    <label for="employee">진료 의사:</label>
+    <input type="text" id="employee" name="employee"
+           th:value="${reception.employee().getEmployeeName()}" readonly />
+
+
+</div>
+
+<hr>
+
+<!-- 환자 정보 출력 -->
+<div>
+    <h3>환자 정보</h3>
+    <p>환자 번호: <span th:text="${reception.member().memberNo}"></span></p>
+    <p>이름: <span th:text="${reception.member().memberName}"></span></p>
+    <p>생년월일: <span th:text="${reception.member().memberBirthday}"></span></p>
+    <p>전화번호: <span th:text="${reception.member().memberPhoneNumber}"></span></p>
+</div>
+
+<hr>
+
+<!-- 진료 기록 카드 작성 폼 -->
+<form th:action="@{'/erp/patients/' + ${receptionNo} + '/record'}" method="post">
+    <input type="hidden" name="receptionNo" th:value="${receptionNo}" />
+    <input type="hidden" name="member" th:value="${reception.member().memberNo}" />
+    <input type="hidden" name="employee" th:value="${reception.employee().getEmployeeNo()}" />
+
+    <label for="diseaseCategory">진료 카테고리:</label>
+    <select id="diseaseCategory" name="diseaseCategory" onchange="loadDiseaseList(this.value)">
+        <option th:each="category : ${categories}"
+                th:value="${category.diseaseCategoryNo}"
+                th:text="${category.categoryName}">
+        </option>
+    </select>
+
+    <p th:if="${categories == null or categories.isEmpty()}">등록된 진료 카테고리가 없습니다.</p>
+
+    <label for="diseaseList">질병명:</label>
+    <select id="diseaseList" name="diseaseList" th:if="${categories != null and !categories.isEmpty() and !categories[0].diseaseLists.isEmpty()}">
+        <option th:each="disease : ${categories[0].diseaseLists}"
+                th:value="${disease.diseaseListNo}"
+                th:text="${disease.diseaseName}">
+        </option>
+    </select>
+    <p th:if="${categories == null or categories.isEmpty() or categories[0].diseaseLists.isEmpty()}">등록된 질병명이 없습니다.</p>
+
+    <br>
+    <br>
+
+    <label for="clinicDate">진료 일자:</label>
+    <input type="date" id="clinicDate" name="clinicDate" required /><br />
+    <br>
+
+    <label for="clinicName">진료명:</label>
+    <input type="text" id="clinicName" name="clinicName" required /><br />
+    <br>
+
+    <label for="clinicManifestation">진료 소견:</label>
+    <textarea id="clinicManifestation" name="clinicManifestation"></textarea><br />
+    <br>
+
+    <label for="clinicReservationDate">진료 예약 일자:</label>
+    <input type="datetime-local" id="clinicReservationDate" name="clinicReservationDate" required /><br />
+
+    <input type="hidden" name="clinicStatus" value="SCHEDULED" />
+
+    <button type="submit">등록</button>
+</form>
+
+<a th:href="@{/erp/patients/list}">목록으로 돌아가기</a>
+</body>
+
+<script>
+    function loadDiseaseList(categoryNo) {
+        const diseaseNameSelect = document.getElementById('diseaseName');
+        diseaseNameSelect.innerHTML = '<option>Loading...</option>'; // 로딩 메시지 표시
+
+        fetch(`/disease-list/${categoryNo}`)
+            .then(response => response.json())
+            .then(data => {
+                // 기존 옵션 제거
+                diseaseNameSelect.innerHTML = '';
+
+                if (data.length > 0) {
+                    data.forEach(disease => {
+                        const option = document.createElement('option');
+                        option.value = disease.diseaseListNo;
+                        option.textContent = disease.diseaseList;
+                        diseaseNameSelect.appendChild(option);
+                    });
+                } else {
+                    const option = document.createElement('option');
+                    option.textContent = '등록된 질병명이 없습니다.';
+                    diseaseNameSelect.appendChild(option);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading disease list:', error);
+                diseaseNameSelect.innerHTML = '<option>오류가 발생했습니다.</option>';
+            });
+    }
+</script>
+
+</html>

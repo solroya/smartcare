@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>pagination</title>
+    <link rel="stylesheet" th:href="@{/css/erp/fragments/pagination.css}">
+</head>
+<body>
+<th:block th:fragment="pagination (page, size, totalElements, url)">
+    <ul class="pagination" style="display: flex;
+                            justify-content: center;
+                            padding: 0;
+                            margin: 20px 0;"
+    >
+        <!-- Previous button -->
+        <li style="display: flex; justify-content: space-between; align-items: center; padding: 0; margin: 20px 0;">
+            <a style="text-decoration: none; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; color: #007bff;"
+               th:classappend="${page == 0} ? 'disabled'"
+               th:href="${url + '?page=' + (page - 1) + '&size=' + size}"
+               th:if="${page > 0}">
+                이전
+            </a>
+            <a style="text-decoration: none; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; color: #007bff;"
+               th:if="${page == 0}" class="disabled">이전</a>
+        </li>
+
+        <!-- Page numbers -->
+        <li style="display: flex; justify-content: space-between; align-items: center; padding: 0; margin: 20px 0;"
+            th:each="i : ${#numbers.sequence(0, totalElements / size)}">
+            <a style="text-decoration: none; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; color: #007bff;"
+               th:classappend="${i == page} ? 'active'"
+               th:href="${url + '?page=' + i + '&size=' + size}">
+                <span th:text="${i + 1}"></span>
+            </a>
+        </li>
+
+        <!-- Next button -->
+        <li style="display: flex; justify-content: space-between; align-items: center; padding: 0; margin: 20px 0;">
+            <a style="text-decoration: none; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; color: #007bff;"
+               th:classappend="${page == totalElements / size} ? 'disabled'"
+               th:href="${url + '?page=' + (page + 1) + '&size=' + size}"
+               th:if="${page < totalElements / size - 1}">
+                다음
+            </a>
+            <a style="text-decoration: none; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; color: #007bff;"
+               th:if="${page == totalElements / size - 1}" class="disabled">다음</a>
+        </li>
+    </ul>
+</th:block>
+</body>
+</html>

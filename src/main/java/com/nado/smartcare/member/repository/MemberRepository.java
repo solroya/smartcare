@@ -1,7 +1,7 @@
 package com.nado.smartcare.member.repository;
 
 import com.nado.smartcare.member.domain.Member;
-import com.nado.smartcare.member.dto.MemberDto;
+import com.nado.smartcare.member.domain.dto.MemberDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;

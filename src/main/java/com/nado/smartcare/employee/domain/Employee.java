@@ -5,10 +5,12 @@ import com.nado.smartcare.config.BaseEntity;
 import com.nado.smartcare.employee.domain.type.EmployeeStatus;
 import com.nado.smartcare.employee.domain.type.TypeOfEmployee;
 import com.nado.smartcare.employee.domain.type.WorkingStatus;
+import com.nado.smartcare.patient.domain.PatientRecordCard;
 import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Entity
@@ -47,6 +49,9 @@ public class Employee extends BaseEntity {
     @JoinColumn(name = "department_id", nullable = false)
     @JsonIgnore
     private Department department;
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    private List<PatientRecordCard> patientRecordCards; // 이 의사가 담당한 진료 기록
 
     public Employee(String employeeId, String employeeName, String employeePass, String employeeEmail, LocalDate employeeBirthday, String employeePhoneNumber, boolean isSocial, EmployeeStatus employeeStatus, TypeOfEmployee typeOfEmployee, WorkingStatus workingStatus, Department department) {
         this.employeeId = employeeId;

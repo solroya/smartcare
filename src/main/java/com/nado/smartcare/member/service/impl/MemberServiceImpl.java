@@ -1,12 +1,14 @@
 package com.nado.smartcare.member.service.impl;
 
 import com.nado.smartcare.member.domain.Member;
-import com.nado.smartcare.member.dto.MemberDto;
+import com.nado.smartcare.member.domain.dto.MemberDto;
 import com.nado.smartcare.member.repository.MemberRepository;
 import com.nado.smartcare.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -98,4 +100,10 @@ public class MemberServiceImpl implements MemberService {
         return member;
     }
 	
+
+    @Override
+    public Page<MemberDto> getAllMembers(Pageable pageable) {
+        return memberRepository.findAll(pageable)
+                .map(MemberDto::from);
+    }
 }

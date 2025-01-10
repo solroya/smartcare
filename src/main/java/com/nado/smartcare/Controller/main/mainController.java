@@ -1,4 +1,4 @@
-package com.nado.smartcare.Controller.main;
+package com.nado.smartcare.controller.main;
 
 import com.nado.smartcare.notice.dto.NoticeDto;
 import com.nado.smartcare.notice.service.NoticeService;
@@ -11,7 +11,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-public class mainController {
+public class MainController {
 
 	private final NoticeService noticeService;
 

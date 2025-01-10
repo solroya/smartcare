@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="header">
+
+  <header class="header" style="background-color: #b4e2e4" th:height="120px">
+    <div>
+      <a th:href="@{/erp}">메인 페이지</a>
+      <div>
+        <h4>진료</h4>
+        <a th:href="@{/erp/patients/register}">환자 등록</a>
+        <a th:href="@{/erp/patients/list}">접수 목록</a>
+      </div>
+      <div>
+        <h4>예약</h4>
+      </div>
+    </div>
+    <hr>
+  </header>
+
+</th:block>

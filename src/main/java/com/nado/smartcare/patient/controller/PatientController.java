@@ -1,19 +1,28 @@
 package com.nado.smartcare.patient.controller;
 
-import com.nado.smartcare.employee.dto.EmployeeDto;
+import com.nado.smartcare.disease.domain.dto.DiseaseCategoryDto;
+import com.nado.smartcare.disease.service.DiseaseService;
+import com.nado.smartcare.employee.domain.dto.EmployeeDto;
 import com.nado.smartcare.employee.service.EmployeeService;
-import com.nado.smartcare.member.dto.MemberDto;
+import com.nado.smartcare.member.domain.dto.MemberDto;
 import com.nado.smartcare.member.service.MemberService;
+import com.nado.smartcare.patient.domain.PatientRecordCard;
+import com.nado.smartcare.patient.domain.dto.PatientRecordCardDto;
+import com.nado.smartcare.patient.domain.dto.ReceptionDto;
+import com.nado.smartcare.patient.service.PatientRecordCardService;
+import com.nado.smartcare.patient.service.ReceptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Log4j2
@@ -26,17 +35,52 @@ public class PatientController {
 
     private final EmployeeService employeeService;
 
+    private final ReceptionService receptionService;
+
+    private final DiseaseService diseaseService;
+
+    private final PatientRecordCardService patientRecordCardService;
+
     @GetMapping("/register")
     public String patientRegister(Model model) {
-        return "patients/register";
+        return "erp/patients/register";
+    }
+
+    @PostMapping("/register")
+    public String patientRegister(@RequestParam("memberNo") Long memberNo,
+                                  @RequestParam("employeeNo") Long employeeNo) {
+        MemberDto member = memberService.searchMemberNo(memberNo)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found with memberNo: " + memberNo));
+        EmployeeDto doctor = employeeService.findById(employeeNo)
+                .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
+
+        log.info("Creating appointment for member: {}, employeeNo: {} ({})", memberNo, employeeNo);
+
+        receptionService.registerReception(member.memberNo(), doctor.employeeNo(), LocalDateTime.now());
+
+        return "redirect:/erp/patients/list";
     }
 
     @GetMapping("/search")
-    public String searchPatients(@RequestParam("memberName") String memberName, @RequestParam("memberBirthday") String memberBirthday, Model model) {
-        log.info("search patients " + memberName + " " + memberBirthday);
+    public String searchPatients(@RequestParam("memberName") String memberName,
+                                 @RequestParam("memberBirthday") String memberBirthday,
+                                 Model model) {
+        log.info("Searching patients with name: {} and birthday: {}", memberName, memberBirthday);
         List<MemberDto> members = memberService.findByNameAndMemberBirthday(memberName, LocalDate.parse(memberBirthday));
         model.addAttribute("members", members);
-        return "patients/search-results";
+        return "erp/patients/search-results";
+    }
+
+    @GetMapping("/all")
+    public String patientAll(@RequestParam(defaultValue = "0") int page,
+                             @RequestParam(defaultValue = "10") int size,
+                             Model model) {
+        Page<MemberDto> memberPage = memberService.getAllMembers(PageRequest.of(page, size));
+        model.addAttribute("members", memberPage.getContent());
+        model.addAttribute("page", memberPage.getNumber());
+        model.addAttribute("size", memberPage.getSize());
+        model.addAttribute("totalElements", memberPage.getTotalElements());
+        return "erp/patients/search-results";
     }
 
     @GetMapping("/doctors")
@@ -45,4 +89,58 @@ public class PatientController {
         log.info("Fetching doctors for department: " + departmentName);
         return employeeService.findDoctorsByDepartment(departmentName);
     }
+
+    // 진료 접수 환자 목록
+    @GetMapping("/list")
+    public String patientList(Model model) {
+        List<ReceptionDto> allReceptions = receptionService.getAllReceptions();
+        model.addAttribute("receptions", allReceptions);
+        return "erp/patients/reception/list";
+    }
+
+    // 진료 접수 환자 진료 결과 등록
+    @GetMapping("/{receptionNo}/register")
+    public String registerRecord(@PathVariable Long receptionNo, Model model) {
+        log.info("receptionNo: {}", receptionNo);
+
+
+        ReceptionDto receptionDto = receptionService.getReceptionById(receptionNo)
+                .orElseThrow(() -> new IllegalArgumentException("Reception not found"));
+
+        // DiseaseCategory 정보 로드
+        List<DiseaseCategoryDto> categories = diseaseService.getAllDiseaseCategories();
+        if (categories.isEmpty()) {
+            log.warn("No categories found.");
+        } else {
+            log.info("Loaded {} categories.", categories.size());
+        }
+
+        model.addAttribute("reception", receptionDto);
+        model.addAttribute("categories", categories);
+
+        return "erp/patients/reception/register";
+    }
+
+    @PostMapping("/{receptionNo}/cancel")
+    public String cancelReception(@PathVariable Long receptionNo, RedirectAttributes redirectAttributes) {
+        try {
+            receptionService.deleteReceptionById(receptionNo);
+            redirectAttributes.addFlashAttribute("successMessage", "접수가 성공적으로 취소되었습니다.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "접수 취소 중 오류가 발생했습니다.");
+        }
+        return "redirect:/erp/patients/list";
+    }
+
+    // 진료기록카드 저장 & 접수 리스트 삭제
+    @Transactional
+    @PostMapping("/{receptionNo}/record")
+    public String registerPatientRecordCard(PatientRecordCardDto patientRecordCardDto) {
+        log.info("Registering patientRecordCard: {}", patientRecordCardDto);
+
+        patientRecordCardService.registerPatientRecordCard(patientRecordCardDto);
+
+        return "redirect:/erp/patients/list";
+    }
+
 }
