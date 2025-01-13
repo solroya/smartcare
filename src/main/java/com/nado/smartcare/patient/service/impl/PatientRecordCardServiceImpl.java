@@ -8,9 +8,19 @@ import com.nado.smartcare.patient.repository.PatientRecordCardRepository;
 import com.nado.smartcare.patient.service.PatientRecordCardService;
 import com.nado.smartcare.patient.service.ReceptionService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PatientRecordCardServiceImpl implements PatientRecordCardService {
@@ -18,6 +28,7 @@ public class PatientRecordCardServiceImpl implements PatientRecordCardService {
     private final PatientRecordCardRepository patientRecordCardRepository;
 
     private final ReceptionService receptionService;
+
 
     @Transactional
     @Override
@@ -38,5 +49,52 @@ public class PatientRecordCardServiceImpl implements PatientRecordCardService {
 
         ReceptionDto receptionDto = ReceptionDto.from(patientRecordCardDto.receptionNo());
         receptionService.updateReceptionStatus(receptionDto, ReceptionStatus.COMPLETED);
+    }
+
+    @Override
+    public List<PatientRecordCardDto> findAll() {
+        List<PatientRecordCardDto> collect = patientRecordCardRepository.findAll().stream()
+                .map(PatientRecordCardDto::from).collect(Collectors.toList());
+        return collect;
+    }
+
+    @Override
+    public Optional<PatientRecordCardDto> findById(Long id) {
+        Optional<PatientRecordCardDto> patientRecordCardDto = patientRecordCardRepository.findById(id).map(PatientRecordCardDto::from);
+        return patientRecordCardDto;
+    }
+
+    @Override
+    public Map<LocalDate, Map<String, Boolean>> findWeeklyReservationsByEmployee(Long employeeNo) {
+
+        log.info("서비스 구현체의 employee no: {}", employeeNo);
+
+        LocalDate today = LocalDate.now();
+        LocalDate startOfWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)); // 이번 주 일요일
+        LocalDate endOfWeek = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY)); // 이번 주 토요일
+
+        log.info("today: {}", today);
+        log.info("startOfWeek: {}", startOfWeek);
+        log.info("endOfWeek: {}", endOfWeek);
+
+        // 진료 기록 조회
+        List<PatientRecordCard> records = patientRecordCardRepository.findByEmployee_EmployeeNoAndClinicDateBetween(employeeNo, startOfWeek, endOfWeek);
+        log.info("조회된 진료 기록: {}", records.size());
+        records.forEach(record -> log.info("Record: {}", record));
+
+        return patientRecordCardRepository.findByEmployee_EmployeeNoAndClinicDateBetween(employeeNo, startOfWeek, endOfWeek)
+                .stream()
+                .collect(Collectors.groupingBy(
+                        PatientRecordCard::getClinicDate, // 날짜별로 그룹화
+                        Collectors.partitioningBy(record -> record.getClinicReservationDate().getHour() < 12) // 오전/오후
+                ))
+                .entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> Map.of(
+                                "morning", !entry.getValue().get(true).isEmpty(), // 오전 예약 여부
+                                "afternoon", !entry.getValue().get(false).isEmpty() // 오후 예약 여부
+                        )
+                ));
     }
 }

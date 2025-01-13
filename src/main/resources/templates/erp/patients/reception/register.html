@@ -85,33 +85,40 @@
 
 <script>
     function loadDiseaseList(categoryNo) {
-        const diseaseNameSelect = document.getElementById('diseaseName');
-        diseaseNameSelect.innerHTML = '<option>Loading...</option>'; // 로딩 메시지 표시
+        const diseaseListSelect = document.getElementById('diseaseList');
+        diseaseListSelect.innerHTML = '<option>Loading...</option>'; // 로딩 메시지 표시
 
-        fetch(`/disease-list/${categoryNo}`)
-            .then(response => response.json())
+        fetch(`/erp/patients/diseases/list?categoryNo=${categoryNo}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
                 // 기존 옵션 제거
-                diseaseNameSelect.innerHTML = '';
+                diseaseListSelect.innerHTML = '';
 
                 if (data.length > 0) {
                     data.forEach(disease => {
                         const option = document.createElement('option');
-                        option.value = disease.diseaseListNo;
-                        option.textContent = disease.diseaseList;
-                        diseaseNameSelect.appendChild(option);
+                        option.value = disease.diseaseListNo; // 고유 식별자 설정
+                        option.textContent = disease.diseaseName; // 질병 이름 표시
+                        diseaseListSelect.appendChild(option);
                     });
                 } else {
                     const option = document.createElement('option');
                     option.textContent = '등록된 질병명이 없습니다.';
-                    diseaseNameSelect.appendChild(option);
+                    diseaseListSelect.appendChild(option);
                 }
             })
             .catch(error => {
                 console.error('Error loading disease list:', error);
-                diseaseNameSelect.innerHTML = '<option>오류가 발생했습니다.</option>';
+                diseaseListSelect.innerHTML = '<option>오류가 발생했습니다.</option>';
             });
     }
+
+
 </script>
 
 </html>

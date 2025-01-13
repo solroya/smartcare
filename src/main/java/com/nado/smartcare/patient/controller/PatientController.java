@@ -1,6 +1,7 @@
 package com.nado.smartcare.patient.controller;
 
 import com.nado.smartcare.disease.domain.dto.DiseaseCategoryDto;
+import com.nado.smartcare.disease.domain.dto.DiseaseListDto;
 import com.nado.smartcare.disease.service.DiseaseService;
 import com.nado.smartcare.employee.domain.dto.EmployeeDto;
 import com.nado.smartcare.employee.service.EmployeeService;
@@ -64,10 +65,18 @@ public class PatientController {
     @GetMapping("/search")
     public String searchPatients(@RequestParam("memberName") String memberName,
                                  @RequestParam("memberBirthday") String memberBirthday,
+                                 @RequestParam(defaultValue = "0") int page,
+                                 @RequestParam(defaultValue = "10") int size,
                                  Model model) {
         log.info("Searching patients with name: {} and birthday: {}", memberName, memberBirthday);
         List<MemberDto> members = memberService.findByNameAndMemberBirthday(memberName, LocalDate.parse(memberBirthday));
+        Page<MemberDto> memberPage = memberService.getAllMembers(PageRequest.of(page, size));
+
         model.addAttribute("members", members);
+        model.addAttribute("page", memberPage.getNumber());
+        model.addAttribute("size", memberPage.getSize());
+        model.addAttribute("totalElements", memberPage.getTotalElements());
+
         return "erp/patients/search-results";
     }
 
@@ -88,6 +97,15 @@ public class PatientController {
     public List<EmployeeDto> getDoctorsByDepartment(@RequestParam("department") String departmentName) {
         log.info("Fetching doctors for department: " + departmentName);
         return employeeService.findDoctorsByDepartment(departmentName);
+    }
+
+    @GetMapping("/diseases/list")
+    @ResponseBody
+    public List<DiseaseListDto> getDiseaseListByCategory(@RequestParam("categoryNo") Long categoryNo) {
+        log.info("Fetching disease list for categoryNo: {}", categoryNo);
+        List<DiseaseListDto> diseaseList = diseaseService.findByCategoryId(categoryNo);
+        log.info("Disease list fetched: {}", diseaseList);
+        return diseaseList;
     }
 
     // 진료 접수 환자 목록
@@ -142,5 +160,7 @@ public class PatientController {
 
         return "redirect:/erp/patients/list";
     }
+
+
 
 }

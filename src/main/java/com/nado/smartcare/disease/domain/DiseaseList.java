@@ -20,7 +20,7 @@ public class DiseaseList {
     @JoinColumn(name = "disease_category_no")
     private DiseaseCategory diseaseCategory;
 
-    @OneToMany(mappedBy = "disease", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "diseaseList", cascade = CascadeType.ALL)
     private List<PatientRecordCard> patientRecordCards; // 이 질병에 해당하는 진료 기록
 
     public static DiseaseList of(DiseaseListDto dto) {

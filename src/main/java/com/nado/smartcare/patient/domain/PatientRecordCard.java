@@ -45,7 +45,7 @@ public class PatientRecordCard extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "disease_list_id", nullable = false)
-    private DiseaseList disease; // 질병 코드 및 이름
+    private DiseaseList diseaseList; // 질병 코드 및 이름
 
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "reception_no", nullable = false)
@@ -59,7 +59,7 @@ public class PatientRecordCard extends BaseEntity {
     // 필드 초기화 생성자
     public PatientRecordCard(String clinicName, LocalDate clinicDate, LocalDateTime clinicReservationDate,
                              String clinicManifestation, ClinicStatus clinicStatus, Reception reception, Member member,
-                             Employee employee, DiseaseCategory diseaseCategory, DiseaseList disease) {
+                             Employee employee, DiseaseCategory diseaseCategory, DiseaseList diseaseList) {
         this.clinicName = clinicName;
         this.clinicDate = clinicDate;
         this.clinicReservationDate = clinicReservationDate;
@@ -69,7 +69,7 @@ public class PatientRecordCard extends BaseEntity {
         this.member = member;
         this.employee = employee;
         this.diseaseCategory = diseaseCategory;
-        this.disease = disease;
+        this.diseaseList = diseaseList;
     }
 
 

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>환자 기록 카드 상세보기</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div th:replace="~{/erp/layout/header :: header}"></div>
+<h1>환자 기록 카드 상세보기</h1>
+
+<div>
+  <h3>기본 정보</h3>
+  <p>환자명: <span th:text="${record.member.memberName}"></span></p>
+  <p>진료 의사: <span th:text="${record.employee.employeeName}"></span></p>
+  <p>진료명: <span th:text="${record.clinicName}"></span></p>
+  <p>진료일자: <span th:text="${record.clinicDate}"></span></p>
+</div>
+
+<div>
+  <h3>진료 정보</h3>
+  <p>진료 카테고리: <span th:text="${record.diseaseCategory.categoryName}"></span></p>
+  <p>질병명: <span th:text="${record.diseaseList.diseaseName}"></span></p>
+  <p>진료 상태: <span th:text="${record.clinicStatus}"></span></p>
+  <p>진료 소견: <span th:text="${record.clinicManifestation}"></span></p>
+</div>
+
+<a th:href="@{/erp/record/list}">목록으로 돌아가기</a>
+</body>
+</html>

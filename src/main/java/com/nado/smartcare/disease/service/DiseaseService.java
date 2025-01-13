@@ -11,9 +11,6 @@ public interface DiseaseService {
 
     List<DiseaseCategoryDto> getAllDiseaseCategories();
 
-    Optional<DiseaseCategoryDto> getDiseaseCategoryById(Long categoryNo);
-
     List<DiseaseListDto> findByCategoryId(Long categoryId);
 
-    Optional<DiseaseListDto> getDiseaseById(Long diseaseListNo);
 }

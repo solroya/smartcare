@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>의사별 예약 목록</title>
+</head>
+<body>
+<div th:replace="~{/erp/layout/header :: header}"></div>
+<h1>의사별 예약 목록</h1>
+<p>진료과: <span th:text="${departmentName}"></span></p>
+<table border="1">
+  <thead>
+  <tr>
+    <th>의사 이름</th>
+    <th>예약 수</th>
+    <th>상세 보기</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="doctor : ${doctors}">
+    <td th:text="${doctor.employeeName}"></td>
+    <td th:text="${doctor.patientRecordCards.size()}"></td>
+    <td><a th:href="@{/erp/patients/doctors/{doctorId}/reservations(doctorId=${doctor.employeeNo})}">상세 보기</a></td>
+  </tr>
+  </tbody>
+</table>
+<a th:href="@{/erp/patients/list}">뒤로 가기</a>
+</body>
+</html>
