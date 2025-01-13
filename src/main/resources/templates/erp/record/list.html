@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>환자 기록 카드 목록</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div th:replace="~{/erp/layout/header :: header}"></div>
+<h1>환자 기록 카드 목록</h1>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>번호</th>
+        <th>환자명</th>
+        <th>진료 의사</th>
+        <th>진료명</th>
+        <th>진료일자</th>
+        <th>진료 카테고리</th>
+        <th>질병명</th>
+        <th>상태</th>
+        <th>상세보기</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="record, iterStat : ${records}">
+        <td th:text="${iterStat.index + 1}"></td>
+        <td th:text="${record.member.memberName}"></td>
+        <td th:text="${record.employee.employeeName}"></td>
+        <td th:text="${record.clinicName}"></td>
+        <td th:text="${record.clinicDate}"></td>
+        <td th:text="${record.diseaseCategory.categoryName}"></td>
+        <td th:text="${record.diseaseList.diseaseName}"></td>
+        <td th:text="${record.clinicStatus}"></td>
+        <td><a th:href="@{'/erp/record/' + ${record.patientRecordNo}}">상세보기</a></td>
+    </tr>
+    </tbody>
+</table>
+
+<a th:href="@{/erp/patients/list}">목록으로 돌아가기</a>
+</body>
+</html>

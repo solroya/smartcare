@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>의사별 일정 조회</title>
+</head>
+<body>
+<h1>의사별 이번 주 일정 조회</h1>
+
+<!-- 의사 번호 입력 -->
+<label for="doctorNoInput">의사 번호 입력:</label>
+<input type="number" id="doctorNoInput" placeholder="의사 번호 입력" />
+<button onclick="loadWeeklySchedule()">조회</button>
+
+<!-- 일정 테이블 -->
+<div id="scheduleTable" style="margin-top: 20px;">
+    <table border="1">
+        <thead>
+        <tr>
+            <th> </th>
+            <th>일</th>
+            <th>월</th>
+            <th>화</th>
+            <th>수</th>
+            <th>목</th>
+            <th>금</th>
+            <th>토</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th>오전</th>
+            <td id="sun-morning"></td>
+            <td id="mon-morning"></td>
+            <td id="tue-morning"></td>
+            <td id="wed-morning"></td>
+            <td id="thu-morning"></td>
+            <td id="fri-morning"></td>
+            <td id="sat-morning"></td>
+        </tr>
+        <tr>
+            <th>오후</th>
+            <td id="sun-afternoon"></td>
+            <td id="mon-afternoon"></td>
+            <td id="tue-afternoon"></td>
+            <td id="wed-afternoon"></td>
+            <td id="thu-afternoon"></td>
+            <td id="fri-afternoon"></td>
+            <td id="sat-afternoon"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function loadWeeklySchedule() {
+        const doctorNo = document.getElementById('doctorNoInput').value;
+        console.log("employeeNo : " + doctorNo);
+        if (!doctorNo) {
+            alert('의사 번호를 입력해주세요!');
+            return;
+        }
+
+        fetch(`/erp/record/weekly/schedule/${doctorNo}`)
+            .then(response => response.json())
+            .then(data => {
+                // Clear previous data
+                ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'].forEach(day => {
+                    document.getElementById(`${day}-morning`).textContent = ' ';
+                    document.getElementById(`${day}-afternoon`).textContent = ' ';
+                });
+
+                // Map LocalDate to days of the week
+                const dayMap = {
+                    0: 'sun', 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat'
+                };
+
+                for (const [date, schedule] of Object.entries(data)) {
+                    const dayOfWeek = new Date(date).getDay();
+                    const dayKey = dayMap[dayOfWeek];
+
+                    if (schedule.morning) {
+                        document.getElementById(`${dayKey}-morning`).textContent = '❤️';
+                    }
+                    if (schedule.afternoon) {
+                        document.getElementById(`${dayKey}-afternoon`).textContent = '❤️';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error loading schedule:', error);
+                alert('일정 조회 중 오류가 발생했습니다.');
+            });
+    }
+</script>
+</body>
+</html>

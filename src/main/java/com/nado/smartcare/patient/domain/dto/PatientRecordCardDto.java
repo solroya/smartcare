@@ -35,7 +35,7 @@ public record PatientRecordCardDto(
                 entity.getMember(),
                 entity.getEmployee(),
                 entity.getDiseaseCategory(),
-                entity.getDisease(),
+                entity.getDiseaseList(),
                 entity.getReception()
         );
     }

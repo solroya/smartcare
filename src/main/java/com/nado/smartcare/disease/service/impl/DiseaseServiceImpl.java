@@ -12,7 +12,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,22 +37,12 @@ public class DiseaseServiceImpl implements DiseaseService {
     }
 
     @Override
-    public Optional<DiseaseCategoryDto> getDiseaseCategoryById(Long categoryNo) {
-        return diseaseCategoryRepository.findById(categoryNo)
-                .map(DiseaseCategoryDto::to);
-    }
-
-    @Override
     public List<DiseaseListDto> findByCategoryId(Long categoryId) {
-        return diseaseListRepository.findByDiseaseCategory_DiseaseCategoryNo(categoryId)
-                .stream()
-                .map((diseaseList -> new DiseaseListDto(diseaseList.getDiseaseListNo(), diseaseList.getDiseaseName())))
+        List<DiseaseList> diseaseLists = diseaseListRepository.findByDiseaseCategory_DiseaseCategoryNo(categoryId);
+        log.info("Fetched disease lists: {}", diseaseLists); // 디버깅 로그
+        return diseaseLists.stream()
+                .map(diseaseList -> new DiseaseListDto(diseaseList.getDiseaseListNo(), diseaseList.getDiseaseName()))
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public Optional<DiseaseListDto> getDiseaseById(Long diseaseListNo) {
-        return diseaseListRepository.findById(diseaseListNo)
-                .map(DiseaseListDto::from); // 엔티티를 DTO로 변환
-    }
 }
