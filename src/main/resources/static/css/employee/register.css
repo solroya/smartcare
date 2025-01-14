@@ -1,0 +1,293 @@
+@charset "UTF-8";
+
+.content {
+	width: 100%;
+	margin-top: 120px;
+}
+
+/* register 영역 시작 */
+
+.registerwrap {
+	width: 100%;
+	display : flex;
+	align-items: center;
+	justify-content: center;
+	margin-top : 270px;
+	margin-bottom : 150px;
+}
+
+.register {
+	width : 100%;
+	max-width: 600px;
+	margin : 0 auto;
+	display :flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.register-text {
+	font-size : 50px;
+	font-weight: bold;
+	color : #333;
+	letter-spacing: -0.2px;
+	margin-bottom : 50px;
+}
+
+.employee-register {
+	display : flex;
+	flex-direction: column;
+	width : 100%;
+}
+
+.employee-register-text {
+	display : flex;
+	position: relative;
+	align-items: center;
+	margin-bottom : 20px;
+}
+
+.titleText2 {
+	font-size : 30px;
+	letter-spacing: -0.2px;
+	color : #333;
+	font-weight: bold;
+}
+
+.employee-register-text span {
+	display : flex;
+	align-items: center;
+	right : 0;
+	position: absolute;
+	font-size : 16px;
+	letter-spacing: -0.5px;
+	color : #333;
+}
+
+.employee-register-text span b {
+	color : #DC0000;
+	margin-right : 3px;
+}
+
+.employeeLine {
+	width : 100%;
+	height: 2px;
+	background-color: #555555;
+	margin-bottom : 43px;
+}
+
+.employee-register-box {
+	display : flex;
+	flex-direction: column;
+	margin-bottom : 30px;
+}
+
+.employee-register-box:nth-last-child(3) {
+	margin-bottom : 50px;
+}
+
+.employee-register-box label {
+	font-size : 18px;
+	letter-spacing: -0.5px;
+	color : #333;
+	margin-bottom : 15px;
+}
+
+.employee-register-box label b {
+	color : #DC0000;
+	font-size: 16px;
+	margin-left : 5px;
+}
+
+.employee-register-box-input {
+	display : flex;
+	width : 100%;
+}
+
+.employee-register-box-input .input-text-btn {
+	display : flex;
+	align-items : center;
+	width : 600px;
+	height: 52px;
+	border : 1px solid #ECECEC;
+	margin-right : 5px;
+	text-indent: 15px;
+	font-size : 16px;
+	color : #333;
+}
+
+.employee-register-box-input .input-text-btn::placeholder {
+	font-size : 16px;
+	color : #ddd;
+}
+
+.employee-register-box-input button {
+	width : 95px;
+	height: 52px;
+	display : flex;
+	background-color: #223049;
+	font-size : 16px;
+	color : #fff;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+}
+
+.employee-register-box-input .input-text {
+	display : flex;
+	align-items : center;
+	width : 600px;
+	height: 52px;
+	border : 1px solid #ECECEC;
+	margin-right : 5px;
+	text-indent: 15px;
+	font-size : 16px;
+	color : #333;
+}
+
+.employee-register-box-button{
+	display : flex;
+	justify-content : center;
+	align-items : center;
+	width : 600px;
+	height: 52px;
+	background-color : #223049;
+	font-size : 18px;
+	color : #fff;
+	cursor: pointer;
+}
+
+#submitButton {
+    width: 100%;
+    height: 52px;
+    background-color: #223049; 
+    font-size: 18px;
+    color: #fff;
+    cursor: pointer;
+    text-align: center;
+	display : flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gender-checkbox {
+	display : flex;
+	align-items: center;
+}
+
+.gender-checkbox:nth-child(1) {
+	margin-right : 30px;
+}
+
+.gender-checkbox input {
+	width : 24px;
+	height: 24px;
+	border-radius: 50%;
+	border : 2px solid #DDDDDD;
+	cursor: pointer;
+	transition : all 0.3s ease;
+}
+
+.gender-checkbox span {
+	font-size : 16px;
+	font-weight: 500;
+	margin-left : 8px;
+}
+
+.gender-checkbox input:checked {
+    border: 6px solid #223049;
+}
+
+.gender-checkbox input:checked + span {
+    font-weight: bold;
+}
+
+.department-checkbox {
+	display : flex;
+	align-items: center;
+	margin-right : 30px;
+}
+
+.department-checkbox input {
+	width : 24px;
+	height: 24px;
+	border-radius: 50%;
+	border : 2px solid #DDDDDD;
+	cursor: pointer;
+	transition : all 0.3s ease;
+}
+
+.department-checkbox span {
+	font-size : 16px;
+	font-weight: 500;
+	margin-left : 8px;
+}
+
+.department-checkbox input:checked {
+    border: 6px solid #223049;
+}
+
+.department-checkbox input:checked + span {
+    font-weight: bold;
+}
+
+/* input style */
+input[type="date"] {
+    display: flex;
+    position : relative;
+    width: 100%;
+}
+
+
+input[type="date"]::-webkit-datetime-edit {
+	display : flex;
+	position : absolute;
+	left : 0;
+	opacity: 35%;
+	font-size: 16px;
+	color: #333;
+}
+
+input[type="date"]:valid::-webkit-datetime-edit {
+    opacity: 1;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+	display : flex;
+	position : absolute;
+	right:  0;
+    width: 20px; /* 아이콘 너비 */
+    height: 20px; /* 아이콘 높이 */
+    cursor: pointer; /* 마우스 커서 */
+    margin-right: 10px;
+}
+
+/* 인증코드 디자인 */
+
+.employee-register-box-input2 {
+	display : flex;
+	align-items : center;
+	width : 100%;
+	height: 52px;
+	border : 1px solid #ECECEC;
+	margin-right : 5px;
+}
+
+.employee-register-box-input2 .input-text-btn2 {
+	display : flex;
+	height : 100%;
+	width : 85%;
+	font-size : 16px;
+	color : #333;
+	text-indent: 15px;
+}
+
+.employee-register-box-input2 #remainingTime {
+	width : 15%;
+	display : flex;
+	font-size : 16px;
+	color : red !important;
+	height: 100%;
+	justify-content: center;
+	align-items: center;
+}

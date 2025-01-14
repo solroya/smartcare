@@ -2,10 +2,12 @@ package com.nado.smartcare.employee.controller;
 
 import com.nado.smartcare.employee.domain.dto.EmployeeDto;
 import com.nado.smartcare.employee.service.EmployeeService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -18,14 +20,19 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
 
-    @GetMapping("join")
+    @GetMapping("register")
     public String join() {
-        return "employee/join";
+        return "employee/register";
     }
 
-    @PostMapping("join")
-    public String join(@Valid EmployeeDto employeeDto) {
-        log.info("employeeDto join: {} ", employeeDto);
+    @PostMapping("register")
+    public String join(@Valid @ModelAttribute EmployeeDto employeeDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            log.error("Validation Errors : {}", bindingResult.getAllErrors());
+            return "employee/register";
+        }
+        
+        log.info("employeeDto register: {} ", employeeDto);
 
         employeeService.saveEmployee(employeeDto);
         return "redirect:/main";
