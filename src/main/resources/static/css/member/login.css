@@ -88,13 +88,3 @@
 	background-color: #000;
 	opacity: 20%;
 }
-
-.error-message p {
-	margin-top : 10px !important;
-	font-size : 16px;
-	color : red;
-	width : 100%;
-	margin : 0;
-	font-weight: 500;
-	letter-spacing: -0.5px;
-}

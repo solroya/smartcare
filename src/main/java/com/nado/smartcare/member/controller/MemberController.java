@@ -68,23 +68,6 @@ public class MemberController {
 	public String loginForm() {
 		return "member/login";
 	}
-	
-    @PostMapping("/login")
-    public String login(@RequestParam("memberId") String memberId,
-                        @RequestParam("memberPass") String memberPass,
-                        HttpSession session,
-                        Model model) {
-        try {
-        	Member member = memberService.login(memberId, memberPass);
-        	
-			session.setAttribute("member", member);
-			
-			return "redirect:/main";
-		} catch (IllegalArgumentException e) {
-			model.addAttribute("error", "아이디 또는 비밀번호가 다릅니다.");
-			return "member/login";
-		}
-    }
     
     @GetMapping("/division")
     public String divisionForm() {
