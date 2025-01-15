@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>예약 완료</title>
+</head>
+<body>
+<h1>예약이 완료되었습니다!</h1>
+<p>직원: <span th:text="${employeeName}"></span></p>
+<p>예약 날짜: <span th:text="${reservationDate}"></span></p>
+<p>시간대: <span th:text="${timeSlot}"></span></p>
+
+<a th:href="@{/reservation/create}">다시 예약하기</a>
+</body>
+</html>

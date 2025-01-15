@@ -1,4 +1,4 @@
-package com.nado.smartcare.Controller.main;
+package com.nado.smartcare.controller.main;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
