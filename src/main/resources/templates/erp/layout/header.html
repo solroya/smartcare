@@ -13,6 +13,13 @@
       <div>
         <h4>예약</h4>
         <a th:href="@{/erp/record/list}">예약 목록</a>
+        <a th:href="@{/reservation/create}">예약</a>
+
+        <!-- 새창 열림 테스트 -->
+        <a th:href="@{/reservation/register?user_id=1}" target="_blank">유저1로 접속</a>
+        <a th:href="@{/reservation/register?user_id=2}" target="_blank">유저2로 접속</a>
+        <a th:href="@{/reservation/register?user_id=3}" target="_blank">유저3로 접속</a>
+        <a th:href="@{/reservation/register?user_id=4}" target="_blank">유저4로 접속</a>
       </div>
     </div>
     <hr>

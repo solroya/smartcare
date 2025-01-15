@@ -17,8 +17,10 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     Optional<Employee> findByEmployeeEmail(String employeeEmail);
 
+    Optional<Employee> findByEmployeeName(String employeeName);
+
     List<Employee> findByDepartment_DepartmentNameAndTypeOfEmployee(String departmentName, TypeOfEmployee typeOfEmployee);
 
-    @Query("SELECT e FROM Employee e WHERE e.department.departmentName = :departmentName AND e.typeOfEmployee = :typeOfEmployee")
-    List<Employee> findDoctorsByDepartment(@Param("departmentName") String departmentName, @Param("typeOfEmployee") TypeOfEmployee typeOfEmployee);
+    /*@Query("SELECT e FROM Employee e WHERE e.department.departmentName = :departmentName AND e.typeOfEmployee = :typeOfEmployee")
+    List<Employee> findDoctorsByDepartment(@Param("departmentName") String departmentName, @Param("typeOfEmployee") TypeOfEmployee typeOfEmployee);*/
 }
