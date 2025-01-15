@@ -11,6 +11,8 @@ import com.nado.smartcare.member.domain.Member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Optional<EmployeeDto> findById(Long employeeNo) {
@@ -49,6 +52,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
+    	String encodedPassword = passwordEncoder.encode(employeeDto.employeePass());
     	log.info("employee에 저장된 departmentId는? ==> : {}", employeeDto.departmentId());
         Department department = departmentRepository.findById(employeeDto.departmentId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Department ID"));
@@ -56,7 +60,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = Employee.of(
                 employeeDto.employeeId(),
                 employeeDto.employeeName(),
-                employeeDto.employeePass(),
+                encodedPassword,
                 employeeDto.employeeEmail(),
                 employeeDto.employeeGender(),
                 employeeDto.employeeBirthday(),

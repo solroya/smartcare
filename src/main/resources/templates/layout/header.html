@@ -49,7 +49,7 @@
              </ul>
              <div class="user-info">
 			    <a th:href="@{/member/login}" class="login-btn">로그인</a>
-			    <a th:href="@{/member/logout}" class="logout-btn" style="display: none;">로그아웃</a>
+			    <a th:href="@{/logout}" class="logout-btn" style="display: none;">로그아웃</a>
 			    <a href="#" class="my-page">
 			        <img alt="mypage" th:src="@{/img/mypage.png}">
 			    </a>
@@ -61,6 +61,18 @@
 			 </div>
          </nav>
          <div class="expanded-content">
+			<div class="menu-header">
+				<p class="user-name">안녕하세요, <span id="userName">Guest</span>님!</p>
+				<a href="/my-page" class="my-page-link">
+					<img alt="MY PAGE" th:src="@{img/mypage.png}">
+				</a>
+			</div>
+			<ul class="menu-list">
+				<li><a th:href="@{/company/company}">회사소개</a>
+				<li><a th:href="@{/discharge/discharge}">입퇴원 안내</a>
+				<li><a th:href="@{/health/health}">나의 건강관리</a>
+				<li><a href="#">고객센터</a>
+			</ul>
          </div>
      </header>
  	 <script th:src="@{/js/header.js}"></script>
