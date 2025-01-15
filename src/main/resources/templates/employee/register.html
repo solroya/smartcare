@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Employee Registration</title>
+  <link rel="stylesheet" th:href="@{/css/reset.css}">
+  <link rel="stylesheet" th:href="@{/css/employee/register.css}">
+  <style>
+        .validation-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .success-message {
+            color: green;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: block;
+        }
+        
+    </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script defer th:src="@{/js/employee/register.js}"></script>
+</head>
+<body>
+<div th:replace="~{/layout/header :: header}"></div>
+
+<div class="content">
+		<div class="registerwrap">
+			<div class="register">
+				<p class="register-text">회원가입</p>
+				<div class="employee-register">
+					<div class="employee-register-text">
+						<p class="titleText2">기본정보</p>
+						<span><b>*</b>필수입력사항</span>
+					</div>
+					<div class="employeeLine"></div>
+					<div class="employee-register-info">
+					    <form action="/employee/register" method="post">
+					    	<div class="employee-register-box">
+						        <label for="employeeId">아이디<b>*</b></label>
+						        <div class="employee-register-box-input">
+							        <input class="input-text-btn" type="text" id="employeeId" name="employeeId" placeholder="영문/숫자, 6~12자" required>
+							        <button type="button" id="checkIdBtn">중복 확인</button>
+						        </div>
+						        <span id="idValidationMessage" class="validation-message"></span>
+					    	</div>
+					    	
+					    	<div class="employee-register-box">
+						        <label for="employeePass">비밀번호<b>*</b></label>
+						        <div class="employee-register-box-input">
+							        <input class="input-text" type="password" id="employeePass" name="employeePass" required>
+						        </div>
+						        <span id="passwordValidationMessage" class="validation-message"></span>
+					    	</div>
+							
+							<div class="employee-register-box">
+						        <label for="confirmMemberPass">비밀번호 확인<b>*</b></label>
+						        <div class="employee-register-box-input">
+							        <input class="input-text" type="password" id="confirmEmployeePass" name="confirmEmployeePass" required>
+						        </div>
+						        <span id="passwordConfirmValidationMessage" class="validation-message"></span>
+					    	</div>
+							
+							<div class="employee-register-box">
+						        <label for="employeeName">이름<b>*</b></label>
+						        <div class="employee-register-box-input">
+							        <input class="input-text" type="text" id="employeeName" name="employeeName" required>
+						        </div>
+						        <span id="nameValidationMessage" class="validation-message"></span>
+					    	</div>
+
+							<div class="employee-register-box">
+						        <label for="employeeEmail">이메일<b>*</b></label>
+						        <div class="employee-register-box-input">
+							        <input class="input-text-btn" type="email" id="employeeEmail" name="employeeEmail" required>
+							        <button type="button" id="checkEmailBtn">중복 확인</button>
+						        </div>
+						        <span id="emailValidationMessage" class="validation-message"></span>
+					    	</div>
+							
+							<div class="employee-register-box">
+						        <label for="employeeGender">성별<b>*</b></label>
+						        <div class="employee-register-box-input">
+						        	<div class="gender-checkbox">
+								        <input type="radio" id="male" name="employeeGender" value="true" required>
+								        <span>남성</span>
+						        	</div>
+						        	<div class="gender-checkbox">
+										<input type="radio" id="female" name="employeeGender" value="false"  required>
+										<span>여성</span>
+						        	</div>
+						        </div>
+					    	</div>
+							
+							<div class="employee-register-box">
+							    <label for="employeeBirthday">생년월일<b>*</b></label>
+							    <div class="employee-register-box-input">
+							        <input class="input-text" type="date" id="employeeBirthday" name="employeeBirthday" value="2000-01-01" required>
+							    </div>
+							    <span id="birthdayValidationMessage" class="validation-message"></span>
+							</div>
+							
+							<div class="employee-register-box">
+						        <label for="employeePhoneNumber">휴대전화<b>*</b></label>
+						        <div class="employee-register-box-input">
+							        <input class="input-text-btn" type="tel" id="employeePhoneNumber" name="employeePhoneNumber" required>
+					        		<button type="button" id="sendSmsBtn">인증 코드</button>
+						        </div>
+						        <span id="phoneValidationMessage" class="validation-message"></span>
+					    	</div>
+							
+							<div class="employee-register-box">
+						        <label for="smsCode">인증코드<b>*</b></label>
+						        <div class="employee-register-box-input">
+						        	<div class="employee-register-box-input2">
+								        <input class="input-text-btn2" type="text" id="smsCode" name="smsCode" required>
+								        <span id="remainingTime" class="validation-message"></span>
+						        	</div>
+					        		<button type="button" id="verifySmsBtn">코드 확인</button>
+						        </div>
+						        <span id="smsValidationMessage" class="validation-message"></span>
+					    	</div>
+													
+					        <input type="hidden" name="employeeStatus" value="PENDING">
+						    <input type="hidden" name="workingStatus" value="WORKING">
+						    
+						    <div class="employee-register-box">
+						    	<label for="department">부서<b>*</b></label>
+						    	<div class="employee-register-box-input">
+						    		<div class="department-checkbox">
+							            <input type="radio" id="department1" name="departmentId" value="1" required>
+							            <span>내과</span>
+							        </div>
+							        <div class="department-checkbox">
+							            <input type="radio" id="department2" name="departmentId" value="2" required>
+							            <span>외과</span>
+							        </div>
+							        <div class="department-checkbox">
+							            <input type="radio" id="department3" name="departmentId" value="3" required>
+							            <span>정신과</span>
+							        </div>
+							        <div class="department-checkbox">
+							            <input type="radio" id="department4" name="departmentId" value="4" required>
+							            <span>인사팀</span>
+							        </div>
+						    	</div>
+						    </div>
+							
+						    <input type="hidden" name="isSocial" value="false">
+					        
+							<div class="employee-register-box-button">
+						        <button type="submit" id="submitButton">회원가입</button>
+							</div>
+					    </form>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+	</div>
+	<div th:replace="~{/layout/footer :: footer}"></div>
+</body>
+</html>

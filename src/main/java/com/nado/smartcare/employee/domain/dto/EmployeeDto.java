@@ -24,6 +24,9 @@ public record EmployeeDto(
 
         @Email(message = "Email must be valid.")
         String employeeEmail,
+        
+        @NotNull(message = "Gender is required.")
+        boolean employeeGender,
 
         @NotNull(message = "Birthday is required.")
         LocalDate employeeBirthday,
@@ -32,23 +35,25 @@ public record EmployeeDto(
         String employeePhoneNumber,
 
         boolean isSocial,
-
-        Department departmentName,
+        
+        @NotNull(message = "Department is required.")
+        Long departmentId,
 
         LocalDateTime createdAt,
         LocalDateTime updatedAt) {
 
         public static EmployeeDto from(Employee employee) {
                 return new EmployeeDto(
-                        employee.getEmployeeNo(),
+                		employee.getEmployeeNo(),
                         employee.getEmployeeId(),
                         employee.getEmployeeName(),
                         employee.getEmployeePass(),
                         employee.getEmployeeEmail(),
+                        employee.isEmployeeGender(),
                         employee.getEmployeeBirthday(),
                         employee.getEmployeePhoneNumber(),
                         employee.isSocial(),
-                        employee.getDepartment(),
+                        employee.getDepartment().getDepartmentId(),
                         employee.getCreatedAt(),
                         employee.getUpdatedAt()
                 );

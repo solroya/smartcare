@@ -18,9 +18,9 @@ function showValidationMessage(elementId, message, isValid) {
 
 // 아이디 중복 확인
 document.getElementById('checkIdBtn').addEventListener('click', function () {
-    const memberId = document.getElementById('memberId').value.trim();
+    const employeeId = document.getElementById('employeeId').value.trim();
 
-    if (!memberId || memberId.length < 6 || memberId.length > 12) {
+    if (!employeeId || employeeId.length < 6 || employeeId.length > 12) {
         showValidationMessage('idValidationMessage', '아이디는 6~12자의 영문/숫자로 입력해주세요.', false);
         isIdValid = false;
         updateSubmitButtonState();
@@ -28,7 +28,7 @@ document.getElementById('checkIdBtn').addEventListener('click', function () {
     }
 
     // 중복 확인 (예시로 fetch 사용)
-    fetch(`/member/search-memberId?memberId=${memberId}`)
+    fetch(`/employee/search-employeeId?employeeId=${employeeId}`)
         .then(response => response.json())
         .then(data => {
             if (data.result) {
@@ -48,7 +48,7 @@ document.getElementById('checkIdBtn').addEventListener('click', function () {
 });
 
 // 비밀번호 유효성 검사
-document.getElementById('memberPass').addEventListener('input', function () {
+document.getElementById('employeePass').addEventListener('input', function () {
     const password = this.value.trim();
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // 영어+숫자, 최소 8자
 
@@ -69,8 +69,8 @@ document.getElementById('memberPass').addEventListener('input', function () {
 });
 
 // 비밀번호 확인
-document.getElementById('confirmMemberPass').addEventListener('input', function () {
-    const password = document.getElementById('memberPass').value.trim();
+document.getElementById('confirmEmployeePass').addEventListener('input', function () {
+    const password = document.getElementById('employeePass').value.trim();
     const confirmPassword = this.value.trim();
 
     if (confirmPassword === '') {
@@ -87,7 +87,7 @@ document.getElementById('confirmMemberPass').addEventListener('input', function 
 });
 
 // 이름 유효성 검사
-document.getElementById('memberName').addEventListener('input', function () {
+document.getElementById('employeeName').addEventListener('input', function () {
     const name = this.value.trim();
     if (name.length < 2) {
         showValidationMessage('nameValidationMessage', '이름은 최소 2자 이상이어야 합니다.', false);
@@ -101,7 +101,7 @@ document.getElementById('memberName').addEventListener('input', function () {
 
 // 이메일 중복 확인
 document.getElementById('checkEmailBtn').addEventListener('click', function () {
-    const email = document.getElementById('memberEmail').value.trim();
+    const email = document.getElementById('employeeEmail').value.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(email)) {
@@ -110,17 +110,9 @@ document.getElementById('checkEmailBtn').addEventListener('click', function () {
         updateSubmitButtonState();
         return;
     }
-	
-	// 카카오 이메일 도메인 검사
-	if (email.toLowerCase().endsWith('@kakao.com')) {
-	        showValidationMessage('emailValidationMessage', '카카오는 소셜로그인을 이용해주세요.', false);
-	        isEmailValid = false;
-	        updateSubmitButtonState();
-	        return;
-	    }
-	
+
     // 이메일 중복 확인
-    fetch(`/member/search-memberEmail?memberEmail=${email}`)
+    fetch(`/employee/search-employeeEmail?employeeEmail=${email}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('네트워크 응답이 올바르지 않습니다.');
@@ -167,9 +159,17 @@ genderRadios.forEach(radio => {
     });
 });
 
+const departmentRadios = document.querySelectorAll('input[name="departmentName"]');
+departmentRadios.forEach(radio => {
+    radio.addEventListener('change', function () {
+        isDepartmentSelected = [...departmentRadios].some(radio => radio.checked);
+        updateSubmitButtonState();
+    });
+});
+
 // 생년월일 확인
 document.addEventListener("DOMContentLoaded", () => {
-    const birthdayInput = document.getElementById("memberBirthday"); // 생년월일 입력 필드
+    const birthdayInput = document.getElementById("employeeBirthday"); // 생년월일 입력 필드
     const messageElement = document.getElementById("birthdayValidationMessage"); // 검증 메시지 출력 요소
 
     // 생년월일 검증 이벤트 추가
@@ -204,7 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // 휴대폰 인증 및 인증코드
 document.addEventListener("DOMContentLoaded", () => {
-    const phoneInput = document.getElementById("memberPhoneNumber"); // 휴대전화 입력 필드
+    const phoneInput = document.getElementById("employeePhoneNumber"); // 휴대전화 입력 필드
     const phoneValidationMessage = document.getElementById("phoneValidationMessage"); // 휴대전화 검증 메시지
     const smsCodeInput = document.getElementById("smsCode"); // 인증 코드 입력 필드
     const smsValidationMessage = document.getElementById("smsValidationMessage"); // 인증 코드 검증 메시지

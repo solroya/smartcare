@@ -1,12 +1,18 @@
 package com.nado.smartcare.employee.service.impl;
 
+import com.nado.smartcare.employee.domain.Department;
 import com.nado.smartcare.employee.domain.Employee;
 import com.nado.smartcare.employee.domain.type.TypeOfEmployee;
 import com.nado.smartcare.employee.domain.dto.EmployeeDto;
+import com.nado.smartcare.employee.repository.DepartmentRepository;
 import com.nado.smartcare.employee.repository.EmployeeRepository;
 import com.nado.smartcare.employee.service.EmployeeService;
+import com.nado.smartcare.member.domain.Member;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +27,8 @@ import java.util.stream.Collectors;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final DepartmentRepository departmentRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Optional<EmployeeDto> findById(Long employeeNo) {
@@ -44,16 +52,23 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
+    	String encodedPassword = passwordEncoder.encode(employeeDto.employeePass());
+    	log.info("employee에 저장된 departmentId는? ==> : {}", employeeDto.departmentId());
+        Department department = departmentRepository.findById(employeeDto.departmentId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Department ID"));
+
         Employee employee = Employee.of(
                 employeeDto.employeeId(),
-                employeeDto.employeePass(),
                 employeeDto.employeeName(),
+                encodedPassword,
                 employeeDto.employeeEmail(),
+                employeeDto.employeeGender(),
                 employeeDto.employeeBirthday(),
                 employeeDto.employeePhoneNumber(),
                 employeeDto.isSocial(),
-                employeeDto.departmentName()
+                department
         );
+
         return EmployeeDto.from(employeeRepository.save(employee));
     }
 
@@ -90,4 +105,18 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .map(EmployeeDto::from)
                 .collect(Collectors.toList());
     }
+
+	@Override
+	public Employee login(String employeeId, String employePass) {
+		Employee employee = employeeRepository.findByEmployeeId(employeeId)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid Id or password"));
+		
+		if (!employePass.equals(employee.getEmployeePass())) {
+			log.info("비밀번호 불일치 : 입력된 비밀번호 ===> {}", employePass);
+			throw new IllegalArgumentException("Invalid Id or password");
+		}
+		
+		log.info("로그인 성공 : 회원 이름 ==> {}", employee.getEmployeeName());
+		return employee;
+	}
 }

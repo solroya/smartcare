@@ -29,6 +29,8 @@ public class Employee extends BaseEntity {
     private String employeePass;
 
     private String employeeEmail;
+    
+    private boolean employeeGender;
 
     private LocalDate employeeBirthday;
 
@@ -53,11 +55,12 @@ public class Employee extends BaseEntity {
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     private List<PatientRecordCard> patientRecordCards; // 이 의사가 담당한 진료 기록
 
-    public Employee(String employeeId, String employeeName, String employeePass, String employeeEmail, LocalDate employeeBirthday, String employeePhoneNumber, boolean isSocial, EmployeeStatus employeeStatus, TypeOfEmployee typeOfEmployee, WorkingStatus workingStatus, Department department) {
+    public Employee(String employeeId, String employeeName, String employeePass, String employeeEmail, boolean employeeGender, LocalDate employeeBirthday, String employeePhoneNumber, boolean isSocial, EmployeeStatus employeeStatus, TypeOfEmployee typeOfEmployee, WorkingStatus workingStatus, Department department) {
         this.employeeId = employeeId;
         this.employeeName = employeeName;
         this.employeePass = employeePass;
         this.employeeEmail = employeeEmail;
+        this.employeeGender = employeeGender;
         this.employeeBirthday = employeeBirthday;
         this.employeePhoneNumber = employeePhoneNumber;
         this.isSocial = isSocial;
@@ -70,12 +73,12 @@ public class Employee extends BaseEntity {
     public Employee() {
     }
 
-    public static Employee of(String employeeId, String employeeName, String employeePass, String employeeEmail, LocalDate employeeBirthday,
+    public static Employee of(String employeeId, String employeeName, String employeePass, String employeeEmail, boolean employeeGender, LocalDate employeeBirthday,
                               String employeePhoneNumber, boolean isSocial, Department department) {
         EmployeeStatus employeeStatus = EmployeeStatus.PENDING;
         TypeOfEmployee typeOfEmployee = TypeOfEmployee.STAFF;
         WorkingStatus workingStatus = WorkingStatus.WORKING;
-        return new Employee(employeeId, employeeName, employeePass, employeeEmail, employeeBirthday, employeePhoneNumber,
+        return new Employee(employeeId, employeeName, employeePass, employeeEmail, employeeGender, employeeBirthday, employeePhoneNumber,
                 isSocial, employeeStatus, typeOfEmployee, workingStatus, department);
     }
 
