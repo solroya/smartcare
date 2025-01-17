@@ -23,4 +23,3 @@ public class CompanyController {
 		return "company/location";
 	}
 }
-

@@ -1,13 +1,15 @@
-package com.nado.smartcare.Controller.main;
+package com.nado.smartcare.controller.main;
 
-import com.nado.smartcare.notice.dto.NoticeDto;
-import com.nado.smartcare.notice.service.NoticeService;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.List;
+import com.nado.smartcare.notice.dto.NoticeDto;
+import com.nado.smartcare.notice.service.NoticeService;
+
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
@@ -28,4 +30,3 @@ public class MainController {
 	}
 	
 }
-
