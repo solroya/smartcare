@@ -28,4 +28,10 @@ public interface MemberService {
     Member login(String memberId, String memberPass);
 
     Page<MemberDto> getAllMembers(Pageable pageable);
+    
+    List<MemberDto> findByPhoneNumber(String memberPhoneNumber);
+    
+    boolean verifyMember(String memberId, String memberPhoneNumber);
+    
+    void updatePassword(String memberId, String newPassword);
 }

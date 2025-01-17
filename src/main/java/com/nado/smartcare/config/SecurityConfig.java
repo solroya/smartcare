@@ -29,6 +29,7 @@ public class SecurityConfig {
 			.requestMatchers("/css/**", "/js/**").permitAll()
 			.requestMatchers("/api/check-login-status").permitAll()
 			.requestMatchers("/oauth2/authorization/kakao").permitAll()
+			.requestMatchers("/auth/kakao/**").permitAll()
 			.anyRequest().authenticated()
 		)
 		.formLogin((form) -> form

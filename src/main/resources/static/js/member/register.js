@@ -114,8 +114,7 @@ document.getElementById('checkEmailBtn').addEventListener('click', function () {
 	// 카카오 이메일 도메인 검사
 	if (email.toLowerCase().endsWith('@kakao.com')) {
 	        showValidationMessage('emailValidationMessage', '카카오는 소셜로그인을 이용해주세요.', false);
-	        isEmailValid = false;
-	        updateSubmitButtonState();
+	        openKakaoModal();
 	        return;
 	    }
 	
@@ -143,8 +142,33 @@ document.getElementById('checkEmailBtn').addEventListener('click', function () {
             isEmailValid = false;
             updateSubmitButtonState();
         });
+		
 });
 
+// 모달 열기
+function openKakaoModal() {
+	document.getElementById('kakaoLoginModal').style.display = 'flex';
+	
+	const birthdayInput = document.getElementById("memberBirthday");
+	birthdayInput.disabled = true;
+}
+
+// 모달 닫기
+document.getElementById('closeKakaoModal').addEventListener('click', function () {
+	document.getElementById('kakaoLoginModal').style.display = 'none';
+	
+	const birthdayInput = document.getElementById("memberBirthday");
+	birthdayInput.disabled = false;
+})
+
+// 카카오 로그인 버튼 클릭 시
+document.getElementById('kakaoLoginBtn').addEventListener('click', function () {
+	
+    const kakaoAuthUrl = `/oauth2/authorization/kakao`;
+    window.location.href = kakaoAuthUrl;
+});
+
+// 메세지 표시 함수
 function showValidationMessage(elementId, message, isValid) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -159,6 +183,7 @@ function updateSubmitButtonState() {
     }
 }
 
+// 성별 확인
 const genderRadios = document.querySelectorAll('input[name="gender"]');
 genderRadios.forEach(radio => {
     radio.addEventListener('change', function () {

@@ -28,13 +28,17 @@ public class AuthController {
 			Long socialIdLong = (Long) attributes.get("id");
 			String socialId = String.valueOf(socialIdLong);
 			
+			log.info("카카오 사용자 이메일: {}", email);
+            log.info("카카오 사용자 닉네임: {}", userName);
+            
+            session.setAttribute("userEmail", email);
+            session.setAttribute("userNickname", userName);
+			
 			return "redirect:/main";
 		} catch (Exception e) {
 			log.error("카카오 로그인 처리 실패 : {}", e.getMessage());
 			return "redirect:/member/login?error";
 		}
 	}
-	
-	
 	
 }

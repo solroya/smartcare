@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,7 +90,8 @@ public class MemberServiceImpl implements MemberService {
                 .map(member -> new MemberDto(member.memberNo(), member.memberId(), member.memberPass(), member.memberName(), member.memberEmail(), member.memberGender(), member.memberPhoneNumber(), member.memberBirthday(), member.isSocial(), member.createdAt(), member.updatedAt()))
                 .toList();
     }
-
+    
+    // 로그인
     @Override
     public Member login(String memberId, String memberPass) {
         Member member = memberRepository.findByMemberId(memberId)
@@ -110,4 +112,31 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findAll(pageable)
                 .map(MemberDto::from);
     }
+    
+    
+    // 아이디 찾기
+    @Override
+    public List<MemberDto> findByPhoneNumber(String memberPhoneNumber) {
+        return memberRepository.findByMemberPhoneNumber(memberPhoneNumber)
+                .stream()
+                .map(MemberDto::from)
+                .toList();
+    }
+    
+    // 비밀번호 찾기
+	@Override
+	public boolean verifyMember(String memberId, String memberPhoneNumber) {
+		String normalizedPhone = memberPhoneNumber.replaceAll("-", "");
+		return memberRepository.findByMemberIdAndMemberPhoneNumber(memberId, memberPhoneNumber).isPresent();
+	}
+
+	@Override
+	public void updatePassword(String memberId, String newPassword) {
+		Member member = memberRepository.findByMemberId(memberId)
+				.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+		
+		member.setMemberPass(passwordEncoder.encode(newPassword));
+		memberRepository.save(member);
+	}
+
 }
