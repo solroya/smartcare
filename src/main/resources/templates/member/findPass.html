@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>FindPass Page</title>
+    <link rel="stylesheet" th:href="@{/css/reset.css}">
+    <link rel="stylesheet" th:href="@{/css/member/findPass.css}">
+    <script defer th:src="@{/js/member/findPass.js}"></script>
+    <style>
+    	.validation-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .success-message {
+            color: green;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{/layout/header :: header}"></div>
+    <div class="content">
+        <div class="findPasswrap">
+            <div class="findPass">
+                <form>
+                    <p>비밀번호 찾기</p>
+                    <div class="member-findPass-box">
+                        <label for="memberId">아이디<b>*</b></label>
+                        <div class="member-findPass-box-input">
+                            <input class="input-text-btn3" type="text" id="memberId" name="memberId" placeholder="영문/숫자, 6~12자" required>
+                        </div>
+                        <span id="idValidationMessage" class="validation-message"></span>
+                    </div>
+                    
+                    <div class="member-findPass-box">
+                        <label for="memberPhoneNumber">휴대전화<b>*</b></label>
+                        <div class="member-findPass-box-input">
+                            <input class="input-text-btn" type="tel" id="memberPhoneNumber" name="memberPhoneNumber" required>
+                            <button type="button" id="sendSmsBtn">인증 코드</button>
+                        </div>
+                        <span id="phoneValidationMessage" class="validation-message"></span>
+                    </div>
+            
+                    <div class="member-findPass-box">
+                        <label for="smsCode">인증코드<b>*</b></label>
+                        <div class="member-findPass-box-input">
+                            <div class="member-findPass-box-input2">
+                                <input class="input-text-btn2" type="text" id="smsCode" name="smsCode" required>
+                                <span id="remainingTime" class="validation-message"></span>
+                            </div>
+                            <button type="button" id="verifySmsBtn">코드 확인</button>
+                        </div>
+                        <span id="smsValidationMessage" class="validation-message"></span>
+                    </div>
+
+                    <!-- 모달 창 -->
+                    <div id="findPassModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" id="closeFindPassModal">&times;</span>
+                            <label for="resetPass" class="labelTitle">비밀번호 변경</label>
+                            <div class="member-restPass-box">
+                                <label for="memberPass">새 비밀번호<b>*</b></label>
+                                <div class="member-restPass-box-input">
+                                    <input class="input-text" type="password" id="memberPass" name="memberPass" required>
+                                </div>
+                                <span id="passwordValidationMessage" class="validation-message"></span>
+                            </div>
+                            
+                            <div class="member-restPass-box">
+                                <label for="confirmMemberPass">새 비밀번호 확인<b>*</b></label>
+                                <div class="member-restPass-box-input">
+                                    <input class="input-text" type="password" id="confirmMemberPass" name="confirmMemberPass" required>
+                                </div>
+                                <span id="passwordConfirmValidationMessage" class="validation-message"></span>
+                            </div>
+                            <button type="button" id="updatePasswordBtn">수정 완료</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{/layout/footer :: footer}"></div>
+</body>
+</html>

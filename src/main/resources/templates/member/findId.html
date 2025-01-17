@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>FindId Page</title>
+    <link rel="stylesheet" th:href="@{/css/reset.css}">
+    <link rel="stylesheet" th:href="@{/css/member/findId.css}">
+    <script defer th:src="@{/js/member/findId.js}"></script>
+    <style>
+    	.validation-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .success-message {
+            color: green;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{/layout/header :: header}"></div>
+    <div class="content">
+        <div class="findIdwrap">
+        	<div class="findId">
+        		<form>
+		            <p>아이디 찾기</p>
+			        <div class="member-findId-box">
+			            <label for="memberPhoneNumber">휴대전화<b>*</b></label>
+			            <div class="member-findId-box-input">
+			                <input class="input-text-btn" type="tel" id="memberPhoneNumber" name="memberPhoneNumber" required>
+			                <button type="button" id="sendSmsBtn">인증 코드</button>
+			            </div>
+			            <span id="phoneValidationMessage" class="validation-message"></span>
+			        </div>
+			
+			        <div class="member-findId-box">
+			            <label for="smsCode">인증코드<b>*</b></label>
+			            <div class="member-findId-box-input">
+			            	<div class="member-findId-box-input2">
+				                <input class="input-text-btn2" type="text" id="smsCode" name="smsCode" required>
+				                <span id="remainingTime" class="validation-message"></span>
+			            	</div>
+			                <button type="button" id="verifySmsBtn">코드 확인</button>
+			            </div>
+			            <span id="smsValidationMessage" class="validation-message"></span>
+			        </div>
+
+			        <!-- 모달 창 -->
+			        <div id="findIdModal" class="modal">
+					    <div class="modal-content">
+					        <span class="close" id="closeFindIdModal">&times;</span>
+					        <label for="foundMemberIds">등록된 아이디</label>
+			            	<div id="foundMemberIds" class="result-box"></div>
+			            	<div class="pageBtn">
+			            		<a th:href="@{/member/login}">로그인</a>
+			            		<a th:href="@{/member/find-password}">비밀번호 찾기</a>
+			            	</div>
+					    </div>
+					</div>
+        		</form>
+        	</div>
+        </div>
+    </div>
+    <div th:replace="~{/layout/footer :: footer}"></div>
+</body>
+</html>

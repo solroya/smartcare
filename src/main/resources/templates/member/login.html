@@ -19,27 +19,28 @@
                     <div class="form-group">
                         <input type="password" id="password" name="password" required placeholder="비밀번호">
                     </div>
-                    <div class="form-group">
-                        <button type="submit">로그인</button>
-                    </div>
-                    <div class="social-login-kakao">
-	                    <a href="/oauth2/authorization/kakao" class="kakao-login-btn">카카오 로그인</a>
-	                </div>
                     <div th:if="${param.error}">
-					    <p style="margin-top : 10px !important;
+					    <p style="
 								  font-size : 16px;
 								  color : red;
 								  width : 100%;
 								  margin : 0;
 								  font-weight: 500;
-								  letter-spacing: -0.5px;">
+								  letter-spacing: -0.5px;
+								  margin-bottom : 20px;">
 						아이디 또는 비밀번호가 잘못되었습니다.</p>
 					</div>
+                    <div class="form-group-2">
+                        <button type="submit">로그인</button>
+                    </div>
+                    <a href="/oauth2/authorization/kakao" class="kakao-login-btn">
+                    	<img alt="카카오" th:src="@{/img/member/kakao-login.png}">
+                    </a>
                 </form>
                 <div class="info-find">
-                    <a href="#" class="findStyle">아이디 찾기</a>
+                    <a th:href="@{/member/find-id}" class="findStyle">아이디 찾기</a>
                     <div class="info-line"></div>
-                    <a href="#" class="findStyle">비밀번호 찾기</a>
+                    <a th:href="@{/member/find-password}" class="findStyle">비밀번호 찾기</a>
                     <div class="info-line"></div>
                     <a th:href="@{/member/division}" class="findStyle">회원가입</a>
                 </div>

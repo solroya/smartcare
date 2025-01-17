@@ -4,6 +4,7 @@ import com.nado.smartcare.config.BaseEntity;
 import com.nado.smartcare.patient.domain.PatientRecordCard;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import java.util.List;
 @Getter
 @ToString
 @Entity
+@Setter
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
