@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Query Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        #container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        #newsQuery {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        #searchBtn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: white;
+            background: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        #searchBtn:hover {
+            background: #0056b3;
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #loading span {
+            display: inline-block;
+            padding: 10px;
+            font-size: 1.2rem;
+            color: #555;
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .alert {
+            padding: 10px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .alert-info {
+            color: #0c5460;
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{/erp/layout/header :: header}"></div>
+<div id="container">
+    <div>
+        <textarea id="newsQuery" placeholder="질문을 입력하세요"></textarea>
+        <button id="searchBtn">검색</button>
+    </div>
+    <div id="loading">
+        <span>Loading...</span>
+    </div>
+    <div id="resultContainer">
+        <!-- SQL Query 출력 -->
+        <div id="sqlQueryContainer" class="d-none">
+            <div>
+                <strong>Generated SQL Query:</strong>
+                <pre id="sqlQuery"></pre>
+            </div>
+        </div>
+
+        <!-- 결과 테이블 -->
+        <div id="tableContainer" class="d-none">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead id="tableHead"></thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- AI의 대답 -->
+        <div id="aiResponseContainer" class="d-none">
+            <h3>AI Response</h3>
+            <p id="aiResponse"></p>
+        </div>
+
+        <!-- 알림 메시지 -->
+        <div id="alertContainer"></div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("searchBtn").addEventListener("click", function () {
+        const query = document.getElementById("newsQuery").value.trim();
+        const sqlQueryContainer = document.getElementById("sqlQueryContainer");
+        const tableContainer = document.getElementById("tableContainer");
+        const aiResponseContainer = document.getElementById("aiResponseContainer");
+        const alertContainer = document.getElementById("alertContainer");
+        const loading = document.getElementById("loading");
+        const tableHead = document.getElementById("tableHead");
+        const tableBody = document.getElementById("tableBody");
+        const sqlQuery = document.getElementById("sqlQuery");
+        const aiResponse = document.getElementById("aiResponse");
+
+        // 초기화
+        sqlQueryContainer.classList.add("d-none");
+        tableContainer.classList.add("d-none");
+        aiResponseContainer.classList.add("d-none");
+        alertContainer.innerHTML = '';
+        tableHead.innerHTML = '';
+        tableBody.innerHTML = '';
+        loading.style.display = "block";
+
+        // 서버 요청
+        fetch('/ai/sql', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({ question: query })
+        })
+            .then(response => response.json())
+            .then(data => {
+                loading.style.display = "none";
+
+                // SQL Query 출력
+                sqlQuery.textContent = data.sqlQuery || "No SQL query generated.";
+                sqlQueryContainer.classList.remove("d-none");
+
+                // 테이블 생성
+                if (data.results && data.results.length > 0) {
+                    // 테이블 헤더 생성
+                    tableHead.innerHTML = `
+                    <tr>
+                        ${Object.keys(data.results[0]).map(key => `<th>${key}</th>`).join('')}
+                    </tr>
+                `;
+
+                    // 테이블 본문 생성
+                    tableBody.innerHTML = data.results.map(row => `
+                    <tr>
+                        ${Object.values(row).map(value => `<td>${value}</td>`).join('')}
+                    </tr>
+                `).join('');
+
+                    tableContainer.classList.remove("d-none");
+                } else {
+                    alertContainer.innerHTML = `
+                    <div class="alert alert-info">No results found for the query.</div>
+                `;
+                }
+
+                // AI의 자연어 응답 표시
+                aiResponse.textContent = data.naturalResponse || "No response from AI.";
+                aiResponseContainer.classList.remove("d-none");
+            })
+            .catch(error => {
+                loading.style.display = "none";
+                alertContainer.innerHTML = `
+                <div class="alert alert-danger">Error loading results: ${error.message || error}</div>
+            `;
+            });
+    });
+
+</script>
+</body>
+</html>
