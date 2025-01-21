@@ -3,7 +3,9 @@ package com.nado.smartcare.patient.controller;
 import com.nado.smartcare.disease.domain.dto.DiseaseCategoryDto;
 import com.nado.smartcare.disease.domain.dto.DiseaseListDto;
 import com.nado.smartcare.disease.service.DiseaseService;
+import com.nado.smartcare.employee.domain.dto.DepartmentDto;
 import com.nado.smartcare.employee.domain.dto.EmployeeDto;
+import com.nado.smartcare.employee.service.DepartmentService;
 import com.nado.smartcare.employee.service.EmployeeService;
 import com.nado.smartcare.member.domain.dto.MemberDto;
 import com.nado.smartcare.member.service.MemberService;
@@ -16,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -41,6 +44,9 @@ public class PatientController {
     private final DiseaseService diseaseService;
 
     private final PatientRecordCardService patientRecordCardService;
+
+    private final DepartmentService departmentService;
+
 
     @GetMapping("/register")
     public String patientRegister(Model model) {
@@ -90,6 +96,11 @@ public class PatientController {
         model.addAttribute("size", memberPage.getSize());
         model.addAttribute("totalElements", memberPage.getTotalElements());
         return "erp/patients/search-results";
+    }
+    @GetMapping("/departments")
+    @ResponseBody
+    public ResponseEntity<List<DepartmentDto>> getDepartmentsWithDoctors() {
+        return ResponseEntity.ok(departmentService.getAllDepartmentsWithDoctors());
     }
 
     @GetMapping("/doctors")

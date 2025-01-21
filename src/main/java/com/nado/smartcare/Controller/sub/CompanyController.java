@@ -8,18 +8,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/company")
 public class CompanyController {
 
-	@GetMapping("/company")
-	public String companyForm() {
-		return "company/company";
-	}
-	
-	@GetMapping("/vision")
-	public String visionForm() {
-		return "company/vision";
-	}
-	
-	@GetMapping("/location")
-	public String locationForm() {
-		return "company/location";
-	}
+    @GetMapping("/company")
+    public String companyForm() {
+        return "company/company";
+    }
+
+    @GetMapping("/vision")
+    public String visionForm() {
+        return "company/vision";
+    }
+
+    @GetMapping("/location")
+    public String locationForm() {
+        return "company/location";
+    }
 }

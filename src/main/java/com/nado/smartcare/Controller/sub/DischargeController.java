@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/discharge")
 public class DischargeController {
-	
-	@GetMapping("/discharge")
-	public String dischargeForm() {
-		return "discharge/discharge";
-	}
+
+    @GetMapping("/discharge")
+    public String dischargeForm() {
+        return "discharge/discharge";
+    }
 }

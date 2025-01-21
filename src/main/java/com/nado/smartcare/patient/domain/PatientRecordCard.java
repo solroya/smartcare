@@ -7,6 +7,7 @@ import com.nado.smartcare.employee.domain.Employee;
 import com.nado.smartcare.member.domain.Member;
 import com.nado.smartcare.patient.domain.dto.type.ClinicStatus;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
