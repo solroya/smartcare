@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ErpController {
 
     @GetMapping
-    public String index() {
+    public String newIndex() {
         return "erp/index";
     }
+
 }

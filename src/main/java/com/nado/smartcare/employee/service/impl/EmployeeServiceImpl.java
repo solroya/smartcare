@@ -2,6 +2,7 @@ package com.nado.smartcare.employee.service.impl;
 
 import com.nado.smartcare.employee.domain.Department;
 import com.nado.smartcare.employee.domain.Employee;
+import com.nado.smartcare.employee.domain.dto.DepartmentDto;
 import com.nado.smartcare.employee.domain.type.TypeOfEmployee;
 import com.nado.smartcare.employee.domain.dto.EmployeeDto;
 import com.nado.smartcare.employee.repository.DepartmentRepository;
@@ -106,7 +107,14 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .collect(Collectors.toList());
     }
 
-	@Override
+    @Override
+    public List<DepartmentDto> getAllDepartmentsWithDoctors() {
+        return departmentRepository.findAll().stream()
+                .map(DepartmentDto::from)
+                .collect(Collectors.toList());
+    }
+
+    @Override
 	public Employee login(String employeeId, String employePass) {
 		Employee employee = employeeRepository.findByEmployeeId(employeeId)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Id or password"));

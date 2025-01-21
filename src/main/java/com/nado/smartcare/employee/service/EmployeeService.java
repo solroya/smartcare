@@ -1,6 +1,7 @@
 package com.nado.smartcare.employee.service;
 
 import com.nado.smartcare.employee.domain.Employee;
+import com.nado.smartcare.employee.domain.dto.DepartmentDto;
 import com.nado.smartcare.employee.domain.dto.EmployeeDto;
 
 import java.util.List;
@@ -23,4 +24,7 @@ public interface EmployeeService {
     Employee login(String employeeId, String employePass);
 
     List<EmployeeDto> findDoctorsByDepartment(String departmentType);
+
+    List<DepartmentDto> getAllDepartmentsWithDoctors();
+
 }

@@ -1,11 +1,152 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartCare</title>
+  <link rel="stylesheet" th:href="@{/css/erp/index.css}">
+  <style>
+  </style>
 </head>
 <body>
-    <div th:replace="~{/erp/layout/header :: header}"></div>
-    <h1>ERP MAIN PAGE</h1>
+<!-- 사이드바 -->
+<th:block th:replace="erp/fragments/sidebar :: sidebarFragment"></th:block>
+
+<!-- 메인 컨텐츠 -->
+<main class="main-content">
+  <!-- 대시보드 헤더 -->
+  <div class="dashboard-header">
+    <h1>대시보드</h1>
+    <div class="dashboard-date" th:text="${#dates.format(#dates.createNow(), 'yyyy년 MM월 dd일')}"></div>
+  </div>
+
+  <!-- 통계 카드 -->
+  <div class="dashboard-stats">
+    <div class="stat-card">
+      <h3>오늘의 예약</h3>
+      <div class="number">24</div>
+    </div>
+    <div class="stat-card">
+      <h3>대기 환자</h3>
+      <div class="number">5</div>
+    </div>
+    <div class="stat-card">
+      <h3>진료 완료</h3>
+      <div class="number">18</div>
+    </div>
+    <div class="stat-card">
+      <h3>신규 환자</h3>
+      <div class="number">3</div>
+    </div>
+  </div>
+
+  <!-- 대시보드 그리드 -->
+  <div class="dashboard-grid">
+    <!-- 환자 검색 -->
+    <div class="dashboard-card">
+      <h2>환자 검색</h2>
+      <form class="search-form">
+        <input type="text" class="search-input" placeholder="환자명 또는 차트번호 입력">
+        <button type="submit" class="search-button">검색</button>
+      </form>
+      <table class="table">
+        <thead>
+        <tr>
+          <th>차트번호</th>
+          <th>환자명</th>
+          <th>상태</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>2024-001</td>
+          <td>김환자</td>
+          <td><span class="status status-active">진료중</span></td>
+        </tr>
+        <tr>
+          <td>2024-002</td>
+          <td>이환자</td>
+          <td><span class="status status-waiting">대기중</span></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 오늘의 일정 -->
+    <div class="dashboard-card">
+      <h2>오늘의 일정</h2>
+      <table class="table">
+        <thead>
+        <tr>
+          <th>시간</th>
+          <th>환자명</th>
+          <th>진료과</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>09:30</td>
+          <td>박환자</td>
+          <td>내과</td>
+        </tr>
+        <tr>
+          <td>10:00</td>
+          <td>최환자</td>
+          <td>치과</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 공지사항 -->
+    <div class="dashboard-card">
+      <h2>공지사항</h2>
+      <table class="table">
+        <thead>
+        <tr>
+          <th>제목</th>
+          <th>등록일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>진료 시간 변경 안내</td>
+          <td>2025-01-20</td>
+        </tr>
+        <tr>
+          <td>코로나19 예방접종 안내</td>
+          <td>2025-01-15</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 진료과별 의사 일정 -->
+    <div class="dashboard-card">
+      <h2>진료과별 의사 일정</h2>
+      <table class="table">
+        <thead>
+        <tr>
+          <th>진료과</th>
+          <th>의사명</th>
+          <th>상태</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>내과</td>
+          <td>김의사</td>
+          <td><span class="status status-active">진료중</span></td>
+        </tr>
+        <tr>
+          <td>치과</td>
+          <td>이의사</td>
+          <td><span class="status status-waiting">휴진</span></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
 </body>
 </html>

@@ -1,0 +1,56 @@
+<!-- /templates/erp/fragments/sidebar.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="sidebarFragment">
+  <aside class="sidebar">
+    <h4 class="sidebar-title">스마트 케어</h4>
+    <nav class="sidebar-nav">
+      <ul class="nav-menu">
+        <li>
+          <a th:href="@{/static}" th:class="${currentPage == 'dashboard'} ? 'active'" class="menu-item">
+            대시보드
+          </a>
+        </li>
+
+        <li class="menu-section">
+          <h4 class="section-title">진료</h4>
+          <ul class="submenu">
+            <li>
+              <a th:href="@{/erp/patients/register}" class="submenu-item">환자 등록</a>
+            </li>
+            <li>
+              <a th:href="@{/erp/patients/list}" class="submenu-item">접수 목록</a>
+            </li>
+          </ul>
+        </li>
+
+        <li class="menu-section">
+          <h4 class="section-title">예약</h4>
+          <ul class="submenu">
+            <li>
+              <a th:href="@{/erp/record/list}" class="submenu-item">예약 목록</a>
+            </li>
+            <li>
+              <a th:href="@{/reservation/create}" class="submenu-item">예약</a>
+            </li>
+            <li>
+              <a th:href="@{/reservation/create}" class="submenu-item">예약</a>
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          <a th:href="@{/templates/notice}" th:class="${currentPage == 'notice'} ? 'active'" class="menu-item">
+            공지사항
+          </a>
+        </li>
+        <li>
+          <a th:href="@{/mypage}" th:class="${currentPage == 'mypage'} ? 'active'" class="menu-item">
+            마이페이지
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+</th:block>
+</html>
