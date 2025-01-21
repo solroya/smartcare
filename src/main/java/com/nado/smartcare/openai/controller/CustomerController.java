@@ -12,4 +12,9 @@ public class CustomerController {
     public String customer() {
         return "customer/index";
     }
+
+    @GetMapping("/consume")
+    public String consume() {
+        return "customer/consume";
+    }
 }
