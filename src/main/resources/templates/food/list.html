@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title th:text="'음식점 리스트 -' + ${currentCategory}">음식점</title>
+</head>
+<body>
+	<h1 th:text="'음식점 리스트 -' + ${currentCategory}">음식점</h1>
+	<ul>
+		<li th:each="foodPlace : ${foodPlaces}">
+			<img th:src="${foodPlace.imageUrl}" alt="음식점 이미지" style="width : 78px; height: 78px; border-radius: 100%;">
+			<h3 th:text="${foodPlace.foodName}"></h3>
+			<p th:text="${foodPlace.foodAddressRoad}"></p>
+		</li>
+	</ul>
+</body>
+</html>
