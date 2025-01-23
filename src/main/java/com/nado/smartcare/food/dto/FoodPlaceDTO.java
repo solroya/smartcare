@@ -21,6 +21,7 @@ public class FoodPlaceDTO {
 	private Double latitude;
 	private Double longitude;
 	private Integer likes;
+	private boolean liked;
 	private Integer views;
 	private String category;
 	private String imageUrl;

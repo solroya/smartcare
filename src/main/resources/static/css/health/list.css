@@ -1,0 +1,274 @@
+@charset "UTF-8";
+
+.content {
+	width : 100%;
+	display : flex;
+}
+
+.listwrap {
+	width : 450px;
+	height: 100%;
+	position: relative;
+}
+
+.list {
+	width : 100%;
+	height: 100%;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+}
+
+.header {
+	width : 100%;
+	height: 80px;
+	display : flex;
+	position: relative;
+	align-items: center;
+	padding-left : 25px;
+}
+
+.gnb-btn {
+	width : 30px;
+	height: 30px;
+	display : flex;
+	flex-direction: column;
+	gap : 10px;
+	margin-right : 25px;
+}
+
+.gnb-btn .bar {
+	width : 100%;
+	height: 3px;
+	background-color: #1C3D5A;
+}
+
+.header a {
+	font-size : 40px;
+	letter-spacing : -0.25px;
+	color : #1C3D5A;
+	font-weight: bold;
+	margin : 0;
+	padding : 0;
+}
+
+.aiRecommentBox {
+	width : 450px;
+	height: 234px;
+	background-color: #1C3D5A;
+	display : flex;
+	flex-direction: column;
+	justify-content: center;
+	padding-left : 25px;
+}
+
+.aiText-title {
+	font-size : 24px;
+	letter-spacing: -0.25px;
+	color : #fff;
+	margin-bottom : 15px;
+}
+
+.aiText-title b {
+	font-weight: bold;
+}
+
+.aiFoodBox {
+	width : 400px;
+	height: 139px;
+	background-color:  #fff;
+	display : flex;
+	position: relative;
+	align-items:  center;
+	padding-left : 25px; 
+}
+
+.aiFoodBox img {
+	width : 80px;
+	height: 80px;
+	border-radius : 100%;
+	background-repeat: no-repeat;
+	background-size: contain;
+	display: flex;
+	align-items: center;
+	margin-right : 20px;
+}
+
+.foodText {
+	display : flex;
+	flex-direction: column;
+}
+
+.foodText-Text {
+	display : flex;
+	gap : 15px;
+	align-items: center;
+	margin-bottom : 7px;
+}
+
+.foodText-Text p {
+	font-size : 20px;
+	letter-spacing: -0.25px;
+	font-weight: bold;
+	color : #333;
+}
+
+.heightLine {
+	width : 1px;
+	height: 15px;
+	background-color : #707070;
+}
+
+.foodText-Text span {
+	font-size : 20px;
+	letter-spacing: -0.25px;
+	color : #333;
+}
+
+.foodText-subText {
+	font-size : 18px;
+	letter-spacing: -0.25px;
+	line-height: 26px;
+	color : #333;
+}
+
+.foodText-subText b {
+	font-weight: bold;
+}
+
+.foodListwrap {
+	width : 450px;
+	height: 100%;
+	display : flex;
+	flex-direction: column;
+	padding-top : 25px;
+}
+
+.foodList-Title {
+	font-size : 24px;
+	font-weight: bold;
+	letter-spacing: -0.25px;
+	color : #333;
+	margin-bottom : 25px;
+	margin-left : 25px;
+}
+
+.foodList {
+	display : flex;
+	flex-direction: column;
+	width : 100%;
+	height: 100%;
+}
+
+.foodListBox {
+	width : 450px;
+	height: 638px;
+	display : flex;
+	overflow-y : auto;
+	scroll-behavior: smooth;
+	overflow-x : hidden;
+}
+
+.foodListBox li {
+	width : 450px;
+	height: 128px;
+	display : flex;
+	align-items: center;
+	padding-left : 25px;
+	position: relative;
+}
+
+.foodListBox li:hover {
+	background-color: #F5F5F5;
+}
+
+.foodListBox li::after {
+	content : '';
+	width : 360px;
+	height: 1px;
+	background-color: #ddd;
+	position: absolute;
+	bottom : 0;
+	left : 50%;
+	transform : translateX(-50%);
+}
+
+.foodListBox .foodPlaceFno {
+	font-size : 24px;
+	font-weight: bold;
+	letter-spacing: -0.25px;
+	color : #333;
+	margin-right : 20px;
+	text-align: left;
+	display : inline-block;
+	width : 15px;
+}
+
+.foodListBox img {
+	width : 78px;
+	height: 78px;
+	border-radius: 100%;
+	background-repeat: no-repeat;
+	background-size: contain;
+	margin-right : 20px;
+}
+
+.foodListBox-Text {
+	display : flex;
+	flex-direction: column;
+}
+
+.foodListBox-Text h3  {
+	font-size : 20px;
+	font-weight: bold;
+	letter-spacing: -0.25px;
+	margin-bottom : 7px;
+	color : #333;
+}
+
+.foodListBox-Text p {
+	width : 165px;
+	white-space : nowrap;
+	overflow : hidden;
+	text-overflow : ellipsis;
+	font-size : 16px;
+	letter-spacing: -0.5px;
+	color : #333;
+	margin-right: 66px;
+}
+
+.like-btn {
+	width : 25px;
+	height: 25px;
+	display : flex;
+	align-items: center;
+}
+
+.like-btn .heart {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    overflow: hidden;
+}
+
+.heart img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background-repeat: no-repeat;
+}
+
+/* 스크롤 디자인 */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 234px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #AAAAAA;
+  border-radius: 50px; /* 핸들 모서리 둥글게 */
+}

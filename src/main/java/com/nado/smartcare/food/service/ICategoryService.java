@@ -11,6 +11,8 @@ public interface ICategoryService {
 	
 	List<CategoryDTO> getSampleDiagnosisWithCategories();
 	
+	CategoryDTO getCategoryByName(String categoryName);
+	
 	default Category dtoToEntity(CategoryDTO categoryDTO) {
 		return Category.builder()
 				.categoryNo(categoryDTO.getCategoryNo())

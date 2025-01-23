@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>음식점 상세 정보</title>
+</head>
+<body>
+	<div th:fragment="detailContent">
+		<div class="content">
+			<div class="detailwrap">
+		        <div class="detail" th:attr="data-fno=${foodPlace.fno}">
+		            <div class="detailImage">
+		                <img th:src="${foodPlace.imageUrl}" alt="음식점 이미지">
+		            </div>
+		            <div class="detailTitle">
+		                <h2 th:text="${foodPlace.foodName}"></h2>
+		                <div class="clickBtn">
+		                    <span>
+		                        <img class="heart-img" th:src="@{/img/health/heartOff.png}" alt="좋아요">
+		                        <b th:text="${foodPlace.likes} + '개'"></b>
+		                    </span>
+		                    <div class="clickBtnLine"></div>
+		                    <span>
+		                        <img th:src="@{/img/health/views.png}" alt="조회수">
+		                        <b th:text="${foodPlace.views} + '개'"></b>
+		                    </span>
+		                </div>
+		                <button>지도로 보기</button>
+		            </div>
+		            <div class="detailContent">
+		                <h3>상세정보</h3>
+		                <div class="detailAddress">
+	                		<img alt="주소아이콘" th:src="@{/img/health/address.png}">
+		                	<div class="detailAddressText">
+			                    <span th:text="${foodPlace.foodAddressRoad}"></span>
+			                    <span th:text="'지번 | ' + ${foodPlace.foodAddressJibun}"></span>
+		                	</div>
+		                </div>
+		                <div class="detailBusiness">
+		                	<img alt="시계아이콘" th:src="@{/img/health/business.png}">
+		                	<div class="detailBusinessText">
+								<b>영업중</b>
+			                    <span th:text="'매일 ' + ${foodPlace.foodBusinessHours}"></span>
+		                	</div>
+		                </div>
+		                <div class="detailPhoneNumber">
+		                	<img alt="전화아이콘" th:src="@{/img/health/phoneNumber.png}">
+		                    <span th:text="${foodPlace.foodPhoneNumber}"></span>
+		                </div>
+		            </div>
+		            <div class="detailContentLine"></div>
+		        </div>
+			</div>
+		</div>
+    </div>
+</body>
+</html>

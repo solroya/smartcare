@@ -62,5 +62,15 @@ public class CategoryServiceImpl implements ICategoryService {
 		
 		return result;
 	}
+
+	@Override
+	public CategoryDTO getCategoryByName(String categoryName) {
+		return iCategoryRepository.findByCategoryName(categoryName)
+			.map(category -> new CategoryDTO(
+				category.getCategoryNo(),
+				category.getCategoryName(),
+				category.getCategoryImage()))
+			.orElseThrow(() -> new IllegalArgumentException("카테고리를 찾을 수 없습니다."));
+	}
 	
 }

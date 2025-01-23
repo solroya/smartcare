@@ -3,15 +3,67 @@
 <head>
 <meta charset="UTF-8">
 <title th:text="'음식점 리스트 -' + ${currentCategory}">음식점</title>
+<link rel="stylesheet" th:href="@{/css/reset.css}">
+<link rel="stylesheet" th:href="@{/css/health/list.css}">
+<link rel="stylesheet" th:href="@{/css/health/detail.css}">
+<script th:src="@{/js/health/list.js}"></script>
+<script th:src="@{/js/health/detail.js}"></script>
 </head>
 <body>
-	<h1 th:text="'음식점 리스트 -' + ${currentCategory}">음식점</h1>
-	<ul>
-		<li th:each="foodPlace : ${foodPlaces}">
-			<img th:src="${foodPlace.imageUrl}" alt="음식점 이미지" style="width : 78px; height: 78px; border-radius: 100%;">
-			<h3 th:text="${foodPlace.foodName}"></h3>
-			<p th:text="${foodPlace.foodAddressRoad}"></p>
-		</li>
-	</ul>
+	<div class="content">
+		<div class="listwrap">
+			<div class="list">
+				<div class="header">
+					<div class="gnb-btn" title="전체메뉴 열기">
+				        <div class="bar"></div>
+				        <div class="bar"></div>
+				        <div class="bar"></div>
+				    </div>
+				    <a th:href="@{/main}">SmartCare</a>
+				</div>
+				<div class="aiRecommentBox">
+					<p class="aiText-title"><b>ooo님</b>을 위한 <b><span th:text="${currentCategory}"></span></b> 추천</p>
+					<div class="aiFoodBox">
+						<img th:src="${selectedCategory.categoryImage}" alt="카테고리 이미지">
+						<div class="foodText">
+							<div class="foodText-Text">
+								<p>• 총 음식점</p>
+								<div class="heightLine"></div>
+								<span th:text="${#lists.size(foodPlaces)} + '개'"></span>
+							</div>
+							<span class="foodText-subText"><b>ooo님</b>의 치료에 도움이 되는<br>
+							음식으로 추천드립니다.</span>
+						</div>
+					</div>
+				</div>
+				<div class="foodListwrap">
+					<p class="foodList-Title" th:text="${currentCategory} + '음식점'"></p>
+					<div class="foodList">
+						<div class="foodListBox" >
+							<ul>
+								<li th:each="foodPlace, stat : ${foodPlaces}" th:onclick="'loadDetail(' + ${foodPlace.fno} + ')'">
+									<p class="foodPlaceFno" th:text="${stat.index + 1}"></p>
+									<img th:src="${foodPlace.imageUrl}" alt="음식점 이미지">
+									<div class="foodListBox-Text">
+										<h3 th:text="${foodPlace.foodName}"></h3>
+										<p th:text="${foodPlace.foodAddressRoad}"></p>
+									</div>
+									<button class="like-btn" th:data-fno="${foodPlace.fno}" th:data-likes="${foodPlace.likes}">
+									    <span class="heart">
+									        <img th:src="@{/img/health/heartOff.png}">
+									    </span>
+									    <span class="likes-count" th:text="${foodPlace.likes}" style="display:none;"></span>
+									</button>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 상세페이지 자리 -->
+		<div id="detail" class="detailwrap hidden"></div>
+		<!-- 지도 자리 -->
+	</div>
 </body>
 </html>

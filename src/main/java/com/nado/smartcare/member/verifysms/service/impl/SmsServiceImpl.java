@@ -31,7 +31,7 @@ public class SmsServiceImpl implements SmsService {
         String phone = smsDto.getPhone();
         String certificationCode = Integer.toString((int)(Math.random() * (999999 - 100000 + 1)) + 100000); // 6자리 인증 코드를 랜덤으로 생성
         // TODO : 요금 절약을 위해 닫아 놓음
-        coolSMSConfig.sendOne(phone, certificationCode);
+//        coolSMSConfig.sendOne(phone, certificationCode);
 
         // Reids 인증 코드 저장
         redisTemplate.opsForValue().set(phone, certificationCode, 5, TimeUnit.MINUTES);
