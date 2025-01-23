@@ -7,7 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/member/login.css}">
 </head>
 <body>
-    <div th:replace="~{/layout/header :: header}"></div>
+    <div th:replace="~{layout/header :: header}"></div>
     <div class="content">
         <div class="loginwrap">
             <div class="login">
@@ -47,7 +47,7 @@
             </div>
         </div>
     </div>
-    <div th:replace="~{/layout/footer :: footer}"></div>
+    <div th:replace="~{layout/footer :: footer}"></div>
     <script>
         document.querySelector("form").addEventListener("submit", function (event) {
             const id = document.getElementById("id").value;

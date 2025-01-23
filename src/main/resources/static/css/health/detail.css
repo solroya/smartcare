@@ -1,0 +1,206 @@
+@charset "UTF-8";
+
+.content {
+	width : 100%;
+}
+
+.detailwrap {
+	width : 450px;
+	height: 100%;
+}
+
+.detail {
+	display : flex;
+	flex-direction: column;
+	width : 100%;
+	height: 100%;
+	position: relative;
+}
+
+.detailImage {
+	width : 450px;
+	height: 250px;
+}
+
+.detailImage img {
+	width : 100%;
+	height: 100%;
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.detailTitle {
+	position : relative;
+	top : -100px;
+	width : 400px;
+	height: 200px;
+	display: flex;
+	margin : 0 auto;
+	justify-content : center;
+	align-items : center;
+	flex-direction: column;
+	background-color : #fff;
+	box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.12);
+	margin-bottom : -70px;
+}
+
+.detailTitle h2 {
+	font-size : 30px;
+	font-weight: bold;
+	letter-spacing: -0.25px;
+	color : #333;
+	margin-bottom : 15px;
+}
+
+.clickBtn {
+	display : flex;
+	align-items: center;
+	margin-bottom : 15px;
+}
+
+.clickBtn span {
+	gap : 10px;
+	display : flex;
+}
+
+.clickBtn span:nth-child(1) {
+	margin-right : 15px;
+}
+
+.clickBtn img {
+	width : 25px;
+	height: 25px;
+	background-repeat: no-repeat;
+	background-size: contain;
+}
+
+.clickBtn b {
+	font-size : 20px;
+	letter-spacing: -0.25px;
+	color : #333;
+	display : flex;
+	align-items: center;
+}
+
+.clickBtnLine {
+	width : 1px;
+	height: 15px;
+	background-color: #707070;
+	display : flex;
+	align-items: center;
+	margin-right : 15px;
+}
+
+.detailTitle button {
+	display : flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	width : 220px;
+	height: 50px;
+	background-color: #1C3D5A;
+	color : #fff;
+	font-size: 20px;
+	font-weight: bold;
+	letter-spacing: -0.25px;
+	cursor: pointer;
+}
+
+.detailContent {
+	display : flex;
+	flex-direction: column;
+	padding-left : 25px;
+}
+
+.detailContent h3 {
+	font-size : 24px;
+	font-weight: bold;
+	letter-spacing: -0.25px;
+	color : #333;
+	margin-bottom : 15px;
+}
+
+.detailAddress {
+	display : flex;
+	align-items: center;
+	margin-bottom : 20px;
+}
+
+.detailAddress img {
+	width : 25px;
+	height: 25px;
+	background-repeat: no-repeat;
+	background-size: contain;
+	margin-right : 10px;
+}
+
+.detailAddressText {
+	display : flex;
+	flex-direction: column;
+}
+
+.detailAddressText span {
+	font-size: 16px;
+	letter-spacing: -0.5px;
+	color : #333;
+	line-height: 22px;
+}
+
+.detailBusiness {
+	display : flex;
+	align-items: center;
+	margin-bottom : 20px;
+}
+
+.detailBusiness img {
+	width : 25px;
+	height: 25px;
+	background-repeat: no-repeat;
+	background-size: contain;
+	margin-right : 10px;
+}
+
+.detailBusinessText {
+	display : flex;
+	flex-direction: column;
+}
+
+.detailBusinessText b {
+	font-size : 16px;
+	font-weight: bold;
+	letter-spacing: -0.5px;
+	color : #1C3D5A;
+}
+
+.detailBusinessText span {
+	font-size: 16px;
+	letter-spacing: -0.5px;
+	color : #333;
+	line-height: 22px;
+}
+
+.detailPhoneNumber {
+	display : flex;
+	align-items: center;
+	margin-bottom : 30px;
+}
+
+.detailPhoneNumber img {
+	width : 25px;
+	height: 25px;
+	background-repeat: no-repeat;
+	background-size: contain;
+	margin-right : 10px;
+}
+
+.detailPhoneNumber span {
+	font-size: 16px;
+	letter-spacing: -0.5px;
+	color : #333;
+}
+
+.detailContentLine {
+	width : 450px;
+	height: 1px;
+	background-color: #ddd;
+}

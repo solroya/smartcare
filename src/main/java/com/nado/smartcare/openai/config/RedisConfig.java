@@ -5,6 +5,7 @@ import org.springframework.ai.openai.OpenAiEmbeddingModel;
 import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.ai.vectorstore.RedisVectorStore;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import redis.clients.jedis.JedisPooled;
@@ -21,7 +22,7 @@ public class RedisConfig {
     }
 
     @Bean(name = "customVectorStore")
-    public VectorStore vectorStore(JedisPooled jedisPooled, EmbeddingModel embeddingModel) {
+    public VectorStore vectorStore(JedisPooled jedisPooled, @Qualifier("embeddingModel") EmbeddingModel embeddingModel) {
         RedisVectorStore.RedisVectorStoreConfig config = RedisVectorStore.RedisVectorStoreConfig.builder()
                 .withIndexName("custom-index")
                 .withPrefix("custom-prefix")
@@ -33,7 +34,7 @@ public class RedisConfig {
         return new RedisVectorStore(config, embeddingModel, jedisPooled, true);
     }
 
-    @Bean
+    @Bean(name = "embeddingModel")
     public EmbeddingModel embeddingModel() {
         return new OpenAiEmbeddingModel(new OpenAiApi(System.getenv("OPENAI_API_KEY")));
     }

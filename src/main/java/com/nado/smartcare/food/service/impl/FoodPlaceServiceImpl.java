@@ -44,6 +44,50 @@ public class FoodPlaceServiceImpl implements IFoodPlaceService {
 			.imageUrl(foodPlace.getImageUrl())
 			.build();
 	}
+
+	@Override
+	public boolean toggleLike(Long fno) {
+		log.info("toggleLike에 들어왔나?");
+		FoodPlace foodPlace = iFoodPlaceRepository.findById(fno)
+				.orElseThrow(() -> new IllegalArgumentException("음식점을 찾을 수 없습니다."));
+		
+		boolean isLiked = foodPlace.getLikes() > 0;
+		if (isLiked) {
+			foodPlace.setLikes(foodPlace.getLikes() - 1);
+		} else {
+			foodPlace.setLikes(foodPlace.getLikes() + 1);
+		}
+		
+		iFoodPlaceRepository.save(foodPlace);
+		
+		return !isLiked;
+	}
+
+	@Override
+	public int getLikesCount(Long fno) {
+		log.info("getLikesCount에 들어왔나?");
+		log.info("좋아요 개수 확인 메서드 실행 - 음식점 ID : {}", fno);
+		FoodPlace foodPlace = iFoodPlaceRepository.findById(fno)
+				.orElseThrow(() -> new IllegalArgumentException("음식점을 찾을 수 없습니다."));
+		
+		return foodPlace.getLikes();
+	}
+
+	@Override
+	public FoodPlaceDTO getFoodPlaceById(Long fno) {
+		return iFoodPlaceRepository.findById(fno)
+			.map(this::EntityToDto)
+			.orElseThrow(() -> new IllegalArgumentException("해당 음식점을 찾을 수 없습니다."));
+	}
+
+	@Override
+	public void incrementViews(Long fno) {
+		log.info("조회수 증가 요청 음식점 ID: {}", fno);
+		FoodPlace foodPlace = iFoodPlaceRepository.findById(fno)
+			.orElseThrow(() -> new IllegalArgumentException("음식점을 찾울 수 없습니다."));
+		foodPlace.setViews(foodPlace.getViews() + 1);
+		iFoodPlaceRepository.save(foodPlace);
+	}
 	
 	
 }
