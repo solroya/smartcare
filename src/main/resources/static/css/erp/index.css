@@ -272,3 +272,110 @@ body {
         flex-direction: column;
     }
 }
+
+/* 사이드바 사용자 프로필 영역 스타일 */
+.user-profile-sidebar {
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 20px;
+}
+
+.user-info-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: var(--secondary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.user-details {
+    flex: 1;
+}
+
+.user-name {
+    color: var(--text-light);
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.department-name {
+    color: var(--secondary-color);
+    font-size: 0.9em;
+}
+
+.logout-btn-sidebar {
+    width: 100%;
+    padding: 8px 12px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 4px;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.logout-btn-sidebar:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.logout-icon {
+    font-size: 1.1em;
+}
+
+/* 개발 모드 스타일 */
+.dev-login-info {
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.dev-status {
+    color: #ffd700;  /* 개발 모드임을 눈에 띄게 표시 */
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+.dev-login-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: var(--secondary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.9em;
+    transition: background-color 0.3s;
+}
+
+.dev-login-btn:hover {
+    background-color: #4ca5c3;
+}
+
+/* 기존 사용자 프로필 스타일은 유지 */
+.user-profile-sidebar {
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 20px;
+}
+
+.user-info-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
