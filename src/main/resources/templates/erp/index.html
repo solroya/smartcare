@@ -5,13 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SmartCare</title>
   <link rel="stylesheet" th:href="@{/css/erp/index.css}">
-  <link rel="stylesheet" th:href="@{/css/erp/fragments/floatingBtn.css}">
   <style>
   </style>
 </head>
 <body>
 <!-- 사이드바 -->
-<th:block th:replace="~{erp/fragments/sidebar :: sidebarFragment}"></th:block>
+<th:block th:replace="erp/fragments/sidebar :: sidebarFragment"></th:block>
 
 <!-- 메인 컨텐츠 -->
 <main class="main-content">
@@ -149,8 +148,5 @@
     </div>
   </div>
 </main>
-<!-- 플로팅 채팅 버튼 -->
-<th:block th:replace="~{erp/fragments/floating-chat :: floatingChatFragment}"></th:block>
-
 </body>
 </html>
