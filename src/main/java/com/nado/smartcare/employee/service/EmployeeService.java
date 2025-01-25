@@ -3,6 +3,7 @@ package com.nado.smartcare.employee.service;
 import com.nado.smartcare.employee.domain.Employee;
 import com.nado.smartcare.employee.domain.dto.DepartmentDto;
 import com.nado.smartcare.employee.domain.dto.EmployeeDto;
+import com.nado.smartcare.employee.domain.type.WorkingStatus;
 
 import java.util.List;
 import java.util.Optional;

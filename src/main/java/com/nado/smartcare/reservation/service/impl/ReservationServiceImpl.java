@@ -19,7 +19,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
 
     @Override
-    public void createReservation(Long memberNo, LocalDate localDate, TimeSlot timeSlot, Long employeeNo, Long patientRecordCardNo, WorkingStatus status) {
+    public Reservation createReservation(Long memberNo, LocalDate localDate, TimeSlot timeSlot, Long employeeNo, Long patientRecordCardNo, WorkingStatus status) {
 
         if (reservationRepository.existsByEmployeeNoAndReservationDateAndTimeSlot(employeeNo, localDate, timeSlot)) {
             throw new IllegalArgumentException("이미 예약이 되어 있습니다.");
@@ -34,7 +34,7 @@ public class ReservationServiceImpl implements ReservationService {
                 status
         );
 
-        reservationRepository.save(reservation);
+       return reservationRepository.save(reservation);
 
     }
 
@@ -53,5 +53,16 @@ public class ReservationServiceImpl implements ReservationService {
             }
         }
         return availableDates;
+    }
+
+    @Override
+    public List<LocalDate> getAvailableDates(Long employeeNo, TimeSlot timeSlot, LocalDate now, LocalDate localDate) {
+        return List.of();
+    }
+
+    @Override
+    public Reservation getReservation(Long reservationNo) {
+        return reservationRepository.findById(reservationNo)
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

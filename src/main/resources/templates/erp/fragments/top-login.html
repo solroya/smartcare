@@ -1,0 +1,32 @@
+<!-- /templates/erp/fragments/top-login.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="topNavFragment">
+
+    <nav class="top-nav">
+        <!-- 비로그인 상태 -->
+        <div class="user-info" th:if="${employee == null}">
+            <button class="login-btn" onclick="location.href='/login'">로그인</button>
+            <button class="register-btn" onclick="location.href='/register'">회원가입</button>
+        </div>
+
+        <!-- 로그인 상태 -->
+        <div class="user-info" th:if="${employee != null}">
+            <div class="user-profile">
+                <div class="user-avatar" th:text="${#strings.substring(employee.employeeName, 0, 1)}">K</div>
+                <div>
+                    <div class="user-name" th:text="${employee.employeeName}">김의사</div>
+                    <span class="department-badge" th:text="${employee.department?.departmentName}">내과</span>
+                </div>
+                <div class="user-status" th:text="${employee.workingStatus?.name()}">근무중</div>
+            </div>
+            <div class="user-actions">
+                <a th:href="@{/mypage}" class="mypage-btn">마이페이지</a>
+                <form th:action="@{/logout}" method="post" class="logout-form">
+                    <button type="submit" class="logout-btn">로그아웃</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+</th:block>
+</html>

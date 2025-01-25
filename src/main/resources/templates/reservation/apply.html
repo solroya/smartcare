@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>진료 예약 - 스마트 케어</title>
+  <link rel="stylesheet" th:href="@{/css/erp/index.css}">
+  <style>
+    .reservation-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .steps {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      padding: 20px 0;
+      position: relative;
+    }
+
+    .step {
+      flex: 1;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-number {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: var(--background-light);
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 10px;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+
+    .step.active .step-number {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+
+    .step-label {
+      font-size: 0.9em;
+      color: var(--text-dark);
+    }
+
+    .step-content {
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--primary-color);
+      font-weight: 500;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .form-control:focus {
+      border-color: var(--secondary-color);
+      box-shadow: 0 0 0 2px rgba(91, 192, 222, 0.25);
+      outline: none;
+    }
+
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      margin-top: 20px;
+    }
+
+    .calendar-header {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .calendar-day {
+      padding: 10px;
+      text-align: center;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .calendar-day:hover:not(.disabled) {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+
+    .calendar-day.disabled {
+      background-color: #f5f5f5;
+      color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .calendar-day.selected {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .time-slots {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .time-slot {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .time-slot:hover:not(.disabled) {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+
+    .time-slot.selected {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s;
+      border: none;
+    }
+
+    .btn-primary {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--secondary-color);
+      color: var(--secondary-color);
+    }
+
+    .reservation-summary {
+      background-color: var(--background-light);
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .summary-label {
+      font-weight: 500;
+      color: var(--primary-color);
+    }
+
+    @media (max-width: 768px) {
+      .steps {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .step {
+        margin-bottom: 20px;
+      }
+
+      .time-slots {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- 사이드바 -->
+<th:block th:replace="erp/fragments/sidebar :: sidebarFragment"></th:block>
+
+<!-- 메인 컨텐츠 -->
+<main class="main-content">
+  <div class="dashboard-header">
+    <h1>진료 예약</h1>
+  </div>
+
+  <div class="reservation-container">
+    <!-- 진행 단계 표시 -->
+    <div class="steps">
+      <div class="step active">
+        <div class="step-number">1</div>
+        <div class="step-label">진료과/의사 선택</div>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-label">날짜/시간 선택</div>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-label">예약 확인</div>
+      </div>
+    </div>
+
+    <!-- 예약 폼 -->
+    <form th:action="@{/apply/create}" method="post" id="reservationForm">
+      <input type="hidden" id="reservationDate" name="reservationDate">
+      <!-- 1단계: 진료과/의사 선택 -->
+      <div class="step-content" id="step1">
+        <div class="form-group">
+          <label for="memberNo">환자 선택</label>
+          <select id="memberNo" name="memberNo" class="form-control" required>
+            <option value="">환자를 선택해주세요</option>
+            <option th:each="member : ${members}"
+                    th:value="${member.memberNo}"
+                    th:text="${member.memberName}">
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="employeeNo">담당 의사 선택</label>
+          <select id="employeeNo" name="employeeNo" class="form-control" required>
+            <option value="">담당 의사를 선택해주세요</option>
+            <option th:each="employee : ${employees}"
+                    th:value="${employee.employeeNo}"
+                    th:text="${employee.employeeName}">
+            </option>
+          </select>
+        </div>
+
+        <div class="button-group">
+          <button type="button" class="btn btn-primary" onclick="nextStep(2)">다음 단계</button>
+        </div>
+      </div>
+
+      <!-- 2단계: 날짜/시간 선택 -->
+      <div class="step-content" id="step2" style="display: none;">
+        <!-- 시간대 선택 -->
+        <div class="form-group">
+          <label for="timeSlot">진료 시간</label>
+          <select id="timeSlot" name="timeSlot" class="form-control" required>
+            <option value="">진료 시간을 선택해주세요</option>
+            <option th:each="slot : ${timeSlots}"
+                    th:value="${slot}"
+                    th:text="${slot.displayName}">
+            </option>
+          </select>
+        </div>
+
+        <!-- 날짜 선택 버튼 -->
+        <div class="form-group">
+          <label for="checkDates">예약 가능한 날짜 확인</label>
+          <button type="button" id="checkDates" class="btn btn-primary"
+                  onclick="checkAvailableDates()">날짜 확인</button>
+        </div>
+
+        <!-- 가능한 날짜 목록이 표시될 테이블 -->
+        <div id="availableDatesTable" style="display: none;">
+          <h4>예약 가능한 날짜</h4>
+          <table class="table">
+            <thead>
+            <tr>
+              <th>날짜</th>
+              <th>예약</th>
+            </tr>
+            </thead>
+            <tbody id="datesBody">
+            </tbody>
+          </table>
+        </div>
+
+        <div class="button-group">
+          <button type="button" class="btn btn-outline" onclick="prevStep(1)">이전 단계</button>
+          <button type="button" class="btn btn-primary" onclick="nextStep(3)">다음 단계</button>
+        </div>
+      </div>
+
+      <!-- 3단계: 예약 확인 -->
+      <div class="step-content" id="step3" style="display: none;">
+        <h3>예약 정보 확인</h3>
+        <div class="reservation-summary">
+          <div class="summary-item">
+            <span class="summary-label">환자명:</span>
+            <span id="summary-patient"></span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">담당 의사:</span>
+            <span id="summary-doctor"></span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">예약 일자:</span>
+            <span id="summary-date"></span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">예약 시간:</span>
+            <span id="summary-time"></span>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button type="button" class="btn btn-outline" onclick="prevStep(2)">이전 단계</button>
+          <button type="submit" class="btn btn-primary">예약 완료</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</main>
+
+<script>
+  let currentStep = 1;
+
+  function nextStep(step) {
+    // 현재 단계 유효성 검사
+    if (!validateStep(currentStep)) return;
+
+    // 현재 단계 숨기기
+    document.getElementById(`step${currentStep}`).style.display = 'none';
+    // 다음 단계 보이기
+    document.getElementById(`step${step}`).style.display = 'block';
+    // 단계 표시 업데이트
+    updateSteps(step);
+    currentStep = step;
+
+    // 3단계로 이동시 예약 정보 요약 업데이트
+    if (step === 3) {
+      updateSummary();
+    }
+  }
+
+  function prevStep(step) {
+    document.getElementById(`step${currentStep}`).style.display = 'none';
+    document.getElementById(`step${step}`).style.display = 'block';
+    updateSteps(step);
+    currentStep = step;
+  }
+
+  function validateStep(step) {
+    if (step === 1) {
+      const memberNo = document.getElementById('memberNo').value;
+      const employeeNo = document.getElementById('employeeNo').value;
+      if (!memberNo || !employeeNo) {
+        alert('환자와 담당 의사를 선택해주세요.');
+        return false;
+      }
+    } else if (step === 2) {
+      const timeSlot = document.getElementById('timeSlot').value;
+      const reservationDate = document.getElementById('reservationDate').value;
+      if (!timeSlot || !reservationDate) {
+        alert('진료 시간과 날짜를 선택해주세요.');
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function updateSteps(activeStep) {
+    document.querySelectorAll('.step').forEach((step, index) => {
+      if (index + 1 <= activeStep) {
+        step.classList.add('active');
+      } else {
+        step.classList.remove('active');
+      }
+    });
+  }
+
+  function checkAvailableDates() {
+    const employeeNo = document.getElementById('employeeNo').value;
+    const timeSlot = document.getElementById('timeSlot').value;
+
+    if (!employeeNo || !timeSlot) {
+      alert('의사와 진료 시간을 먼저 선택해주세요.');
+      return;
+    }
+
+    // 서버에서 가능한 날짜 조회
+    fetch(`/apply/available-dates?employeeNo=${employeeNo}&timeSlot=${timeSlot}`)
+            .then(response => response.json())
+            .then(dates => {
+              displayAvailableDates(dates);
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert('날짜를 불러오는데 실패했습니다.');
+            });
+  }
+
+  function displayAvailableDates(dates) {
+    const tbody = document.getElementById('datesBody');
+    tbody.innerHTML = ''; // 기존 내용 초기화
+
+    dates.forEach(date => {
+      const tr = document.createElement('tr');
+
+      // 날짜 표시
+      const dateCell = document.createElement('td');
+      dateCell.textContent = formatDate(date);
+      tr.appendChild(dateCell);
+
+      // 예약 버튼
+      const buttonCell = document.createElement('td');
+      const button = document.createElement('button');
+      button.className = 'btn btn-primary btn-sm';
+      button.textContent = '선택';
+      button.setAttribute('data-date', date); // 날짜 정보를 데이터 속성으로 저장
+      buttonCell.appendChild(button);
+      tr.appendChild(buttonCell);
+
+      tbody.appendChild(tr);
+    });
+
+    // 테이블 표시
+    document.getElementById('availableDatesTable').style.display = 'block';
+
+    // 이벤트 위임을 사용한 클릭 이벤트 처리
+    tbody.addEventListener('click', handleDateSelection);
+  }
+
+  function handleDateSelection(e) {
+    if (e.target.matches('button')) {
+      const selectedDate = e.target.getAttribute('data-date');
+
+      // 모든 버튼 스타일 초기화
+      document.querySelectorAll('#datesBody button').forEach(btn => {
+        btn.className = 'btn btn-primary btn-sm';
+      });
+
+      // 선택된 버튼 스타일 변경
+      e.target.className = 'btn btn-success btn-sm';
+
+      // 선택된 날짜 저장
+      document.getElementById('reservationDate').value = selectedDate;
+
+      // **다음 단계로 이동하지 않음**
+      alert(`선택된 날짜: ${formatDate(selectedDate)}`);
+    }
+  }
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}년 ${month}월 ${day}일`;
+  }
+
+  function selectDate(date) {
+    // 선택된 날짜를 hidden input에 저장
+    document.getElementById('reservationDate').value = date;
+
+    // 모든 선택 버튼의 스타일 초기화
+    document.querySelectorAll('#datesBody button').forEach(btn => {
+      btn.className = 'btn btn-primary btn-sm';
+    });
+
+    // 선택된 날짜의 버튼 스타일 변경
+    event.target.className = 'btn btn-success btn-sm';
+  }
+
+</script>
+</body>
+</html>
