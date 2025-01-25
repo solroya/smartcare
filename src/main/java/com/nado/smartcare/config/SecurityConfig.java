@@ -58,8 +58,12 @@ public class SecurityConfig {
 			.invalidateHttpSession(true)
 			.deleteCookies("JSESSIONID")
 			.permitAll()
-		);
-		
+		)
+				// Floating Action Button 의 Same-Origin Policy 문제 패스
+				.headers(headers -> headers
+						.frameOptions(frameOptions -> frameOptions
+								.sameOrigin()));
+
 		return http.build();
 	}
 	
