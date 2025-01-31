@@ -101,7 +101,7 @@ public class NewApplyController {
     public String success(@RequestParam Long reservationNo, Model model) {
         Reservation reservation = reservationService.getReservation(reservationNo);
         log.info("Reservation data: " + reservation);
-        Optional<Employee> byEmployeeNo = employeeRepository.findByEmployeeNo(reservation.getEmployeeNo());
+        Optional<Employee> byEmployeeNo = employeeRepository.findByEmployeeNo(reservation.getEmployee().getEmployeeNo());
 
         if (byEmployeeNo.isPresent()) {
             model.addAttribute("employeeName", byEmployeeNo.get().getEmployeeName());

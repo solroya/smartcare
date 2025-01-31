@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCare - 마이페이지</title>
+    <link rel="stylesheet" th:href="@{/css/erp/index.css}">
+    <link rel="stylesheet" th:href="@{/css/erp/fragments/sidebar.css}">
+    <style>
+        .profile-container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            color: white;
+            font-weight: bold;
+        }
+
+        .profile-title {
+            flex-grow: 1;
+        }
+
+        .profile-title h1 {
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .department-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .info-section {
+            background: var(--background-light);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .info-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .info-item {
+            display: flex;
+            margin-bottom: 12px;
+        }
+
+        .info-label {
+            width: 120px;
+            color: var(--text-dark);
+            font-weight: bold;
+        }
+
+        .info-value {
+            flex-grow: 1;
+            color: var(--text-dark);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .edit-button {
+            padding: 10px 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .edit-button:hover {
+            background-color: #4ca5c3;
+        }
+
+        .password-button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .password-button:hover {
+            background-color: var(--primary-light);
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- 사이드바 -->
+<th:block th:replace="~{erp/fragments/sidebar :: sidebarFragment}"></th:block>
+
+<!-- 메인 컨텐츠 -->
+<main class="main-content">
+    <!-- 비로그인 상태일 때 표시할 컨텐츠 -->
+    <div class="profile-container" th:if="${employee == null}">
+        <div class="profile-header">
+            <div class="profile-title">
+                <h1>로그인이 필요합니다</h1>
+                <p>마이페이지를 이용하기 위해서는 로그인이 필요합니다.</p>
+            </div>
+        </div>
+        <div class="action-buttons">
+            <button class="edit-button" onclick="location.href='/member/login'">
+                로그인 페이지로 이동
+            </button>
+        </div>
+    </div>
+
+    <!-- 로그인 상태일 때 표시할 컨텐츠 -->
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-avatar" th:text="${#strings.substring(employee.employeeName, 0, 1)}">K</div>
+            <div class="profile-title">
+                <h1 th:text="${employee.employeeName() + ' 님의 프로필'}">김의사 님의 프로필</h1>
+                <span class="department-badge" th:text="${employee.departmentId().getDepartmentName()}">내과</span>
+            </div>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-section">
+                <h2>기본 정보</h2>
+                <div class="info-item">
+                    <span class="info-label">사번</span>
+                    <span class="info-value" th:text="${employee.employeeNo}">12345</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">아이디</span>
+                    <span class="info-value" th:text="${employee.employeeId}">doctor_kim</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">이메일</span>
+                    <span class="info-value" th:text="${employee.employeeEmail}">kim@smartcare.com</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">전화번호</span>
+                    <span class="info-value" th:text="${employee.employeePhoneNumber}">010-1234-5678</span>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h2>추가 정보</h2>
+                <div class="info-item">
+                    <span class="info-label">직종</span>
+                    <span class="info-value" th:text="${employee.typeOfEmployee}">의사</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">근무 상태</span>
+                    <span class="info-value" th:text="${employee.workingStatus}">진료중</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">생년월일</span>
+                    <span class="info-value" th:text="${#temporals.format(employee.employeeBirthday, 'yyyy년 MM월 dd일')}">1980년 01월 01일</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">성별</span>
+                    <span class="info-value" th:text="${employee.employeeGender ? '남성' : '여성'}">남성</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="edit-button" onclick="location.href='/mypage/edit'">
+                프로필 수정
+            </button>
+            <button class="password-button" onclick="location.href='/mypage/password'">
+                비밀번호 변경
+            </button>
+        </div>
+    </div>
+</main>
+</body>
+</html>

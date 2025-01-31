@@ -1,6 +1,7 @@
 package com.nado.smartcare.member.domain;
 
 import com.nado.smartcare.config.BaseEntity;
+import com.nado.smartcare.member.domain.dto.MemberDto;
 import com.nado.smartcare.patient.domain.PatientRecordCard;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -69,5 +70,18 @@ public class Member extends BaseEntity {
             this.memberPhoneNumber = newMemberPhoneNumber;
         }
         return this; // 체이닝
+    }
+
+    public static Member toEntity(MemberDto dto) {
+        return new Member(
+                dto.memberId(),
+                dto.memberPass(),
+                dto.memberName(),
+                dto.memberEmail(),
+                dto.memberGender(),
+                dto.memberPhoneNumber(),
+                dto.memberBirthday(),
+                dto.isSocial()
+        );
     }
 }

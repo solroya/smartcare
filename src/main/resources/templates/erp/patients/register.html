@@ -245,8 +245,12 @@
             <button type="submit" id="registerButton" class="btn btn-primary" disabled>진료 등록</button>
         </form>
         <button onclick="resetSelection()" class="btn btn-outline">초기화</button>
-        <button onclick="window.location='/patients/register'" class="btn btn-secondary">신규 환자 등록</button>
+        <button onclick="window.location='/employee/register'" class="btn btn-secondary">신규 환자 등록</button>
     </div>
+
+    <!-- 플로팅 채팅 버튼 -->
+    <th:block th:replace="~{erp/fragments/floating-chat :: floatingChatFragment}"></th:block>
+
 </main>
 
 <script>

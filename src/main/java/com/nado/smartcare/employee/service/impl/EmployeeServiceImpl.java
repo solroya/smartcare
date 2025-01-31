@@ -55,8 +55,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
     	String encodedPassword = passwordEncoder.encode(employeeDto.employeePass());
     	log.info("employee에 저장된 departmentId는? ==> : {}", employeeDto.departmentId());
-        Department department = departmentRepository.findById(employeeDto.departmentId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Department ID"));
+/*        Department department = departmentRepository.findById(employeeDto.departmentId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Department ID"));*/
 
         Employee employee = Employee.of(
                 employeeDto.employeeId(),
@@ -67,7 +67,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 employeeDto.employeeBirthday(),
                 employeeDto.employeePhoneNumber(),
                 employeeDto.isSocial(),
-                department
+                employeeDto.departmentId()
         );
 
         return EmployeeDto.from(employeeRepository.save(employee));
@@ -112,6 +112,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         return departmentRepository.findAll().stream()
                 .map(DepartmentDto::from)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Department getDepartmentById(Long employeeNo) {
+        return departmentRepository.findById(employeeNo)
+                .orElseThrow(() -> new IllegalArgumentException("Department not found"));
+    }
+
+    @Override
+    public Department getDepartmentByEmployeeNo(Long employeeNo) {
+        return employeeRepository.findDepartmentByEmployeeNo(employeeNo)
+                .orElseThrow(() -> new IllegalArgumentException("Department not found for employeeNo: " + employeeNo));
     }
 
     @Override

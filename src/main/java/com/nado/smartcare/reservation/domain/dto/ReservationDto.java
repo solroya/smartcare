@@ -1,5 +1,9 @@
 package com.nado.smartcare.reservation.domain.dto;
 
+import com.nado.smartcare.employee.domain.Employee;
+import com.nado.smartcare.member.domain.Member;
+import com.nado.smartcare.patient.domain.PatientRecordCard;
+import com.nado.smartcare.patient.domain.Reception;
 import com.nado.smartcare.reservation.domain.Reservation;
 import com.nado.smartcare.reservation.domain.type.TimeSlot;
 
@@ -10,10 +14,9 @@ public record ReservationDto(
         Long reservationNo,
         LocalDate reservationDate,
         TimeSlot timeSlot,
-        Long memberNo,
-        Long employeeNo,
-        Long patientRecordCardNo,
-
+        Member memberNo,
+        Employee employeeNo,
+        PatientRecordCard patientRecordCard,
         LocalDateTime createdAt,
         LocalDateTime updatedAt) {
 
@@ -22,9 +25,9 @@ public record ReservationDto(
                 reservation.getReservationNo(),
                 reservation.getReservationDate(),
                 reservation.getTimeSlot(),
-                reservation.getMemberNo(),
-                reservation.getEmployeeNo(),
-                reservation.getPatientRecordCardNo(),
+                reservation.getMember(),
+                reservation.getEmployee(),
+                reservation.getPatientRecordCard(),
                 reservation.getCreatedAt(),
                 reservation.getUpdatedAt()
         );

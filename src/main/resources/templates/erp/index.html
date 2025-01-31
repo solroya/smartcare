@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartCare</title>
     <link rel="stylesheet" th:href="@{/css/erp/index.css}">
+    <link rel="stylesheet" th:href="@{/css/erp/fragments/sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/erp/fragments/floatingBtn.css}">
 </head>
 <body>
@@ -16,7 +17,8 @@
     <!-- 대시보드 헤더 -->
     <div class="dashboard-header">
         <h1>대시보드</h1>
-        <div class="dashboard-date" th:text="${#temporals.format(T(java.time.LocalDate).now(), 'yyyy년 MM월 dd일 EEEE')}"></div>
+        <div class="dashboard-date"
+             th:text="${#temporals.format(T(java.time.LocalDate).now(), 'yyyy년 MM월 dd일 EEEE')}"></div>
     </div>
 
     <!-- 통계 카드 -->
@@ -27,7 +29,8 @@
         </div>
         <div class="stat-card">
             <h3>대기 환자</h3>
-            <div class="number">5</div>
+            <!-- Thymeleaf 표현식으로 receptionCount 값을 반영 -->
+            <div class="number" th:text="${receptionCount > 0 ? receptionCount : 0}">0</div>
         </div>
         <div class="stat-card">
             <h3>진료 완료</h3>
@@ -45,48 +48,40 @@
         <div class="dashboard-card">
             <h2>환자 검색</h2>
             <form class="search-form">
-                <input type="text" class="search-input" placeholder="환자명 또는 차트번호 입력">
-                <button type="submit" class="search-button">검색</button>
+                <label class="form-label" for="memberName" style="display: none">이름</label>
+                <input type="text" class="search-input" id="memberName" name="memberName" placeholder="환자명 또는 차트번호 입력">
+                <button type="submit" class="search-button" onclick="openSearchPopup()">검색</button>
             </form>
             <div class="table-scroll-container">
                 <table class="table">
                     <thead>
                     <tr>
-                        <th>차트번호</th>
+                        <th>접수 번호</th>
                         <th>환자명</th>
-                        <th>상태</th>
+                        <th>진료과</th>
+                        <th>담당 의사</th>
+                        <th>접수 일시</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>2024-001</td>
-                        <td>김환자</td>
-                        <td><span class="status status-active">진료중</span></td>
+                    <tr th:each="reception : ${receptions}">
+                        <td th:text="${reception.receptionNo}"></td>
+                        <td th:text="${reception.member().getMemberName()}"></td>
+                        <td>
+                            <span th:switch="${reception.employee().getDepartment().getDepartmentName()}">
+                                <span th:case="'INTERNAL_MEDICINE'">내과</span>
+                                <span th:case="'SURGERY'">외과</span>
+                                <span th:case="'PSYCHIATRY'">정신과</span>
+                                <span th:case="'HUMAN_RESOURCE'">인사과</span>
+                                <span th:case="*">Error</span>
+                            </span>
+                        </td>
+                        <td th:text="${reception.employee().getEmployeeName()}"></td>
+                        <td th:text="${#temporals.format(reception.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
                     </tr>
-                    <tr>
-                        <td>2024-002</td>
-                        <td>이환자</td>
-                        <td><span class="status status-waiting">대기중</span></td>
-                    </tr>
-                    <tr>
-                        <td>2024-001</td>
-                        <td>김환자</td>
-                        <td><span class="status status-active">진료중</span></td>
-                    </tr>
-                    <tr>
-                        <td>2024-001</td>
-                        <td>김환자</td>
-                        <td><span class="status status-active">진료중</span></td>
-                    </tr>
-                    <tr>
-                        <td>2024-001</td>
-                        <td>김환자</td>
-                        <td><span class="status status-active">진료중</span></td>
-                    </tr>
-                    <tr>
-                        <td>2024-001</td>
-                        <td>김환자</td>
-                        <td><span class="status status-active">진료중</span></td>
+                    <!--예외 처리-->
+                    <tr th:if="${#lists.isEmpty(receptions)}">
+                        <td colspan="5" style="text-align: center;">접수된 환자가 없습니다.</td>
                     </tr>
                     </tbody>
                 </table>
@@ -180,38 +175,7 @@
                         <th>상태</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td>내과</td>
-                        <td>김의사</td>
-                        <td><span class="status status-active">진료중</span></td>
-                    </tr>
-                    <tr>
-                        <td>치과</td>
-                        <td>이의사</td>
-                        <td><span class="status status-waiting">휴진</span></td>
-                    </tr>
-                    <tr>
-                        <td>내과</td>
-                        <td>김의사</td>
-                        <td><span class="status status-active">진료중</span></td>
-                    </tr>
-                    <tr>
-                        <td>내과</td>
-                        <td>김의사</td>
-                        <td><span class="status status-active">진료중</span></td>
-                    </tr>
-                    <tr>
-                        <td>내과</td>
-                        <td>김의사</td>
-                        <td><span class="status status-active">진료중</span></td>
-                    </tr>
-                    <tr>
-                        <td>내과</td>
-                        <td>김의사</td>
-                        <td><span class="status status-active">진료중</span></td>
-                    </tr>
-                    </tbody>
+
                 </table>
             </div>
         </div>
@@ -219,5 +183,22 @@
 </main>
 <!-- 플로팅 채팅 버튼 -->
 <th:block th:replace="~{erp/fragments/floating-chat :: floatingChatFragment}"></th:block>
+
+<script>
+    function openSearchPopup() {
+        const name = document.getElementById('memberName').value;
+
+        if (!name) {
+            alert("이름을 입력해주세요.");
+            return false;
+        }
+
+        const popup = window.open(`/erp/patients/searchByName?memberName=${name}`, 'popup', 'width=800,height=600');
+        popup.focus();
+        return false;
+    }
+
+
+</script>
 </body>
 </html>

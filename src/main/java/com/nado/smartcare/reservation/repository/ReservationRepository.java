@@ -9,8 +9,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-    boolean existsByEmployeeNoAndReservationDateAndTimeSlot(Long employeeNo, LocalDate reservationDate, TimeSlot timeSlot);
+    boolean existsByEmployee_EmployeeNoAndReservationDateAndTimeSlot(Long employeeNo, LocalDate reservationDate, TimeSlot timeSlot);
 
-    @Query("SELECT r.reservationDate FROM Reservation r WHERE r.employeeNo = :employeeNo AND r.timeSlot = :timeSlot")
+
+    @Query("SELECT r.reservationDate FROM Reservation r WHERE r.employee.employeeNo = :employeeNo AND r.timeSlot = :timeSlot")
     List<LocalDate> findReservationByEmployeeNoAndTimeSlot(Long employeeNo, TimeSlot timeSlot);
+
+
 }

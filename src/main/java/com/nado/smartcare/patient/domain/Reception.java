@@ -5,13 +5,16 @@ import com.nado.smartcare.employee.domain.Employee;
 import com.nado.smartcare.member.domain.Member;
 import com.nado.smartcare.patient.domain.type.ReceptionStatus;
 import com.nado.smartcare.patient.domain.dto.ReceptionDto;
+import com.nado.smartcare.reservation.domain.Reservation;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 public class Reception extends BaseEntity {
 
     @Id
@@ -35,7 +38,11 @@ public class Reception extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private ReceptionStatus status; // 예약 상태? 혹은 접수 상태? 뭘로 할까
+    private ReceptionStatus status; // 접수 상태
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservation_no")
+    private Reservation reservation;
 
     public static Reception of(ReceptionDto dto, Member member, Employee employee) {
         Reception reception = new Reception();

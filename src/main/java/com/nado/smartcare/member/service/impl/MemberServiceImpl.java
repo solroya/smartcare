@@ -40,6 +40,20 @@ public class MemberServiceImpl implements MemberService {
                 .map(MemberDto::from);
     }
 
+    @Override
+    public List<MemberDto> searchByName(String memberName) {
+        return memberRepository.findByMemberName(memberName).stream()
+                .map(member -> new MemberDto(member.memberNo(), member.memberId(), member.memberPass(), member.memberName(), member.memberEmail(), member.memberGender(), member.memberPhoneNumber(), member.memberBirthday(), member.isSocial(), member.createdAt(), member.updatedAt()))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<MemberDto> findByMemberNameContaining(String memberName, Pageable pageable) {
+        return memberRepository.findByMemberNameContaining(memberName, pageable)
+                .map(MemberDto::from);
+    }
+
     @Transactional(readOnly = true)
     @Override
     public Optional<MemberDto> searchMemberEmail(String memberEmail) {

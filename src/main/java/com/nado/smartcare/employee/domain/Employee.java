@@ -2,6 +2,7 @@ package com.nado.smartcare.employee.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nado.smartcare.config.BaseEntity;
+import com.nado.smartcare.employee.domain.dto.EmployeeDto;
 import com.nado.smartcare.employee.domain.type.EmployeeStatus;
 import com.nado.smartcare.employee.domain.type.TypeOfEmployee;
 import com.nado.smartcare.employee.domain.type.WorkingStatus;
@@ -19,40 +20,40 @@ public class Employee extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "employee_seq")
-    private Long employeeNo;
+    private Long employeeNo; // 직원 사번(시퀀스)
 
     @Column(nullable = false, unique = true)
-    private String employeeId;
+    private String employeeId; // 직원 아이디
 
-    private String employeeName;
+    private String employeeName; // 직원 이름
 
-    private String employeePass;
+    private String employeePass; // 비밀번호
 
-    private String employeeEmail;
+    private String employeeEmail; // 이메일
     
-    private boolean employeeGender;
+    private boolean employeeGender; // 성별(남, 여)
 
-    private LocalDate employeeBirthday;
+    private LocalDate employeeBirthday; // 생년월일
 
-    private String employeePhoneNumber;
+    private String employeePhoneNumber; // 전화번호
 
-    private boolean isSocial;
-
-    @Enumerated(EnumType.STRING)
-    private EmployeeStatus employeeStatus;
+    private boolean isSocial; // 소셜 여부
 
     @Enumerated(EnumType.STRING)
-    private TypeOfEmployee typeOfEmployee;
+    private EmployeeStatus employeeStatus;  // 직원 상태: PENDING 승인 대기중 / APPROVED 승인 / DENIED 승인 거절
 
     @Enumerated(EnumType.STRING)
-    private WorkingStatus workingStatus;
+    private TypeOfEmployee typeOfEmployee;  // STAFF 사원 / HUMAN_RESOURCE 인사팀 / NURSE 간호사 / DOCTOR 의사
+
+    @Enumerated(EnumType.STRING)
+    private WorkingStatus workingStatus; // WORKING("진료") VACATION("휴가") SURGERY("수술")
 
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
     @JsonIgnore
-    private Department department;
+    private Department department; // 부서명
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "employee")
     private List<PatientRecordCard> patientRecordCards; // 이 의사가 담당한 진료 기록
 
     public Employee(String employeeId, String employeeName, String employeePass, String employeeEmail, boolean employeeGender, LocalDate employeeBirthday, String employeePhoneNumber, boolean isSocial, EmployeeStatus employeeStatus, TypeOfEmployee typeOfEmployee, WorkingStatus workingStatus, Department department) {
@@ -90,5 +91,22 @@ public class Employee extends BaseEntity {
             this.employeePhoneNumber = newEmployeePhoneNumber;
         }
         return this;
+    }
+
+    public static Employee toEntity(EmployeeDto employeeDto) {
+        return new Employee(
+                employeeDto.employeeId(),
+                employeeDto.employeeName(),
+                employeeDto.employeePass(),
+                employeeDto.employeeEmail(),
+                employeeDto.employeeGender(),
+                employeeDto.employeeBirthday(),
+                employeeDto.employeePhoneNumber(),
+                employeeDto.isSocial(),
+                employeeDto.employeeStatus(),
+                employeeDto.typeOfEmployee(),
+                employeeDto.workingStatus(),
+                employeeDto.departmentId()
+        );
     }
 }

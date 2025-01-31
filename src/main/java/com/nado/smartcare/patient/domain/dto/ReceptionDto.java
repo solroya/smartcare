@@ -30,4 +30,6 @@ public record ReceptionDto (
                 reception.getUpdatedAt()
         );
     }
+
+
 }

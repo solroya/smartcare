@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>검색 결과</title>
     <link rel="stylesheet" th:href="@{/css/erp/index.css}">
+    <link rel="stylesheet" th:href="@{/css/erp/search-results.css}">
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -152,12 +153,27 @@
         const memberEmail = button.getAttribute('data-member-email');
         const memberPhoneNumber = button.getAttribute('data-member-phone-number');
 
-        if (window.opener && typeof window.opener.setMemberData === 'function') {
-            window.opener.setMemberData(memberNo, memberName, memberBirthday, memberEmail, memberPhoneNumber);
-            window.close();
-        } else {
-            alert("환자 접수 창과의 연결이 끊어졌습니다.");
-        }
+        /* fetch('/erp/patients/searchRegister', {
+             method: 'POST',
+             headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify({ memberNo, memberName, memberBirthday, memberEmail, memberPhoneNumber }),
+         })
+             .then((response) => {
+                 if (!response.ok) throw new Error('데이터 전송에 실패했습니다.');
+                 return response.text();
+             })
+             .then(() => {
+                 alert('환자 정보가 성공적으로 등록 페이지에 전달되었습니다!');
+                 window.close();
+             })
+             .catch((error) => {
+                 console.error('데이터 전송 오류:', error);
+                 alert('데이터 전송에 실패했습니다.');
+             });*/
+
+        // URL에 데이터 포함하여 페이지 이동
+        const targetUrl = `/erp/patients/searchRegister?memberNo=${memberNo}&memberName=${encodeURIComponent(memberName)}&memberBirthday=${memberBirthday}&memberEmail=${encodeURIComponent(memberEmail)}&memberPhoneNumber=${memberPhoneNumber}`;
+        window.location.href = targetUrl;
     }
 </script>
 
