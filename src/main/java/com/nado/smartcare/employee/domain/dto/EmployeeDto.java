@@ -2,6 +2,9 @@ package com.nado.smartcare.employee.domain.dto;
 
 import com.nado.smartcare.employee.domain.Department;
 import com.nado.smartcare.employee.domain.Employee;
+import com.nado.smartcare.employee.domain.type.EmployeeStatus;
+import com.nado.smartcare.employee.domain.type.TypeOfEmployee;
+import com.nado.smartcare.employee.domain.type.WorkingStatus;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -37,7 +40,13 @@ public record EmployeeDto(
         boolean isSocial,
         
         @NotNull(message = "Department is required.")
-        Long departmentId,
+        Department departmentId,
+
+        EmployeeStatus employeeStatus,
+
+        TypeOfEmployee typeOfEmployee,
+
+        WorkingStatus workingStatus,
 
         LocalDateTime createdAt,
         LocalDateTime updatedAt) {
@@ -53,7 +62,10 @@ public record EmployeeDto(
                         employee.getEmployeeBirthday(),
                         employee.getEmployeePhoneNumber(),
                         employee.isSocial(),
-                        employee.getDepartment().getDepartmentId(),
+                        employee.getDepartment(),
+                        employee.getEmployeeStatus(),
+                        employee.getTypeOfEmployee(),
+                        employee.getWorkingStatus(),
                         employee.getCreatedAt(),
                         employee.getUpdatedAt()
                 );

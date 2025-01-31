@@ -7,6 +7,7 @@ import com.nado.smartcare.member.domain.Member;
 import com.nado.smartcare.patient.domain.Reception;
 import com.nado.smartcare.patient.domain.dto.type.ClinicStatus;
 import com.nado.smartcare.patient.domain.PatientRecordCard;
+import com.nado.smartcare.reservation.domain.Reservation;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,7 +23,8 @@ public record PatientRecordCardDto(
         Employee employee,                // 의사
         DiseaseCategory diseaseCategory,       // 진료 카테고리 번호
         DiseaseList diseaseList,            // 질병 번호
-        Reception receptionNo
+        Reception receptionNo,
+        Reservation reservation
 ) {
     public static PatientRecordCardDto from(PatientRecordCard entity) {
         return new PatientRecordCardDto(
@@ -36,7 +38,8 @@ public record PatientRecordCardDto(
                 entity.getEmployee(),
                 entity.getDiseaseCategory(),
                 entity.getDiseaseList(),
-                entity.getReception()
+                entity.getReception(),
+                entity.getReservation()
         );
     }
 }

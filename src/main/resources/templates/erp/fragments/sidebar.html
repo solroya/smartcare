@@ -1,11 +1,14 @@
-<!-- /templates/erp/fragments/sidebar.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="sidebarFragment">
   <aside class="sidebar">
     <!-- 사이트 타이틀 -->
     <div class="sidebar-header">
-      <h4 class="sidebar-title">스마트 케어</h4>
+      <h4 class="sidebar-title">
+        <a th:href="@{/erp}" class="logo-link">
+          스마트 케어
+        </a>
+      </h4>
     </div>
 
     <!-- 사용자 프로필 영역 -->
@@ -34,14 +37,8 @@
     <!-- 네비게이션 메뉴 -->
     <nav class="sidebar-nav">
       <ul class="nav-menu">
-        <li>
-          <a th:href="@{/erp}" th:class="${currentPage == 'dashboard'} ? 'active'" class="menu-item">
-            대시보드
-          </a>
-        </li>
-
         <li class="menu-section">
-          <h4 class="section-title">진료</h4>
+          <h4 class="section-title">접수</h4>
           <ul class="submenu">
             <li>
               <a th:href="@{/erp/patients/register}" class="submenu-item">환자 등록</a>
@@ -56,27 +53,41 @@
           <h4 class="section-title">예약</h4>
           <ul class="submenu">
             <li>
-              <a th:href="@{/erp/record/list}" class="submenu-item">예약 목록</a>
-            </li>
-            <li>
               <a th:href="@{/apply/apply}" class="submenu-item">예약</a>
             </li>
             <li>
+              <a th:href="@{/erp/record/list}" class="submenu-item">예약 목록</a>
+            </li>
+
+<!--            <li>
               <a th:href="@{/apply/list}" class="submenu-item">예약관리</a>
+            </li>-->
+          </ul>
+        </li>
+
+        <li class="menu-section">
+          <h4 class="section-title">진료 결과</h4>
+          <ul class="submenu">
+            <li>
+              <a th:href="@{/erp/patients/result}" class="submenu-item">진료 결과</a>
             </li>
           </ul>
         </li>
 
-        <li>
-          <a th:href="@{/templates/notice}" th:class="${currentPage == 'notice'} ? 'active'" class="menu-item">
-            공지사항
-          </a>
-        </li>
-        <li>
-          <a th:href="@{/mypage}" th:class="${currentPage == 'mypage'} ? 'active'" class="menu-item">
-            마이페이지
-          </a>
-        </li>
+        <li class="menu-section">
+          <h4 class="section-title">홈페이지</h4>
+          <ul class="submenu">
+            <li>
+              <a th:href="@{/notice}" class="submenu-item">
+                공지사항
+              </a>
+            </li>
+            <li>
+              <a th:href="@{/erp/profile}" class="submenu-item">
+                마이페이지
+              </a>
+            </li>
+          </ul>
       </ul>
     </nav>
   </aside>

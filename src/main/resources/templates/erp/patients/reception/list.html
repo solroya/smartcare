@@ -68,7 +68,7 @@
 </head>
 <body>
 <!-- 사이드바 -->
-<th:block th:replace="erp/fragments/sidebar :: sidebarFragment"></th:block>
+<th:block th:replace="~{erp/fragments/sidebar :: sidebarFragment}"></th:block>
 
 <!-- 메인 컨텐츠 -->
 <main class="main-content">
@@ -106,7 +106,7 @@
                 <td th:text="${receptions.receptionNo()}"></td>
                 <td th:text="${receptions.member().memberNo}"></td>
                 <td th:text="${receptions.member().memberName}"></td>
-                <td th:text="${receptions.receptionTime}"></td>
+                <td th:text="${#temporals.format(receptions.receptionTime, 'yyyy-MM-dd HH:mm')}"></td>
                 <td>
                             <span th:class="${'status ' + (receptions.status == 'WAITING' ? 'status-waiting' : 'status-active')}"
                                   th:text="${receptions.status}">
@@ -131,5 +131,9 @@
         </table>
     </div>
 </main>
+
+<!-- 플로팅 채팅 버튼 -->
+<th:block th:replace="~{erp/fragments/floating-chat :: floatingChatFragment}"></th:block>
+
 </body>
 </html>

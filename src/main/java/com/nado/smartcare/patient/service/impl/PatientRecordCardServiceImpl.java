@@ -9,6 +9,8 @@ import com.nado.smartcare.patient.service.PatientRecordCardService;
 import com.nado.smartcare.patient.service.ReceptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 
 @Slf4j
 @Service
@@ -44,7 +47,8 @@ public class PatientRecordCardServiceImpl implements PatientRecordCardService {
                 patientRecordCardDto.member(),
                 patientRecordCardDto.employee(),
                 patientRecordCardDto.diseaseCategory(),
-                patientRecordCardDto.diseaseList()
+                patientRecordCardDto.diseaseList(),
+                patientRecordCardDto.reservation()
         ));
 
         ReceptionDto receptionDto = ReceptionDto.from(patientRecordCardDto.receptionNo());
@@ -96,5 +100,35 @@ public class PatientRecordCardServiceImpl implements PatientRecordCardService {
                                 "afternoon", !entry.getValue().get(false).isEmpty() // 오후 예약 여부
                         )
                 ));
+    }
+
+    @Override
+    public Page<PatientRecordCardDto> findAllWithPagination(Pageable pageable) {
+        return patientRecordCardRepository.findAll(pageable)
+                .map(PatientRecordCardDto::from);
+    }
+
+    @Transactional
+    @Override
+    public void updateRecord(Long id, PatientRecordCardDto updatedRecord) {
+        PatientRecordCard existingRecord = patientRecordCardRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("진료 기록을 찾을 수 없습니다. ID: " + id));
+
+        existingRecord.updateRecord(
+                // 새로운 값이 없으면 기존 값을 유지
+                updatedRecord.clinicName() != null ? updatedRecord.clinicName() : existingRecord.getClinicName(),
+                updatedRecord.clinicManifestation() != null ? updatedRecord.clinicManifestation() : existingRecord.getClinicManifestation(),
+                updatedRecord.clinicStatus() != null ? updatedRecord.clinicStatus() : existingRecord.getClinicStatus(),
+                updatedRecord.diseaseCategory() != null ? updatedRecord.diseaseCategory() : existingRecord.getDiseaseCategory(),
+                updatedRecord.diseaseList() != null ? updatedRecord.diseaseList() : existingRecord.getDiseaseList(),
+                updatedRecord.reservation() != null ? updatedRecord.reservation() : existingRecord.getReservation()
+        );
+
+    }
+
+    @Override
+    public Page<PatientRecordCardDto> findByDateRange(LocalDate startDate, LocalDate endDate, Pageable pageable) {
+        return patientRecordCardRepository.findByClinicDateBetween(startDate, endDate, pageable)
+                .map(PatientRecordCardDto::from);
     }
 }

@@ -7,43 +7,39 @@
 </head>
 <body>
 <th:block th:fragment="pagination (page, size, totalElements, url)">
-    <ul class="pagination" style="display: flex;
-                            justify-content: center;
-                            padding: 0;
-                            margin: 20px 0;"
-    >
-        <!-- Previous button -->
-        <li style="display: flex; justify-content: space-between; align-items: center; padding: 0; margin: 20px 0;">
-            <a style="text-decoration: none; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; color: #007bff;"
-               th:classappend="${page == 0} ? 'disabled'"
+    <ul class="pagination"
+        th:with="totalPages=${totalElements != null and size != null ? (totalElements / size) + (totalElements % size > 0 ? 1 : 0) : 1}">
+
+        <!-- 이전 버튼 -->
+        <li class="pagination-item">
+            <a th:if="${page > 0}"
                th:href="${url + '?page=' + (page - 1) + '&size=' + size}"
-               th:if="${page > 0}">
+               class="pagination-link pagination-prev">
                 이전
             </a>
-            <a style="text-decoration: none; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; color: #007bff;"
-               th:if="${page == 0}" class="disabled">이전</a>
+            <span th:unless="${page > 0}" class="pagination-disabled">
+                이전
+            </span>
         </li>
 
-        <!-- Page numbers -->
-        <li style="display: flex; justify-content: space-between; align-items: center; padding: 0; margin: 20px 0;"
-            th:each="i : ${#numbers.sequence(0, totalElements / size)}">
-            <a style="text-decoration: none; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; color: #007bff;"
-               th:classappend="${i == page} ? 'active'"
-               th:href="${url + '?page=' + i + '&size=' + size}">
-                <span th:text="${i + 1}"></span>
+        <!-- 페이지 번호 -->
+        <li class="pagination-item" th:each="i : ${#numbers.sequence(0, (totalPages - 1))}">
+            <a th:href="${url + '?page=' + i + '&size=' + size}"
+               th:text="${i + 1}"
+               th:class="${page == i ? 'pagination-link pagination-active' : 'pagination-link'}">
             </a>
         </li>
 
-        <!-- Next button -->
-        <li style="display: flex; justify-content: space-between; align-items: center; padding: 0; margin: 20px 0;">
-            <a style="text-decoration: none; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; color: #007bff;"
-               th:classappend="${page == totalElements / size} ? 'disabled'"
+        <!-- 다음 버튼 -->
+        <li class="pagination-item">
+            <a th:if="${page < totalPages - 1}"
                th:href="${url + '?page=' + (page + 1) + '&size=' + size}"
-               th:if="${page < totalElements / size - 1}">
+               class="pagination-link pagination-next">
                 다음
             </a>
-            <a style="text-decoration: none; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; color: #007bff;"
-               th:if="${page == totalElements / size - 1}" class="disabled">다음</a>
+            <span th:unless="${page < totalPages - 1}" class="pagination-disabled">
+                다음
+            </span>
         </li>
     </ul>
 </th:block>

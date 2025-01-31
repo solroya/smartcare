@@ -2,29 +2,235 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>환자 기록 카드 상세보기</title>
-  <link rel="stylesheet" href="/css/styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>진료 기록 상세보기 - 스마트케어</title>
+  <link rel="stylesheet" th:href="@{/css/erp/index.css}">
+  <link rel="stylesheet" th:href="@{/css/erp/fragments/sidebar.css}">
+
+  <style>
+    /* 정보 그리드 레이아웃 */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .info-item label {
+      font-size: 0.9em;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .info-item span {
+      font-size: 1.1em;
+      color: var(--text-dark);
+    }
+
+    /* 진료 소견 스타일 */
+    .clinical-note {
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #eee;
+      min-height: 100px;
+      line-height: 1.6;
+    }
+
+    /* 상태 배지 스타일 */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      font-weight: 500;
+    }
+
+    .status-badge.WAITING {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+
+    .status-badge.IN_PROGRESS {
+      background-color: #cce5ff;
+      color: #004085;
+    }
+
+    .status-badge.COMPLETED {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .status-badge.CANCELED {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+    /* 작업 버튼 영역 */
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 24px;
+      padding: 20px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+    }
+
+    .btn-secondary {
+      background-color: var(--secondary-color);
+      color: white;
+      border: none;
+    }
+
+    .btn-outline {
+      background-color: white;
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+    }
+
+    /* 인쇄 스타일 */
+    @media print {
+      .sidebar,
+      .action-buttons {
+        display: none;
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .dashboard-card {
+        break-inside: avoid;
+      }
+    }
+  </style>
 </head>
 <body>
-<div th:replace="~{/erp/layout/header :: header}"></div>
-<h1>환자 기록 카드 상세보기</h1>
+<!-- 사이드바 -->
+<th:block th:replace="~{erp/fragments/sidebar :: sidebarFragment}"></th:block>
 
-<div>
-  <h3>기본 정보</h3>
-  <p>환자명: <span th:text="${record.member.memberName}"></span></p>
-  <p>진료 의사: <span th:text="${record.employee.employeeName}"></span></p>
-  <p>진료명: <span th:text="${record.clinicName}"></span></p>
-  <p>진료일자: <span th:text="${record.clinicDate}"></span></p>
-</div>
+<!-- 메인 컨텐츠 -->
+<main class="main-content">
+  <!-- 페이지 헤더 -->
+  <div class="dashboard-header">
+    <h1>진료 기록 상세보기</h1>
+    <div class="dashboard-date"
+         th:text="${#temporals.format(T(java.time.LocalDate).now(), 'yyyy년 MM월 dd일 EEEE')}">
+    </div>
+  </div>
 
-<div>
-  <h3>진료 정보</h3>
-  <p>진료 카테고리: <span th:text="${record.diseaseCategory.categoryName}"></span></p>
-  <p>질병명: <span th:text="${record.diseaseList.diseaseName}"></span></p>
-  <p>진료 상태: <span th:text="${record.clinicStatus}"></span></p>
-  <p>진료 소견: <span th:text="${record.clinicManifestation}"></span></p>
-</div>
+  <div class="dashboard-grid">
+    <!-- 환자 기본 정보 카드 -->
+    <div class="dashboard-card">
+      <h2>환자 기본 정보</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <label>차트 번호</label>
+          <span th:text="${record.patientRecordNo}"></span>
+        </div>
+        <div class="info-item">
+          <label>환자명</label>
+          <span th:text="${record.member.memberName}"></span>
+        </div>
+        <div class="info-item">
+          <label>생년월일</label>
+          <span th:text="${#temporals.format(record.member.memberBirthday, 'yyyy년 MM월 dd일')}"></span>
+        </div>
+        <div class="info-item">
+          <label>진료과</label>
+          <span th:switch="${record.employee.department.departmentName}">
+                            <span th:case="'INTERNAL_MEDICINE'">내과</span>
+                            <span th:case="'SURGERY'">외과</span>
+                            <span th:case="'PSYCHIATRY'">정신과</span>
+                            <span th:case="*">기타</span>
+                        </span>
+        </div>
+      </div>
+    </div>
 
-<a th:href="@{/erp/record/list}">목록으로 돌아가기</a>
+    <!-- 진료 정보 카드 -->
+    <div class="dashboard-card">
+      <h2>진료 정보</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <label>진료 의사</label>
+          <span th:text="${record.employee.employeeName}"></span>
+        </div>
+        <div class="info-item">
+          <label>진료일시</label>
+          <span th:text="${#temporals.format(record.clinicDate, 'yyyy년 MM월 dd일 HH:mm')}"></span>
+        </div>
+        <div class="info-item">
+          <label>진료 상태</label>
+          <span class="status-badge"
+                th:classappend="${record.clinicStatus}"
+                th:text="${record.clinicStatus}"></span>
+        </div>
+        <div class="info-item">
+          <label>진료명</label>
+          <span th:text="${record.clinicName}"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 질병 정보 카드 -->
+    <div class="dashboard-card">
+      <h2>질병 정보</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <label>진료 카테고리</label>
+          <span th:text="${record.diseaseCategory.categoryName}"></span>
+        </div>
+        <div class="info-item">
+          <label>질병명</label>
+          <span th:text="${record.diseaseList.diseaseName}"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 진료 소견 카드 -->
+    <div class="dashboard-card">
+      <h2>진료 소견</h2>
+      <div class="clinical-note">
+        <p th:text="${record.clinicManifestation}"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 작업 버튼 영역 -->
+  <div class="action-buttons">
+    <a th:href="@{/erp/patients/result}" class="btn btn-secondary">목록으로</a>
+    <a th:href="@{/erp/record/{id}/edit(id=${record.patientRecordNo})}"
+       class="btn btn-primary">수정하기</a>
+    <button type="button"
+            onclick="printRecord()"
+            class="btn btn-outline">진료 기록 출력</button>
+  </div>
+</main>
+
+<script th:inline="javascript">
+  function printRecord() {
+    window.print();
+  }
+</script>
 </body>
 </html>

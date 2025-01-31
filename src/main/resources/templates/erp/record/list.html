@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>진료 예약 목록</title>
     <link rel="stylesheet" th:href="@{/css/erp/index.css}">
+    <link rel="stylesheet" th:href="@{/css/erp/fragments/pagination.css}">
+
     <style>
         /* 예약 목록 페이지 특정 스타일 */
         .reservation-header {
@@ -21,7 +23,7 @@
             background: white;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
         }
 
@@ -69,7 +71,7 @@
         .table-container {
             background: white;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
@@ -79,8 +81,6 @@
         }
 
         .table th {
-            background-color: var(--primary-color);
-            color: white;
             padding: 12px;
             text-align: left;
         }
@@ -93,55 +93,11 @@
         .table tr:hover {
             background-color: #f8f9fa;
         }
-
-        .status-badge {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .status-confirmed {
-            background-color: #2ecc71;
-            color: white;
-        }
-
-        .status-pending {
-            background-color: #f1c40f;
-            color: white;
-        }
-
-        .status-cancelled {
-            background-color: #e74c3c;
-            color: white;
-        }
-
-        .pagination {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-            padding: 20px;
-        }
-
-        .page-link {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-
-        .page-link.active {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
     </style>
 </head>
 <body>
 <!-- 사이드바 -->
-<th:block th:replace="erp/fragments/sidebar :: sidebarFragment"></th:block>
+<th:block th:replace="~{erp/fragments/sidebar :: sidebarFragment}"></th:block>
 
 <!-- 메인 컨텐츠 -->
 <main class="main-content">
@@ -178,45 +134,38 @@
             <tr>
                 <th>예약번호</th>
                 <th>환자명</th>
-                <th>진료명</th>
+                <th>진료과</th>
                 <th>진료의</th>
                 <th>예약일시</th>
-                <th>진료일자</th>
-                <th>진료카테고리</th>
-                <th>상태</th>
-                <th>관리</th>
+                <th>진료시간</th>
+                <th>예약접수일</th>
+                <th>접수하기</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="record : ${records}">
-                <td th:text="${record.patientRecordNo()}"></td>
-                <td th:text="${record.member().getMemberName()}"></td>
-                <td th:text="${record.clinicName()}"></td>
-                <td th:text="${record.employee().getEmployeeName()}"></td>
-                <td th:text="${#temporals.format(record.clinicReservationDate(), 'yyyy-MM-dd HH:mm')}"></td>
-                <td th:text="${#temporals.format(record.clinicDate(), 'yyyy-MM-dd')}"></td>
-                <td th:text="${record.diseaseCategory().getCategoryName()}"></td>
+            <tr th:each="reservation : ${reservations}">
+                <td th:text="${reservation.reservationNo()}"></td>
+                <td th:text="${reservation.memberNo().getMemberName()}"></td>
+                <td th:text="${reservation.employeeNo().getDepartment().getDepartmentName()}"></td>
+                <td th:text="${reservation.employeeNo().getEmployeeName()}"></td>
+                <td th:text="${#temporals.format(reservation.reservationDate())}"></td>
+                <td th:text="${reservation.timeSlot().getDisplayName()}"></td>
+                <td th:text="${#temporals.format(reservation.createdAt(), 'yyy-MM-dd HH:mm')}"></td>
                 <td>
-                            <span th:class="'status-badge status-' + ${record.clinicStatus()}"
-                                  th:text="${record.clinicStatus()}"></span>
+                    <a th:href="@{'/erp/patients/reservation/' + ${reservation.reservationNo()} + '/register'}"
+                       class="btn btn-secondary">접수하기</a>
                 </td>
-                <td>
-                    <a th:href="@{'/erp/record/' + ${record.patientRecordNo()}}"
-                       class="btn btn-secondary">상세보기</a>
-                </td>
+
             </tr>
             </tbody>
         </table>
     </div>
 
     <!-- 페이지네이션 -->
-    <div class="pagination">
-        <a href="#" class="page-link">이전</a>
-        <a href="#" class="page-link active">1</a>
-        <a href="#" class="page-link">2</a>
-        <a href="#" class="page-link">3</a>
-        <a href="#" class="page-link">다음</a>
-    </div>
+    <div th:replace="~{fragments/pagination :: pagination(${page}, ${size}, ${totalElements}, '/erp/patients/result')}"></div>
+
+    <!-- 플로팅 채팅 버튼 -->
+    <th:block th:replace="~{erp/fragments/floating-chat :: floatingChatFragment}"></th:block>
 
 </main>
 </body>

@@ -4,6 +4,9 @@ import com.nado.smartcare.notice.dto.NoticeDto;
 import com.nado.smartcare.notice.service.NoticeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -24,13 +28,33 @@ public class NoticeController {
     private final NoticeService noticeService;
 
     @GetMapping
-    public String getAllNotices(Model model) {
-        List<NoticeDto> noticeList = noticeService.findAll();
-        noticeList.forEach(notice -> log.info("Created At: {}", notice.getCreatedAt())); // 디버깅용 로그
+    public String getAllNotices(@RequestParam(defaultValue = "0") int page,
+                                @RequestParam(defaultValue = "10") int size,
+                                @RequestParam(defaultValue = "DESC") String sortDirection,
+                                @RequestParam(required = false) String searchTerm,
+                                Model model) {
+
+        // 정렬 방향 처리
+        Sort.Direction direction = Sort.Direction.fromString(sortDirection);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(direction, "createdAt"));
+
+        // 검색 조건에 따른 공지사항 조회
+        List<NoticeDto> noticeList;
+        if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+            noticeList = noticeService.findByTitleContaining(searchTerm, pageRequest);
+        } else {
+            noticeList = noticeService.findAll(pageRequest);
+        }
+
         model.addAttribute("noticeList", noticeList);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("totalElements", noticeList.size());
+        model.addAttribute("searchTerm", searchTerm);
+        model.addAttribute("sortDirection", sortDirection);
+
         return "notice/list";
     }
-
 
     @GetMapping("register")
     public String register() {
@@ -38,7 +62,7 @@ public class NoticeController {
     }
 
     @PostMapping("register")
-    public String register(NoticeDto noticeDto, @RequestParam("images")List<MultipartFile> files) {
+    public String register(NoticeDto noticeDto, @RequestParam("images") List<MultipartFile> files) {
         log.info("register notice: {}", noticeDto);
 
         List<String> imagePaths = files.stream()

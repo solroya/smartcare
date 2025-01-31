@@ -3,6 +3,7 @@ package com.nado.smartcare.employee.service.impl;
 import com.nado.smartcare.employee.domain.Department;
 import com.nado.smartcare.employee.domain.dto.DepartmentDto;
 import com.nado.smartcare.employee.repository.DepartmentRepository;
+import com.nado.smartcare.employee.repository.EmployeeRepository;
 import com.nado.smartcare.employee.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class DepartmentServiceImpl implements DepartmentService {
 
     private final DepartmentRepository departmentRepository;
+    private final EmployeeRepository employeeRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -32,4 +34,6 @@ public class DepartmentServiceImpl implements DepartmentService {
         log.debug("Converted to DTOs: {}", departmentDtos);
         return departmentDtos;
     }
+
+
 }

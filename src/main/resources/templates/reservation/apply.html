@@ -212,7 +212,7 @@
 </head>
 <body>
 <!-- 사이드바 -->
-<th:block th:replace="erp/fragments/sidebar :: sidebarFragment"></th:block>
+<th:block th:replace="~{erp/fragments/sidebar :: sidebarFragment}"></th:block>
 
 <!-- 메인 컨텐츠 -->
 <main class="main-content">
@@ -341,6 +341,9 @@
     </form>
   </div>
 </main>
+
+<!-- 플로팅 채팅 버튼 -->
+<th:block th:replace="~{erp/fragments/floating-chat :: floatingChatFragment}"></th:block>
 
 <script>
   let currentStep = 1;

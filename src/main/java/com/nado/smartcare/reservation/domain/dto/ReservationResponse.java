@@ -39,8 +39,8 @@ public class ReservationResponse {
                 reservation.getReservationNo(),
                 reservation.getReservationDate(),
                 reservation.getTimeSlot(),
-                reservation.getMemberNo(),
-                reservation.getEmployeeNo(),
+                reservation.getMember().getMemberNo(),
+                reservation.getEmployee().getEmployeeNo(),
                 memberName,
                 employeeName,
                 departmentName

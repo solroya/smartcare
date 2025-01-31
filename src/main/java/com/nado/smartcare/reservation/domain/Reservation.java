@@ -1,7 +1,11 @@
 package com.nado.smartcare.reservation.domain;
 
 import com.nado.smartcare.config.BaseEntity;
+import com.nado.smartcare.employee.domain.Employee;
 import com.nado.smartcare.employee.domain.type.WorkingStatus;
+import com.nado.smartcare.member.domain.Member;
+import com.nado.smartcare.patient.domain.PatientRecordCard;
+import com.nado.smartcare.reservation.domain.dto.ReservationDto;
 import com.nado.smartcare.reservation.domain.type.TimeSlot;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -22,28 +26,45 @@ public class Reservation extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private TimeSlot timeSlot; // 오전, 오후
 
-    private Long memberNo;
+    @ManyToOne
+    @JoinColumn(name = "member_no")
+    private Member member;
 
-    private Long employeeNo;
-
-    private Long patientRecordCardNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_no")
+    private Employee employee;
 
     @Enumerated(EnumType.STRING)
     private WorkingStatus status; // 진료, 휴가, 수술
 
+    @ManyToOne
+    @JoinColumn(name = "patient_record_card_no", nullable = true)
+    private PatientRecordCard patientRecordCard;
+
     public Reservation() {
     }
 
-    public Reservation(LocalDate reservationDate, TimeSlot timeSlot, Long memberNo, Long employeeNo, Long patientRecordCardNo, WorkingStatus status) {
+    public Reservation(LocalDate reservationDate, TimeSlot timeSlot, Member member, Employee employee, WorkingStatus status, PatientRecordCard patientRecordCard) {
         this.reservationDate = reservationDate;
         this.timeSlot = timeSlot;
-        this.memberNo = memberNo;
-        this.employeeNo = employeeNo;
-        this.patientRecordCardNo = patientRecordCardNo;
+        this.member = member;
+        this.employee = employee;
         this.status = status;
+        this.patientRecordCard = patientRecordCard;
     }
 
-    public static Reservation of(LocalDate reservationDate, Long memberNo, TimeSlot timeSlot, Long employeeNo, Long patientRecordCardNo, WorkingStatus status) {
-        return new Reservation(reservationDate, timeSlot, memberNo, employeeNo, patientRecordCardNo, status);
+    public static Reservation of(LocalDate reservationDate, Member member, TimeSlot timeSlot, Employee employee, WorkingStatus status, PatientRecordCard patientRecordCard) {
+        return new Reservation(reservationDate, timeSlot, member, employee, status, patientRecordCard);
+    }
+
+    public static Reservation toEntity(ReservationDto reservationDto) {
+        return new Reservation(
+                reservationDto.reservationDate(),
+                reservationDto.timeSlot(),
+                reservationDto.memberNo(),
+                reservationDto.employeeNo(),
+                reservationDto.employeeNo().getWorkingStatus(),
+                reservationDto.patientRecordCard()
+        );
     }
 }
