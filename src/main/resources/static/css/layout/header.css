@@ -189,7 +189,7 @@
     right: -100%; /* 처음에는 화면 밖에 위치 */
     width: 400px; /* 햄버거 메뉴의 너비 */
     height: 100vh;
-    background-color: #1C3D5A;
+    background-color: #ffffff;
     transition: right 0.3s ease;
     z-index: 1001;
     padding: 120px 50px 50px;
@@ -208,7 +208,7 @@
 }
 
 .user-name {
-    color: #fff;
+    color: #1C3D5A;
     font-size: 24px;
     font-weight: bold;
 }
@@ -221,7 +221,7 @@
 }
 
 .menu-list li a {
-    color: #fff;
+    color: #1C3D5A;
     font-size: 20px;
     text-decoration: none;
     transition: color 0.3s ease;

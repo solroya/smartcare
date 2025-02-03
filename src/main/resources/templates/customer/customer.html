@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SMARTCARE</title>
+    <link rel="stylesheet" th:href="@{/css/reset.css}">
+    <link rel="stylesheet" th:href="@{/css/customer/customer.css}">
+</head>
+
+<body>
+<div th:replace="~{layout/header :: header}"></div>
+<div class="content">
+    <div class="titlewrap">
+        <div class="title">
+            <div class="titleText">
+                <span>신뢰를 전하는 소식, 더 나은 내일을 위해</span>
+                <p>실시간으로 답변하는 <b>AI 상담 서비스</b></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="chatContentwrap">
+        <div class="chatContent">
+
+            <div class="chat-container">
+                <div id="chat-messages">
+                    <!-- 시작 메시지 -->
+                    <div class="message ai">
+                        <div class="message-content">
+                            안녕하세요. 스마트케어 고객센터 AI 상담사입니다.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-container">
+                    <input
+                            type="text"
+                            id="question"
+                            placeholder="메시지를 입력하세요..."
+                            autocomplete="off"
+                    >
+                    <button id="send-button" onclick="handleSendMessage()">전송</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 필요시 추가 기능을 위한 영역 -->
+<div>
+    <div id="response" style="display: none"></div>
+</div>
+<div>
+    <div id="loading" style="display: none"></div>
+</div>
+
+<script>
+    // 1. 날짜/시간 포맷 함수
+    function formatDateTime(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const ampm = hours >= 12 ? '오후' : '오전';
+        const formattedHours = hours % 12 || 12;
+
+        return ${year}-${month}-${day} ${ampm} ${formattedHours}:${minutes};
+    }
+
+    // 2. 로딩 메시지 생성 함수
+    function createLoadingMessage() {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message ai'; // AI 메시지 형태로 표시
+
+        // 시간 표시
+        const timeDiv = document.createElement('div');
+        timeDiv.className = 'message-time';
+        timeDiv.textContent = formatDateTime(new Date());
+        messageDiv.appendChild(timeDiv);
+
+        // 실제 로딩 UI 부분
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'loading-message';
+        loadingDiv.innerHTML =
+            응답 생성 중
+        <div class="loading-dots">
+            <span></span>
+        <span></span>
+        <span></span>
+    </div>
+        ;
+
+        messageDiv.appendChild(loadingDiv);
+        return messageDiv;
+    }
+
+    // 3. 공통 API 호출 함수
+    async function fetchAIResponse(endpoint, question) {
+        try {
+            const response = await fetch(${endpoint}?message=${encodeURIComponent(question)});
+            if (!response.ok) {
+                throw new Error("API 호출 실패");
+            }
+            return await response.text();
+        } catch (error) {
+            console.error("API 호출 에러:", error);
+            return "오류가 발생했습니다. 다시 시도해주세요.";
+        }
+    }
+
+    // 4. 메시지 표시 함수
+    function appendMessage(content, isUser = false) {
+        const messagesContainer = document.getElementById('chat-messages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = message ${isUser ? 'user' : 'ai'};
+
+        // 시간 표시
+        const timeDiv = document.createElement('div');
+        timeDiv.className = 'message-time';
+        timeDiv.textContent = formatDateTime(new Date());
+        messageDiv.appendChild(timeDiv);
+
+        // 내용 표시
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        contentDiv.textContent = content;
+        messageDiv.appendChild(contentDiv);
+
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // 5. 메시지 전송 처리
+    async function handleSendMessage() {
+        const questionInput = document.getElementById('question');
+        const question = questionInput.value.trim();
+
+        if (!question) {
+            alert("질문을 입력해 주세요.");
+            return;
+        }
+
+        // 사용자 메시지 먼저 표시
+        appendMessage(question, true);
+        questionInput.value = '';
+
+        // 로딩 메시지 표시
+        const chatMessages = document.getElementById('chat-messages');
+        const loadingElement = createLoadingMessage();
+        chatMessages.appendChild(loadingElement);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // 실제 AI 응답 호출 (엔드포인트 예: /ai/answer)
+        const endpoint = /ai/answer?question=${encodeURIComponent(question)};
+        let answer;
+        try {
+            answer = await fetchAIResponse(endpoint, question);
+        } catch (err) {
+            console.error(err);
+            answer = "오류가 발생했습니다. 다시 시도해주세요.";
+        }
+
+        // 로딩 메시지 제거
+        loadingElement.remove();
+
+        // AI 응답 메시지 표시
+        appendMessage(answer, false);
+    }
+
+    // 6. Enter 키 이벤트 처리
+    document.getElementById('question').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            handleSendMessage();
+        }
+    });
+</script>
+</body>
+</html>
