@@ -7,7 +7,7 @@ LABEL application="smartcare"
 LABEL version="1.0"
 
 # 작업 디렉토리 설정
-WORKDIR /app
+WORKDIR /app/
 
 # JAR 파일 복사 (와일드카드 사용)
 COPY build/libs/smartcare*.jar app.jar
