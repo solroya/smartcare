@@ -9,8 +9,8 @@ LABEL version="1.0"
 # 작업 디렉토리 설정
 WORKDIR /app
 
-# JAR 파일 복사
-COPY build/libs/*.jar app.jar
+# JAR 파일 복사 (와일드카드 사용)
+COPY build/libs/smartcare*.jar app.jar
 
 # 애플리케이션 포트 설정
 EXPOSE 8080
