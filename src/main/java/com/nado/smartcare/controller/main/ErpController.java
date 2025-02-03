@@ -6,7 +6,11 @@ import com.nado.smartcare.notice.dto.NoticeDto;
 import com.nado.smartcare.notice.service.NoticeService;
 import com.nado.smartcare.patient.domain.dto.ReceptionDto;
 import com.nado.smartcare.patient.service.ReceptionService;
+import com.nado.smartcare.reservation.domain.Reservation;
+import com.nado.smartcare.reservation.domain.dto.ReservationDto;
+import com.nado.smartcare.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
+@Log4j2
 @Controller
 @RequestMapping("/erp")
 @RequiredArgsConstructor
@@ -23,6 +28,7 @@ public class ErpController {
     private final NoticeService noticeService;
     private final ReceptionService receptionService;
     private final DepartmentService departmentService;
+    private final ReservationService reservationService;
 
     @GetMapping
     public String newIndex(Model model, Authentication authentication) {
@@ -48,9 +54,16 @@ public class ErpController {
         long receptionCount = receptionService.getTotalReceptionCount();
         model.addAttribute("receptionCount", receptionCount);
 
-        // DashBoard : 환자 접수
+        // DashBoard
+
+        // 접수 환자
         List<ReceptionDto> receptions = receptionService.getAllReceptions();
         model.addAttribute("receptions", receptions);
+
+        // 예약 환자
+        List<ReservationDto> reservations = reservationService.findAllReservations();
+        log.info("reservations: {} ", reservations);
+        model.addAttribute("reservations", reservations);
 
         // DashBoard : 공지사항
         List<NoticeDto> latestNotices = noticeService.findLatestNotices(6); // 공지사항 4개만 가져옴

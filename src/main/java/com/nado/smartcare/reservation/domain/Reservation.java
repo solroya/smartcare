@@ -9,11 +9,13 @@ import com.nado.smartcare.reservation.domain.dto.ReservationDto;
 import com.nado.smartcare.reservation.domain.type.TimeSlot;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
 @Entity
 @Getter
+@ToString
 public class Reservation extends BaseEntity {
 
     @Id
@@ -32,6 +34,7 @@ public class Reservation extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_no")
+    @ToString.Exclude
     private Employee employee;
 
     @Enumerated(EnumType.STRING)
@@ -40,6 +43,10 @@ public class Reservation extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "patient_record_card_no", nullable = true)
     private PatientRecordCard patientRecordCard;
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
 
     public Reservation() {
     }

@@ -15,19 +15,25 @@ import com.nado.smartcare.patient.repository.PatientRecordCardRepository;
 import com.nado.smartcare.patient.service.PatientRecordCardService;
 import com.nado.smartcare.reservation.domain.Reservation;
 import com.nado.smartcare.reservation.domain.dto.ReservationDto;
+import com.nado.smartcare.reservation.domain.dto.ReservationScheduleDto;
 import com.nado.smartcare.reservation.domain.type.TimeSlot;
 import com.nado.smartcare.reservation.repository.ReservationRepository;
 import com.nado.smartcare.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReservationServiceImpl implements ReservationService {
@@ -50,7 +56,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         // DTO를 사용하면 JPA가 관리하는 영속 객체로 인식하지 못해서 계속 무결성 제약 위반 오류를 발생함
         // DTO를 활용해야 하는 경우: 신규 등록일 경우 활용하는것이 올바름
-        
+
         // 1) memberNo -> Member 영속 객체
         Member member = memberRepository.findById(memberNo)
                 .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
@@ -118,6 +124,37 @@ public class ReservationServiceImpl implements ReservationService {
     public Optional<ReservationDto> findReservationById(Long reservationNo) {
         return reservationRepository.findById(reservationNo)
                 .map(ReservationDto::from);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReservationScheduleDto> getThisWeeksReservations() {
+        LocalDate today = LocalDate.now();
+        LocalDate startOfWeek = today.with(DayOfWeek.MONDAY);
+        LocalDate endOfWeek = today.with(DayOfWeek.SUNDAY);
+
+        log.info("조회 기간: {} ~ {}", startOfWeek, endOfWeek);
+
+        List<Reservation> reservations = reservationRepository
+                .findReservationsForCurrentWeek(startOfWeek, endOfWeek);
+
+        log.info("조회된 예약 수: {}", reservations.size());
+        // 상세 로깅 추가
+        reservations.forEach(r -> log.info("예약 정보: 날짜={}, 시간대={}, 의사번호={}",
+                r.getReservationDate(),
+                r.getTimeSlot(),
+                r.getEmployee().getEmployeeNo()));
+
+        return reservations.stream()
+                .map(ReservationScheduleDto::from)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ReservationDto> findAllReservations() {
+        return reservationRepository.findAll().stream()
+                .map(ReservationDto::from)
+                .collect(Collectors.toList());
     }
 
 }
