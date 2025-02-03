@@ -4,7 +4,6 @@ import com.nado.smartcare.employee.domain.Department;
 import com.nado.smartcare.employee.domain.Employee;
 import com.nado.smartcare.employee.domain.dto.DepartmentDto;
 import com.nado.smartcare.employee.domain.dto.EmployeeDto;
-import com.nado.smartcare.employee.domain.type.WorkingStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,5 +31,7 @@ public interface EmployeeService {
     Department getDepartmentById(Long employeeNo);
 
     Department getDepartmentByEmployeeNo(Long employeeNo);
+
+    List<Employee> findByEmployeeByDepartment(String departmentName);
 
 }

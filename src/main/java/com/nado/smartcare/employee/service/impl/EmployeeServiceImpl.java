@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Log4j2
 public class EmployeeServiceImpl implements EmployeeService {
@@ -125,6 +125,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRepository.findDepartmentByEmployeeNo(employeeNo)
                 .orElseThrow(() -> new IllegalArgumentException("Department not found for employeeNo: " + employeeNo));
     }
+
+    @Override
+    public List<Employee> findByEmployeeByDepartment(String departmentName) {
+        return employeeRepository.findByDepartment_DepartmentName(departmentName);
+    }
+
 
     @Override
 	public Employee login(String employeeId, String employePass) {

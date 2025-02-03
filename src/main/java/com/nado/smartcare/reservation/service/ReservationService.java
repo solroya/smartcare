@@ -4,6 +4,7 @@ import com.nado.smartcare.employee.domain.type.WorkingStatus;
 import com.nado.smartcare.patient.domain.dto.PatientRecordCardDto;
 import com.nado.smartcare.reservation.domain.Reservation;
 import com.nado.smartcare.reservation.domain.dto.ReservationDto;
+import com.nado.smartcare.reservation.domain.dto.ReservationScheduleDto;
 import com.nado.smartcare.reservation.domain.type.TimeSlot;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,4 +26,8 @@ public interface ReservationService {
     Page<ReservationDto> findAllWithPagination(Pageable pageable);
 
     Optional<ReservationDto> findReservationById(Long reservationNo);
+
+    List<ReservationScheduleDto> getThisWeeksReservations();
+
+    List<ReservationDto> findAllReservations();
 }

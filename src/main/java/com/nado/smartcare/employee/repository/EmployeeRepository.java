@@ -32,4 +32,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     // 직원 번호로 Employee를 조회하면서 Department도 함께 가져오기
     @Query("SELECT e.department FROM Employee e WHERE e.employeeNo = :employeeNo")
     Optional<Department> findDepartmentByEmployeeNo(@Param("employeeNo") Long employeeNo);
+
+    // BaseEntity 를 불러오는 내용때문에 
+    List<Employee> findByDepartment_DepartmentName(String departmentName);
 }

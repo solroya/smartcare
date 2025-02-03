@@ -56,6 +56,35 @@ public class NoticeController {
         return "notice/list";
     }
 
+    @GetMapping("/mainlist")
+    public String getAllMainNotices(@RequestParam(defaultValue = "0") int page,
+                                @RequestParam(defaultValue = "10") int size,
+                                @RequestParam(defaultValue = "DESC") String sortDirection,
+                                @RequestParam(required = false) String searchTerm,
+                                Model model) {
+
+        // 정렬 방향 처리
+        Sort.Direction direction = Sort.Direction.fromString(sortDirection);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(direction, "createdAt"));
+
+        // 검색 조건에 따른 공지사항 조회
+        List<NoticeDto> noticeList;
+        if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+            noticeList = noticeService.findByTitleContaining(searchTerm, pageRequest);
+        } else {
+            noticeList = noticeService.findAll(pageRequest);
+        }
+
+        model.addAttribute("noticeList", noticeList);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("totalElements", noticeList.size());
+        model.addAttribute("searchTerm", searchTerm);
+        model.addAttribute("sortDirection", sortDirection);
+
+        return "notice/mainlist";
+    }
+
     @GetMapping("register")
     public String register() {
         return "notice/register";
