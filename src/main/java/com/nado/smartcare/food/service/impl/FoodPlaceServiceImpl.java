@@ -89,5 +89,4 @@ public class FoodPlaceServiceImpl implements IFoodPlaceService {
 		iFoodPlaceRepository.save(foodPlace);
 	}
 	
-	
 }

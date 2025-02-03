@@ -1,6 +1,8 @@
 package com.nado.smartcare.food.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -8,12 +10,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.nado.smartcare.food.dto.CategoryDTO;
+import com.nado.smartcare.food.dto.ComentDTO;
 import com.nado.smartcare.food.dto.FoodPlaceDTO;
 import com.nado.smartcare.food.service.ICategoryService;
+import com.nado.smartcare.food.service.IComentService;
 import com.nado.smartcare.food.service.IFoodPlaceService;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +32,7 @@ public class FoodPlaceController {
 	
 	private final IFoodPlaceService iFoodPlaceService;
 	private final ICategoryService iCategoryService;
+	private final IComentService iComentService;
 	
 	@GetMapping("/list/{category}")
 	public String getFoodPlaceList(@PathVariable("category") String category, Model model) {
@@ -39,7 +45,6 @@ public class FoodPlaceController {
 		model.addAttribute("currentCategory", category);
 		model.addAttribute("selectedCategory", selectedCategory);
 		
-		log.info("{}관련 음식점 리스트는? ==> {}", category, foodPlaces);
 		log.info("선택된 카테고리 정보는? ==> {}", selectedCategory);
 		
 		return "food/list";
@@ -60,9 +65,14 @@ public class FoodPlaceController {
 		
 		iFoodPlaceService.incrementViews(fno);
 		FoodPlaceDTO foodPlace = iFoodPlaceService.getFoodPlaceById(fno);
-		model.addAttribute("foodPlace", foodPlace);
+		List<ComentDTO> coments = iComentService.getComentsByFoodPlace(fno);
+		double averageRating = iComentService.calculateAverageRating(fno);
 		
-		log.info("상세 정보 : {}", foodPlace);
+		model.addAttribute("foodPlace", foodPlace);
+		model.addAttribute("coments", coments);
+		model.addAttribute("averageRating", averageRating);
+		
+		log.info("상세 정보, 댓글 정보, 평점 정보, ==> {}, {}, {}", foodPlace, coments, averageRating);
 		
 		return "fragments/detail :: detailContent";
 	}
@@ -72,6 +82,20 @@ public class FoodPlaceController {
 	public ResponseEntity<Void> incrementViews(@PathVariable("fno") Long fno) {
 		iFoodPlaceService.incrementViews(fno);
 		return ResponseEntity.ok().build();
+	}
+	
+	@PostMapping("/coment/{fno}")
+	@ResponseBody
+	public ResponseEntity<?> addComent(@PathVariable("fno") Long fno, @RequestBody ComentDTO comentDTO) {
+		log.info("음식점 ID {}에 댓글 추가 : {}", fno, comentDTO);
+		ComentDTO savedComent = iComentService.addComent(fno, comentDTO);
+		double averageRating = iComentService.calculateAverageRating(fno);
+		
+		Map<String, Object> response = new HashMap<>();
+		response.put("savedComent", savedComent);
+		response.put("averageRating", averageRating);
+		
+		return ResponseEntity.ok(response);
 	}
 	
 }

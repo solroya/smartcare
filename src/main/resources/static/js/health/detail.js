@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const detailHeartClickHandler = async () => {
         const detailElement = document.querySelector(".detail");
+		console.log("fno 값:", fno);
         if (!detailElement) {
             console.error(".detail 요소를 찾을 수 없습니다.");
             return;
@@ -53,4 +54,83 @@ document.addEventListener("DOMContentLoaded", () => {
             detailHeartClickHandler();
         });
     }
+
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const stars = document.querySelectorAll(".stars .star");
+    console.log("stars:", stars);
+
+    stars.forEach((star) => {
+        star.addEventListener("click", () => {
+            const rating = star.getAttribute("data-rating");
+            console.log("선택된 평점:", rating);
+            document.getElementById("rating").value = rating;
+
+            stars.forEach((s, index) => {
+                if (index < rating) {
+                    s.classList.add("selected");
+                } else {
+                    s.classList.remove("selected");
+                }
+            });
+        });
+    });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const comentForm = document.getElementById("comentForm");
+    if (!comentForm) {
+        console.error("comentForm 요소가 없습니다.");
+        return;
+    }
+
+    // 별 선택 로직
+    const stars = document.querySelectorAll(".stars .star");
+    stars.forEach((star) => {
+        star.addEventListener("click", () => {
+            const rating = star.getAttribute("data-rating");
+            document.getElementById("rating").value = rating;
+
+            stars.forEach((s, index) => {
+                if (index < rating) {
+                    s.classList.add("selected");
+                } else {
+                    s.classList.remove("selected");
+                }
+            });
+        });
+    });
+
+    // 폼 제출 로직
+    comentForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const fno = document.querySelector(".detail").getAttribute("data-fno");
+        const content = document.getElementById("comentContent").value;
+        const author = document.getElementById("comentAuthor").value;
+        const rating = document.getElementById("rating").value;
+
+        if (!fno || rating === "0") {
+            alert("평점을 선택하세요.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`/food/coment/${fno}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ content, author, rating }),
+            });
+
+            if (response.ok) {
+                const { savedComent, averageRating } = await response.json();
+                console.log("저장된 댓글:", savedComent, "평균 평점:", averageRating);
+            } else {
+                console.error("댓글 등록 실패", response.status);
+            }
+        } catch (error) {
+            console.error("댓글 등록 요청 중 오류 발생", error);
+        }
+    });
 });
