@@ -64,7 +64,7 @@
         const ampm = hours >= 12 ? '오후' : '오전';
         const formattedHours = hours % 12 || 12;
 
-        return ${year}-${month}-${day} ${ampm} ${formattedHours}:${minutes};
+        return `${year}-${month}-${day} ${ampm} ${formattedHours}:${minutes}`;
     }
 
     // 2. 로딩 메시지 생성 함수
@@ -81,14 +81,14 @@
         // 실제 로딩 UI 부분
         const loadingDiv = document.createElement('div');
         loadingDiv.className = 'loading-message';
-        loadingDiv.innerHTML =
+        loadingDiv.innerHTML = `
             응답 생성 중
-        <div class="loading-dots">
-            <span></span>
-        <span></span>
-        <span></span>
-    </div>
-        ;
+            <div class="loading-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        `;
 
         messageDiv.appendChild(loadingDiv);
         return messageDiv;
@@ -97,7 +97,7 @@
     // 3. 공통 API 호출 함수
     async function fetchAIResponse(endpoint, question) {
         try {
-            const response = await fetch(${endpoint}?message=${encodeURIComponent(question)});
+            const response = await fetch(`${endpoint}?message=${encodeURIComponent(question)}`);
             if (!response.ok) {
                 throw new Error("API 호출 실패");
             }
@@ -112,7 +112,7 @@
     function appendMessage(content, isUser = false) {
         const messagesContainer = document.getElementById('chat-messages');
         const messageDiv = document.createElement('div');
-        messageDiv.className = message ${isUser ? 'user' : 'ai'};
+        messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
 
         // 시간 표시
         const timeDiv = document.createElement('div');
@@ -151,7 +151,7 @@
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
         // 실제 AI 응답 호출 (엔드포인트 예: /ai/answer)
-        const endpoint = /ai/answer?question=${encodeURIComponent(question)};
+        const endpoint = `/ai/answer?question=${encodeURIComponent(question)}`;
         let answer;
         try {
             answer = await fetchAIResponse(endpoint, question);
