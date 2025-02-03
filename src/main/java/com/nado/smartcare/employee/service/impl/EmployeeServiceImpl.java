@@ -2,6 +2,7 @@ package com.nado.smartcare.employee.service.impl;
 
 import com.nado.smartcare.employee.domain.Department;
 import com.nado.smartcare.employee.domain.Employee;
+import com.nado.smartcare.employee.domain.dto.DepartmentDto;
 import com.nado.smartcare.employee.domain.type.TypeOfEmployee;
 import com.nado.smartcare.employee.domain.dto.EmployeeDto;
 import com.nado.smartcare.employee.repository.DepartmentRepository;
@@ -21,7 +22,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Log4j2
 public class EmployeeServiceImpl implements EmployeeService {
@@ -54,8 +55,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
     	String encodedPassword = passwordEncoder.encode(employeeDto.employeePass());
     	log.info("employee에 저장된 departmentId는? ==> : {}", employeeDto.departmentId());
-        Department department = departmentRepository.findById(employeeDto.departmentId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Department ID"));
+/*        Department department = departmentRepository.findById(employeeDto.departmentId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Department ID"));*/
 
         Employee employee = Employee.of(
                 employeeDto.employeeId(),
@@ -66,7 +67,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 employeeDto.employeeBirthday(),
                 employeeDto.employeePhoneNumber(),
                 employeeDto.isSocial(),
-                department
+                employeeDto.departmentId()
         );
 
         return EmployeeDto.from(employeeRepository.save(employee));
@@ -106,7 +107,32 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .collect(Collectors.toList());
     }
 
-	@Override
+    @Override
+    public List<DepartmentDto> getAllDepartmentsWithDoctors() {
+        return departmentRepository.findAll().stream()
+                .map(DepartmentDto::from)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Department getDepartmentById(Long employeeNo) {
+        return departmentRepository.findById(employeeNo)
+                .orElseThrow(() -> new IllegalArgumentException("Department not found"));
+    }
+
+    @Override
+    public Department getDepartmentByEmployeeNo(Long employeeNo) {
+        return employeeRepository.findDepartmentByEmployeeNo(employeeNo)
+                .orElseThrow(() -> new IllegalArgumentException("Department not found for employeeNo: " + employeeNo));
+    }
+
+    @Override
+    public List<Employee> findByEmployeeByDepartment(String departmentName) {
+        return employeeRepository.findByDepartment_DepartmentName(departmentName);
+    }
+
+
+    @Override
 	public Employee login(String employeeId, String employePass) {
 		Employee employee = employeeRepository.findByEmployeeId(employeeId)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Id or password"));

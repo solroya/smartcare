@@ -1,14 +1,137 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>예약 완료</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>예약 완료 - 스마트 케어</title>
+  <link rel="stylesheet" th:href="@{/css/erp/index.css}">
+  <style>
+    .success-container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background-color: #4CAF50;
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .success-icon::before {
+      content: "✓";
+      color: white;
+      font-size: 40px;
+    }
+
+    .success-title {
+      color: var(--primary-color);
+      font-size: 24px;
+      margin-bottom: 30px;
+    }
+
+    .reservation-details {
+      background-color: var(--background-light);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: left;
+    }
+
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      margin: 15px 0;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .detail-item:last-child {
+      border-bottom: none;
+    }
+
+    .detail-label {
+      color: var(--primary-color);
+      font-weight: 500;
+    }
+
+    .detail-value {
+      color: var(--text-dark);
+    }
+
+    .action-buttons {
+      margin-top: 30px;
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s;
+      text-decoration: none;
+      border: none;
+    }
+
+    .btn-primary {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--secondary-color);
+      color: var(--secondary-color);
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+  </style>
 </head>
 <body>
-<h1>예약이 완료되었습니다!</h1>
-<p>직원: <span th:text="${employeeName}"></span></p>
-<p>예약 날짜: <span th:text="${reservationDate}"></span></p>
-<p>시간대: <span th:text="${timeSlot}"></span></p>
+<!-- 사이드바 -->
+<th:block th:replace="erp/fragments/sidebar :: sidebarFragment"></th:block>
 
-<a th:href="@{/reservation/create}">다시 예약하기</a>
+<!-- 메인 컨텐츠 -->
+<main class="main-content">
+  <div class="success-container">
+    <div class="success-icon"></div>
+    <h1 class="success-title">예약이 완료되었습니다!</h1>
+
+    <div class="reservation-details">
+      <div class="detail-item">
+        <span class="detail-label">담당 의사</span>
+        <span class="detail-value" th:text="${employeeName}"></span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">예약 날짜</span>
+        <span class="detail-value" th:text="${reservationDate}"></span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">진료 시간</span>
+        <span class="detail-value" th:text="${timeSlot}"></span>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <a th:href="@{/apply/apply}" class="btn btn-primary">새로운 예약하기</a>
+      <a th:href="@{/apply/list}" class="btn btn-outline">예약 목록 보기</a>
+    </div>
+  </div>
+</main>
 </body>
 </html>

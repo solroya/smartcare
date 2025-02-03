@@ -53,14 +53,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.ai:spring-ai-redis-store-spring-boot-starter'
     implementation 'org.springframework.ai:spring-ai-redis-store'
-	
-	
+
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
-	
+
     // openAI
     implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
-    
-}
 
 dependencyManagement {
     imports {

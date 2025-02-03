@@ -15,10 +15,8 @@ import lombok.extern.log4j.Log4j2;
 @Configuration
 @Log4j2
 public class JasyptConfig {
-	
 	private static final String JASYPT_PASSWORD_ENV_VAR = "JASYPT_ENCRYPTOR_PASSWORD";
 	private final String password;
-	
 	public JasyptConfig(Environment env) {
 		this.password = env.getProperty(JASYPT_PASSWORD_ENV_VAR);
 		

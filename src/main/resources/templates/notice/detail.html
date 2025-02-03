@@ -2,34 +2,194 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>공지사항 상세</title>
+    <link rel="stylesheet" th:href="@{/css/reset.css}">
+    <link rel="stylesheet" th:href="@{/css/notice/notice.css}">
     <style>
         .content {
             width: 100%;
             margin-top: 120px;
+        }
+
+        /* Title 영역 */
+        .titlewrap {
+            margin-top: 30px;
+            width: 100%;
+            margin-bottom: 60px;
+        }
+
+        .titleText {
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .titleText span {
+            font-size: 24px;
+            letter-spacing: -0.25px;
+            color: #1C3D5A;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .titleText p {
+            font-size: 50px;
+            color: #333333;
+        }
+
+        .titleText p b {
+            font-weight: bold;
+        }
+
+        /* 공지사항 상세 컨텐츠 영역 */
+        .notice-detail-wrap {
+            width: 100%;
+            margin-bottom: 150px;
+        }
+
+        .notice-detail {
+            width: 100%;
+            max-width: 1620px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 40px;
+        }
+
+        .notice-detail-header {
+            border-bottom: 2px solid #1C3D5A;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .notice-detail-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .notice-detail-info {
+            display: flex;
+            gap: 30px;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .info-divider {
+            color: #ddd;
+        }
+
+        .notice-detail-content {
+            min-height: 400px;
+            line-height: 1.8;
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 40px;
+        }
+
+        .notice-images {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid #eee;
+        }
+
+        .notice-images h4 {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1C3D5A;
+            margin-bottom: 20px;
+        }
+
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-list {
+            background-color: #1C3D5A;
+            color: white;
+            border: none;
+        }
+
+        .btn-list:hover {
+            background-color: #5BC0DE;
         }
     </style>
 </head>
 <body>
 <div th:replace="~{layout/header :: header}"></div>
 <div class="content">
-    <div th:text="${notice.title}">공지사항 제목</div>
-    <br>
-    <div>
-        작성자: <span th:text="${notice.employee.employeeName}">작성자 이름</span> |
-        작성일: <span th:text="${notice.createdAt}">2025-01-05</span> |
-        조회수: <span th:text="${notice.viewCount}">0</span>
-    </div>
-    <br>
-    <div th:text="${notice.content}">공지사항 내용</div>
-    <br>
-    <div th:if="${notice.imagePaths != null}">
-        <h4>첨부 이미지</h4>
-        <div th:each="imagePath : ${notice.imagePaths}">
-            <img th:src="${imagePath}" alt="첨부 이미지" style="max-width: 100%; margin-bottom: 10px;">
+    <!-- 타이틀 영역 -->
+    <div class="titlewrap">
+        <div class="title">
+            <div class="titleText">
+                <span>신뢰를 전하는 소식, 더 나은 내일을 위해</span>
+                <p>스마트케어 <b>공지사항</b></p>
+            </div>
         </div>
     </div>
 
+    <!-- 공지사항 상세 내용 -->
+    <div class="notice-detail-wrap">
+        <div class="notice-detail">
+            <div class="notice-detail-header">
+                <h1 class="notice-detail-title" th:text="${notice.title}">공지사항 제목</h1>
+                <div class="notice-detail-info">
+                    <span>작성자: <strong th:text="${notice.employee.employeeName}">작성자 이름</strong></span>
+                    <span class="info-divider">|</span>
+                    <span>작성일: <strong th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd')}">2025-01-05</strong></span>
+                    <span class="info-divider">|</span>
+                    <span>조회수: <strong th:text="${notice.viewCount}">0</strong></span>
+                </div>
+            </div>
+
+            <div class="notice-detail-content" th:text="${notice.content}">
+                공지사항 내용
+            </div>
+
+            <!-- 첨부 이미지 영역 -->
+            <div class="notice-images" th:if="${notice.imagePaths != null and !notice.imagePaths.empty}">
+                <h4>첨부 이미지</h4>
+                <div class="image-container">
+                    <div th:each="imagePath : ${notice.imagePaths}">
+                        <img th:src="@{${imagePath}}" alt="첨부 이미지">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 버튼 영역 -->
+            <div class="button-group">
+                <a th:href="@{/notice/mainlist}" class="btn btn-list">목록으로</a>
+            </div>
+        </div>
+    </div>
 </div>
+<div th:replace="~{layout/footer :: footer}"></div>
 </body>
 </html>

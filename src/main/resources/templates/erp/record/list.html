@@ -2,42 +2,171 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>환자 기록 카드 목록</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>진료 예약 목록</title>
+    <link rel="stylesheet" th:href="@{/css/erp/index.css}">
+    <link rel="stylesheet" th:href="@{/css/erp/fragments/pagination.css}">
+
+    <style>
+        /* 예약 목록 페이지 특정 스타일 */
+        .reservation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .search-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .search-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-group label {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .form-control {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            padding: 12px;
+            text-align: left;
+        }
+
+        .table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .table tr:hover {
+            background-color: #f8f9fa;
+        }
+    </style>
 </head>
 <body>
-<div th:replace="~{/erp/layout/header :: header}"></div>
-<h1>환자 기록 카드 목록</h1>
+<!-- 사이드바 -->
+<th:block th:replace="~{erp/fragments/sidebar :: sidebarFragment}"></th:block>
 
-<table border="1">
-    <thead>
-    <tr>
-        <th>번호</th>
-        <th>환자명</th>
-        <th>진료 의사</th>
-        <th>진료명</th>
-        <th>진료일자</th>
-        <th>진료 카테고리</th>
-        <th>질병명</th>
-        <th>상태</th>
-        <th>상세보기</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="record, iterStat : ${records}">
-        <td th:text="${iterStat.index + 1}"></td>
-        <td th:text="${record.member.memberName}"></td>
-        <td th:text="${record.employee.employeeName}"></td>
-        <td th:text="${record.clinicName}"></td>
-        <td th:text="${record.clinicDate}"></td>
-        <td th:text="${record.diseaseCategory.categoryName}"></td>
-        <td th:text="${record.diseaseList.diseaseName}"></td>
-        <td th:text="${record.clinicStatus}"></td>
-        <td><a th:href="@{'/erp/record/' + ${record.patientRecordNo}}">상세보기</a></td>
-    </tr>
-    </tbody>
-</table>
+<!-- 메인 컨텐츠 -->
+<main class="main-content">
+    <div class="reservation-header">
+        <h1>진료 예약 목록</h1>
+        <button class="btn btn-primary">새 예약 등록</button>
+    </div>
 
-<a th:href="@{/erp/patients/list}">목록으로 돌아가기</a>
+    <!-- 검색 컨트롤 -->
+    <div class="search-controls">
+        <div class="search-group">
+            <label>조회기간</label>
+            <input type="date" class="form-control" name="startDate">
+            <span>~</span>
+            <input type="date" class="form-control" name="endDate">
+        </div>
+        <div class="search-group">
+            <label>진료 카테고리</label>
+            <select class="form-control" name="category">
+                <option value="">전체</option>
+            </select>
+        </div>
+        <div class="search-group">
+            <label>검색어</label>
+            <input type="text" class="form-control" placeholder="환자명 또는 진료명">
+        </div>
+        <button class="btn btn-secondary">검색</button>
+    </div>
+
+    <!-- 진료 예약 목록 테이블 -->
+    <div class="table-container">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>예약번호</th>
+                <th>환자명</th>
+                <th>진료과</th>
+                <th>진료의</th>
+                <th>예약일시</th>
+                <th>진료시간</th>
+                <th>예약접수일</th>
+                <th>접수하기</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="reservation : ${reservations}">
+                <td th:text="${reservation.reservationNo()}"></td>
+                <td th:text="${reservation.memberNo().getMemberName()}"></td>
+                <td th:text="${reservation.employeeNo().getDepartment().getDepartmentName()}"></td>
+                <td th:text="${reservation.employeeNo().getEmployeeName()}"></td>
+                <td th:text="${#temporals.format(reservation.reservationDate())}"></td>
+                <td th:text="${reservation.timeSlot().getDisplayName()}"></td>
+                <td th:text="${#temporals.format(reservation.createdAt(), 'yyy-MM-dd HH:mm')}"></td>
+                <td>
+                    <a th:href="@{'/erp/patients/reservation/' + ${reservation.reservationNo()} + '/register'}"
+                       class="btn btn-secondary">접수하기</a>
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 페이지네이션 -->
+    <div th:replace="~{fragments/pagination :: pagination(${page}, ${size}, ${totalElements}, '/erp/patients/result')}"></div>
+
+    <!-- 플로팅 채팅 버튼 -->
+    <th:block th:replace="~{erp/fragments/floating-chat :: floatingChatFragment}"></th:block>
+
+</main>
 </body>
 </html>

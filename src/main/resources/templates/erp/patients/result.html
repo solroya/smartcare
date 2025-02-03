@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>진료 결과 관리 - 스마트케어</title>
+    <link rel="stylesheet" th:href="@{/css/erp/index.css}">
+    <link rel="stylesheet" th:href="@{/css/erp/fragments/pagination.css}">
+
+    <style>
+        /* 공통 컨테이너 스타일 */
+        .search-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .search-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-control {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-outline-secondary {
+            background-color: white;
+            color: var(--secondary-color);
+            border: 1px solid var(--secondary-color);
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .detail-button {
+            padding: 4px 8px;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+
+        .detail-button:hover {
+            background-color: #4ca5c3;
+        }
+
+        .alert {
+            padding: 15px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* 에러 메시지 스타일 */
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        /* 경고 메시지 스타일 */
+        .alert-warning {
+            color: #856404;
+            background-color: #fff3cd;
+            border-color: #ffeeba;
+        }
+    </style>
+</head>
+<body>
+<!-- 사이드바 -->
+<th:block th:replace="~{erp/fragments/sidebar :: sidebarFragment}"></th:block>
+
+<!-- 메인 컨텐츠 -->
+<main class="main-content">
+    <!-- 페이지 헤더 -->
+    <div class="dashboard-header">
+        <h1>진료 결과 관리</h1>
+        <div class="dashboard-date" th:text="${#temporals.format(T(java.time.LocalDate).now(), 'yyyy년 MM월 dd일 EEEE')}"></div>
+    </div>
+
+    <!-- 검색 컨트롤 -->
+    <div class="search-controls">
+        <form method="get" th:action="@{/erp/patients/result}" style="display: flex; gap: 15px; align-items: center;">
+            <div class="search-group">
+                <label>조회기간</label>
+                <input type="date" id="startDate" class="form-control" name="startDate" th:value="${startDate}">
+                <span>~</span>
+                <input type="date" id="endDate" class="form-control" name="endDate" th:value="${endDate}">
+            </div>
+
+            <div class="search-group">
+                <select class="form-control" name="sortDirection">
+                    <option value="DESC" th:selected="${sortDirection == 'DESC'}">최신순</option>
+                    <option value="ASC" th:selected="${sortDirection == 'ASC'}">오래된순</option>
+                </select>
+            </div>
+
+            <div class="search-group">
+                <label>검색어</label>
+                <input type="text" class="form-control" name="searchTerm" th:value="${searchTerm}" placeholder="환자명 또는 진료명">
+            </div>
+
+            <button type="submit" class="btn btn-secondary">검색</button>
+            <button type="button" class="btn btn-outline-secondary" id="resetButton">초기화</button>
+        </form>
+    </div>
+
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <!-- 진료 결과 목록 -->
+    <div class="dashboard-card">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>진료 번호</th>
+                <th>환자명</th>
+                <th>진료과</th>
+                <th>담당의</th>
+                <th>질병명</th>
+                <th>진료명</th>
+                <th>진료일시</th>
+                <th>상세보기</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="record : ${records}">
+                <td th:text="${record.patientRecordNo}"></td>
+                <td th:text="${record.member.memberName}"></td>
+                <td th:text="${record.employee.department.departmentName}"></td>
+                <td th:text="${record.employee.employeeName}"></td>
+                <td th:text="${record.diseaseList.diseaseName ?: '미등록'}"></td>
+                <td th:text="${record.clinicName}"></td>
+                <td th:text="${#temporals.format(record.clinicDate, 'yyyy-MM-dd')}"></td>
+                <td>
+                    <a th:href="@{/erp/record/{id}(id=${record.patientRecordNo})}" class="detail-button">상세보기</a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(records)}">
+                <td colspan="8" class="text-center">진료 기록이 없습니다.</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div th:replace="~{fragments/pagination :: pagination(${page}, ${size}, ${totalElements}, '/erp/patients/result')}"></div>
+    </div>
+</main>
+
+<!-- 플로팅 채팅 버튼 -->
+<th:block th:replace="~{erp/fragments/floating-chat :: floatingChatFragment}"></th:block>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        function resetDates() {
+            const today = new Date();
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(today.getDate() - 7);
+
+            const formatDate = (date) => date.toISOString().split('T')[0];
+
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+
+            if (startDateInput && endDateInput) {
+                startDateInput.value = formatDate(sevenDaysAgo);
+                endDateInput.value = formatDate(today);
+            }
+
+            // 정렬 방향 값은 그대로 유지
+            console.log("날짜가 초기화되었습니다.");
+        }
+
+        const resetButton = document.getElementById('resetButton');
+        if (resetButton) {
+            resetButton.addEventListener('click', resetDates);
+        }
+    });
+</script>
+</body>
+</html>

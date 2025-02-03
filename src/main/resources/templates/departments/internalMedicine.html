@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Surgery Department</title>
+  <link rel="stylesheet" th:href="@{/css/reset.css}">
+  <link rel="stylesheet" th:href="@{/css/department/surgery.css}">
+</head>
+<body>
+<div th:replace="~{layout/header :: header}"></div>
+<div class="content">
+  <div class="visualwrap">
+    <div class="visual-bg"></div>
+    <div class="visualboxwrap">
+      <img class="surgery-img" alt="surgery 이미지" th:src="@{/img/department/main.png}">
+      <div class="visualbox">
+        <p>내과</p>
+        <div class="subMenuTab">
+          <a class="homeIcon" th:href="@{/main}"><img alt="메인돌아가기" th:src="@{/img/company/company/home.png}"></a>
+          <img class="arrow" alt="arrow" th:src="@{/img/company/company/arrow.png}">
+          <a href="#">진료과</a>
+          <img class="arrow" alt="arrow" th:src="@{/img/company/company/arrow.png}">
+          <a href="#">내과</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="titlewrap">
+    <div class="title">
+      <div class="titleText">
+        <span>몸속에서, 삶의 길까지</span>
+        <p>스마트케어 <b>내과</b></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="surgeryExplain">
+    <img class="surgeryExplain-img" alt="외과 소개" th:src="@{/img/department/internal.png}">
+    <p>내과는 소화기, 호흡기, 심혈관, 내분비 등 전신의 질환을 진단 및 치료하며,<br>
+      정밀한 검사와 맞춤형 치료로 환자의 건강을 종합적으로 관리합니다.</p>
+  </div>
+
+  <div class="doctorContentwrap">
+    <div class="doctorContent">
+      <div class="doctorTitle">
+        <span>SMART CARE</span>
+        <div class="doctorSubTitle">
+          <p>의료진과 함께하는<br><b>스마트케어의 미래</b></p>
+          <div class="doctorLine"></div>
+        </div>
+      </div>
+
+      <div class="doctorListwrap">
+        <div class="doctor-card" th:each="doctor : ${surgeryDoctors}">
+          <div class="doctor-img">
+            <img alt="의료진 사진" th:src="@{/img/department/doctor-placeholder.jpg}">
+          </div>
+          <div class="doctor-info">
+            <div class="doctor-header">
+              <div class="doctor-name">
+                <span th:text="${doctor.employeeName}">홍길동</span>
+                <span class="name-separator">|</span>
+                <span class="department" th:text="${doctor.departmentId().getDepartmentName()}">외과</span>
+              </div>
+              <p class="specialty">간암, 담도암, 췌장암, 간경변, 담관염, 복강경 시술</p>
+            </div>
+            <!-- 예약 일정 테이블 -->
+            <div class="schedule-container">
+              <table class="schedule-table">
+                <tr>
+                  <th>구분</th>
+                  <th>월</th>
+                  <th>화</th>
+                  <th>수</th>
+                  <th>목</th>
+                  <th>금</th>
+                  <th>토</th>
+                  <th>일</th>
+                </tr>
+                <tr>
+                  <td>오전</td>
+                  <td th:each="day : ${#numbers.sequence(1, 7)}"
+                      th:with="scheduleKey=${'' + doctor.employeeNo + '-' + day + '-MORNING'}">
+                    <span th:if="${scheduleKeys.contains(scheduleKey)}" class="schedule-dot">●</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>오후</td>
+                  <td th:each="day : ${#numbers.sequence(1, 7)}"
+                      th:with="scheduleKey=${'' + doctor.employeeNo + '-' + day + '-AFTERNOON'}">
+                    <span th:if="${scheduleKeys.contains(scheduleKey)}" class="schedule-dot">●</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>비고</td>
+                  <td th:each="day : ${#numbers.sequence(1, 7)}">
+                </tr>
+
+              </table>
+            </div>
+          </div>
+          <a href="#" class="reservation-btn">
+            <img th:src="@{/img/department/calendar-icon.png}" alt="예약">
+            <span>예약하기</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div th:replace="~{layout/footer :: footer}"></div>
+</body>
+</html>

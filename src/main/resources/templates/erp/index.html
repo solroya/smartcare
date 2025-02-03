@@ -1,11 +1,198 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCare</title>
+    <link rel="stylesheet" th:href="@{/css/erp/index.css}">
+    <link rel="stylesheet" th:href="@{/css/erp/fragments/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/erp/fragments/floatingBtn.css}">
 </head>
 <body>
-    <div th:replace="~{/erp/layout/header :: header}"></div>
-    <h1>ERP MAIN PAGE</h1>
+<!-- 사이드바 -->
+<th:block th:replace="~{erp/fragments/sidebar :: sidebarFragment}"></th:block>
+
+<!-- 메인 컨텐츠 -->
+<main class="main-content">
+    <!-- 대시보드 헤더 -->
+    <div class="dashboard-header">
+        <h1>대시보드</h1>
+        <div class="dashboard-date"
+             th:text="${#temporals.format(T(java.time.LocalDate).now(), 'yyyy년 MM월 dd일 EEEE')}"></div>
+    </div>
+
+    <!-- 통계 카드 -->
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <h3>접수 환자</h3>
+            <div class="number">24</div>
+        </div>
+        <div class="stat-card">
+            <h3>예약 환자</h3>
+            <!-- Thymeleaf 표현식으로 receptionCount 값을 반영 -->
+            <div class="number" th:text="${receptionCount > 0 ? receptionCount : 0}">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>진료 완료</h3>
+            <div class="number">18</div>
+        </div>
+        <div class="stat-card">
+            <h3>휴가중인 의사</h3>
+            <div class="number">3</div>
+        </div>
+    </div>
+
+    <!-- 대시보드 그리드 -->
+    <div class="dashboard-grid">
+        <!-- 접수 환자 -->
+        <div class="dashboard-card">
+            <h2>접수 환자</h2>
+            <div class="table-scroll-container">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>접수 번호</th>
+                        <th>환자명</th>
+                        <th>진료과</th>
+                        <th>담당 의사</th>
+                        <th>접수 일시</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="reception : ${receptions}">
+                        <td th:text="${reception.receptionNo}"></td>
+                        <td th:text="${reception.member().getMemberName()}"></td>
+                        <td>
+                            <span th:switch="${reception.employee().getDepartment().getDepartmentName()}">
+                                <span th:case="'INTERNAL_MEDICINE'">내과</span>
+                                <span th:case="'SURGERY'">외과</span>
+                                <span th:case="'PSYCHIATRY'">정신과</span>
+                                <span th:case="'HUMAN_RESOURCE'">인사과</span>
+                                <span th:case="*">Error</span>
+                            </span>
+                        </td>
+                        <td th:text="${reception.employee().getEmployeeName()}"></td>
+                        <td th:text="${#temporals.format(reception.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                    </tr>
+                    <!--예외 처리-->
+                    <tr th:if="${#lists.isEmpty(receptions)}">
+                        <td colspan="5" style="text-align: center;">접수된 환자가 없습니다.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 예약 환자 -->
+        <div class="dashboard-card">
+            <h2>예약 환자</h2>
+            <div class="table-scroll-container">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>접수 번호</th>
+                        <th>환자명</th>
+                        <th>진료과</th>
+                        <th>담당 의사</th>
+                        <th>예약 일시</th>
+                        <th>시간</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="reservation : ${reservations}">
+                        <td th:text="${reservation.reservationNo}"></td>
+                        <td th:text="${reservation.memberNo().memberName}"></td>
+                        <td>
+                            <span th:switch="${reservation.employeeNo().department.getDepartmentName()}">
+                                <span th:case="'INTERNAL_MEDICINE'">내과</span>
+                                <span th:case="'SURGERY'">외과</span>
+                                <span th:case="'PSYCHIATRY'">정신과</span>
+                                <span th:case="'HUMAN_RESOURCE'">인사과</span>
+                                <span th:case="*">오류</span>
+                            </span>
+                        </td>
+                        <td th:text="${reservation.employeeNo().employeeName}"></td>
+                        <td th:text="${#temporals.format(reservation.reservationDate(), 'yyyy-MM-dd')}"></td>
+                        <td>
+                            <span th:switch="${reservation.timeSlot().name()}">
+                                <span th:case="'MORNING'">오전</span>
+                                <span th:case="'AFTERNOON'">오후</span>
+                                <span th:case="*">오류</span>
+                            </span>
+                        </td>
+                    </tr>
+                    <!--예외 처리-->
+                    <tr th:if="${#lists.isEmpty(reservations)}">
+                        <td colspan="5" style="text-align: center;">예약된 환자가 없습니다.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 공지사항 -->
+        <div class="dashboard-card">
+            <h2>공지사항</h2>
+            <div class="table-scroll-container">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>제목</th>
+                        <th>작성자</th>
+                        <th>조회수</th>
+                        <th>등록일</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="notice : ${latestNotices}">
+                        <td>
+                            <a th:href="@{/notice/{id}(id=${notice.noticeNo})}" th:text="${notice.title}"></a>
+                        </td>
+                        <td th:text="${notice.employee.getEmployeeName()}"></td>
+                        <td th:text="${notice.viewCount}"></td>
+                        <td th:text="${#temporals.format(notice.createdAt, 'yyyy년 M월 d일')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 진료과별 의사 일정 -->
+        <div class="dashboard-card">
+            <h2>진료과별 의사 일정</h2>
+            <div class="table-scroll-container">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>진료과</th>
+                        <th>의사명</th>
+                        <th>상태</th>
+                    </tr>
+                    </thead>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- 플로팅 채팅 버튼 -->
+<th:block th:replace="~{erp/fragments/floating-chat :: floatingChatFragment}"></th:block>
+
+<script>
+    function openSearchPopup() {
+        const name = document.getElementById('memberName').value;
+
+        if (!name) {
+            alert("이름을 입력해주세요.");
+            return false;
+        }
+
+        const popup = window.open(`/erp/patients/searchByName?memberName=${name}`, 'popup', 'width=800,height=600');
+        popup.focus();
+        return false;
+    }
+
+
+</script>
 </body>
 </html>

@@ -17,4 +17,9 @@ public class CustomerController {
     public String consume() {
         return "customer/consume";
     }
+
+    @GetMapping("/chat")
+    public String chat() {
+        return "customer/customer";
+    }
 }

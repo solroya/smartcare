@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="floatingChatFragment">
+    <!-- 플로팅 버튼과 모달 -->
+    <div class="floating-chat-container">
+        <div class="floating-button" onclick="toggleChatModal()">
+            <span class="plus-icon"></span>
+        </div>
+
+        <div class="modal-overlay" onclick="toggleChatModal()"></div>
+
+        <div class="chat-modal">
+            <iframe src="/customer" frameborder="0"></iframe>
+        </div>
+    </div>
+
+    <style>
+        /* 플로팅 버튼 스타일 */
+        .floating-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary-color, #1C3D5A);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .floating-button:hover {
+            transform: scale(1.1);
+            background-color: var(--primary-light, #2a5070);
+        }
+
+        /* + 아이콘 스타일 */
+        .plus-icon {
+            position: relative;
+            width: 20px;
+            height: 20px;
+        }
+
+        .plus-icon::before,
+        .plus-icon::after {
+            content: '';
+            position: absolute;
+            background-color: white;
+            transition: transform 0.3s ease;
+        }
+
+        .plus-icon::before {
+            width: 20px;
+            height: 2px;
+            top: 9px;
+        }
+
+        .plus-icon::after {
+            width: 2px;
+            height: 20px;
+            left: 9px;
+        }
+
+        /* + 에서 X로 변환 애니메이션 */
+        .floating-button.active .plus-icon::before {
+            transform: rotate(45deg) translate(0, 0);
+        }
+
+        .floating-button.active .plus-icon::after {
+            transform: rotate(45deg) translate(0, 0);
+        }
+
+        /* 모달 오버레이 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        /* 채팅 모달 */
+        .chat-modal {
+            display: none;
+            position: fixed;
+            bottom: 100px;
+            right: 50px;
+            width: 800px;
+            height: 800px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            z-index: 999;
+            overflow: hidden;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        /* 모달 표시 상태 */
+        .chat-modal.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+        }
+
+        /* iframe 스타일 */
+        .chat-modal iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+
+    <script>
+        let isModalOpen = false;
+
+        function toggleChatModal() {
+            const modal = document.querySelector('.chat-modal');
+            const overlay = document.querySelector('.modal-overlay');
+            const button = document.querySelector('.floating-button');
+
+            if (!isModalOpen) {
+                // 모달 열기
+                modal.style.display = 'block';
+                overlay.style.display = 'block';
+                button.classList.add('active');
+
+                // 애니메이션을 위한 지연
+                setTimeout(() => {
+                    modal.classList.add('show');
+                    overlay.classList.add('show');
+                }, 10);
+            } else {
+                // 모달 닫기
+                modal.classList.remove('show');
+                overlay.classList.remove('show');
+                button.classList.remove('active');
+
+                // 애니메이션 완료 후 display none
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    overlay.style.display = 'none';
+                }, 300);
+            }
+
+            isModalOpen = !isModalOpen;
+        }
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isModalOpen) {
+                toggleChatModal();
+            }
+        });
+    </script>
+</th:block>
+</html>

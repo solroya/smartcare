@@ -5,8 +5,11 @@ import com.nado.smartcare.disease.domain.DiseaseCategory;
 import com.nado.smartcare.disease.domain.DiseaseList;
 import com.nado.smartcare.employee.domain.Employee;
 import com.nado.smartcare.member.domain.Member;
+import com.nado.smartcare.patient.domain.dto.PatientRecordCardDto;
 import com.nado.smartcare.patient.domain.dto.type.ClinicStatus;
+import com.nado.smartcare.reservation.domain.Reservation;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -30,6 +33,10 @@ public class PatientRecordCard extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private ClinicStatus clinicStatus; // 진료 상태 (예: SCHEDULED, COMPLETED, CANCELLED)
+
+    @OneToOne
+    @JoinColumn(name = "reservation_no")
+    private Reservation reservation;
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
@@ -59,7 +66,7 @@ public class PatientRecordCard extends BaseEntity {
     // 필드 초기화 생성자
     public PatientRecordCard(String clinicName, LocalDate clinicDate, LocalDateTime clinicReservationDate,
                              String clinicManifestation, ClinicStatus clinicStatus, Reception reception, Member member,
-                             Employee employee, DiseaseCategory diseaseCategory, DiseaseList diseaseList) {
+                             Employee employee, DiseaseCategory diseaseCategory, DiseaseList diseaseList, Reservation reservation) {
         this.clinicName = clinicName;
         this.clinicDate = clinicDate;
         this.clinicReservationDate = clinicReservationDate;
@@ -70,15 +77,49 @@ public class PatientRecordCard extends BaseEntity {
         this.employee = employee;
         this.diseaseCategory = diseaseCategory;
         this.diseaseList = diseaseList;
+        this.reservation = reservation;
     }
 
 
     // 정적 팩토리 메서드
     public static PatientRecordCard of(String clinicName, LocalDate clinicDate, LocalDateTime reservationDate,
                                        String clinicManifestation, ClinicStatus clinicStatus, Reception reception, Member member,
-                                       Employee employee, DiseaseCategory category, DiseaseList disease) {
+                                       Employee employee, DiseaseCategory category, DiseaseList disease, Reservation reservation) {
         return new PatientRecordCard(
-                clinicName, clinicDate, reservationDate, clinicManifestation, clinicStatus, reception, member, employee, category, disease
+                clinicName, clinicDate, reservationDate, clinicManifestation, clinicStatus, reception, member, employee, category, disease, reservation
+        );
+    }
+
+    public void updateRecord(
+            String clinicName,
+            String clinicManifestation,
+            ClinicStatus clinicStatus,
+            DiseaseCategory diseaseCategory,
+            DiseaseList diseaseList,
+            Reservation reservation
+    ) {
+        this.clinicName = clinicName;
+        this.clinicManifestation = clinicManifestation;
+        this.clinicStatus = clinicStatus;
+        this.diseaseCategory = diseaseCategory;
+        this.diseaseList = diseaseList;
+        this.reservation = reservation;
+    }
+
+    public static PatientRecordCard toEntity(PatientRecordCardDto dto) {
+        return new PatientRecordCard(
+                dto.clinicName(),
+                dto.clinicDate(),
+                dto.clinicReservationDate(),
+                dto.clinicManifestation(),
+                dto.clinicStatus(),
+                dto.receptionNo(),
+                dto.member(),
+                dto.employee(),
+                dto.diseaseCategory(),
+                dto.diseaseList(),
+                dto.reservation()
+
         );
     }
 }

@@ -20,11 +20,11 @@
                      </ul>
                  </li>
                  <li class="menu-item">
-                     <a href="#">진료과</a>
+                     <a th:href="@{/departments/surgery}">진료과</a>
                      <ul class="subMenu">
-                         <li><a href="#">외과</a></li>
-                         <li><a href="#">내과</a></li>
-                         <li><a href="#">정신과</a></li>
+                         <li><a th:href="@{/departments/surgery}">외과</a></li>
+                         <li><a th:href="@{/departments/internalMedicine}">내과</a></li>
+                         <li><a th:href="@{/departments/psychiatry}">정신과</a></li>
                      </ul>
                  </li>
                  <li class="menu-item">
@@ -40,10 +40,10 @@
                      </ul>
                  </li>
                  <li class="menu-item">
-                     <a href="#">고객센터</a>
+                     <a th:href="@{/customer/chat}">고객센터</a>
                      <ul class="subMenu">
-                         <li><a href="#">병원소식</a></li>
-                         <li><a href="#">Q&amp;A</a></li>
+                         <li><a th:href="@{/notice/mainlist}">병원소식</a></li>
+                         <li><a th:href="@{/customer/chat}">Q&amp;A</a></li>
                      </ul>
                  </li>
              </ul>
@@ -63,8 +63,8 @@
          <div class="expanded-content">
 			<div class="menu-header">
 				<p class="user-name">안녕하세요, <span id="userName">Guest</span>님!</p>
-				<a href="/my-page" class="my-page-link">
-					<img alt="MY PAGE" th:src="@{img/mypage.png}">
+				<a href="#" class="my-page-link">
+					<img alt="MY PAGE" th:src="@{/img/mypage.png}">
 				</a>
 			</div>
 			<ul class="menu-list">

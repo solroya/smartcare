@@ -1,35 +1,189 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCare - 공지사항</title>
+    <link rel="stylesheet" th:href="@{/css/erp/index.css}">
+    <link rel="stylesheet" th:href="@{/css/erp/fragments/floatingBtn.css}">
     <style>
-        .content {
-            width: 100%;
-            margin-top: 120px;
+        /* 검색 컨트롤 스타일 */
+        .search-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
         }
 
+        .search-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-control {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-outline-secondary {
+            background-color: white;
+            color: var(--secondary-color);
+            border: 1px solid var(--secondary-color);
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .alert {
+            padding: 15px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
     </style>
 </head>
 <body>
-<div th:replace="~{layout/header :: header}"></div>
-<div class="content">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>제목</th>
-                <th>내용</th>
-                <th>작성일시</th>
-            </tr>
-        </thead>
-        <tbody>
-        <tr th:each="notice : ${noticeList}">
-            <td th:text="${notice.title}"></td>
-            <td th:text="${notice.content}"></td>
-            <td th:text="${notice.createdAt}"></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+<!-- 사이드바 -->
+<th:block th:replace="~{erp/fragments/sidebar :: sidebarFragment}"></th:block>
+
+<!-- 메인 컨텐츠 -->
+<main class="main-content">
+    <!-- 페이지 헤더 -->
+    <div class="dashboard-header">
+        <h1>공지사항</h1>
+        <div class="dashboard-date"
+             th:text="${#temporals.format(T(java.time.LocalDate).now(), 'yyyy년 MM월 dd일 EEEE')}"></div>
+    </div>
+
+    <!-- 검색 컨트롤 -->
+    <div class="search-controls">
+        <form method="get" th:action="@{/notice}" style="display: flex; gap: 15px; align-items: center;">
+            <div class="search-group">
+                <select class="form-control" name="sortDirection">
+                    <option value="DESC" th:selected="${sortDirection == 'DESC'}">최신순</option>
+                    <option value="ASC" th:selected="${sortDirection == 'ASC'}">오래된순</option>
+                </select>
+            </div>
+
+            <div class="search-group">
+                <label>검색어</label>
+                <input type="text" class="form-control" name="searchTerm" th:value="${searchTerm}"
+                       placeholder="제목 검색">
+            </div>
+
+            <button type="submit" class="btn btn-secondary">검색</button>
+        </form>
+    </div>
+
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <!-- 공지사항 리스트 -->
+    <div class="dashboard-card">
+        <div class="notice-actions" style="margin-bottom: 20px; text-align: right;">
+            <button class="search-button" onclick="location.href='/notice/register'">
+                공지사항 작성
+            </button>
+        </div>
+
+        <div class="table-scroll-container" style="max-height: none;">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th style="width: 10%">번호</th>
+                    <th style="width: 50%">제목</th>
+                    <th style="width: 15%">작성자</th>
+                    <th style="width: 15%">등록일</th>
+                    <th style="width: 10%">조회수</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="notice : ${noticeList}">
+                    <td th:text="${notice.noticeNo}"></td>
+                    <td>
+                        <a th:href="@{/notice/{id}(id=${notice.noticeNo})}"
+                           th:text="${notice.title}"
+                           style="text-decoration: none; color: var(--text-dark);"></a>
+                    </td>
+                    <td th:text="${notice.employee.getEmployeeName()}"></td>
+                    <td th:text="${#temporals.format(notice.createdAt, 'yyyy년 M월 d일')}"></td>
+                    <td th:text="${notice.viewCount}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(noticeList)}">
+                    <td colspan="5" style="text-align: center;">등록된 공지사항이 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:replace="~{fragments/pagination :: pagination(${page}, ${size}, ${totalElements}, '/notice/list')}"></div>
+    </div>
+</main>
+
+<!-- 플로팅 채팅 버튼 -->
+<th:block th:replace="~{erp/fragments/floating-chat :: floatingChatFragment}"></th:block>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        function resetDates() {
+            const today = new Date();
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(today.getDate() - 7);
+
+            const formatDate = (date) => date.toISOString().split('T')[0];
+
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+
+            if (startDateInput && endDateInput) {
+                startDateInput.value = formatDate(sevenDaysAgo);
+                endDateInput.value = formatDate(today);
+            }
+
+            console.log("날짜가 초기화되었습니다.");
+        }
+
+        const resetButton = document.getElementById('resetButton');
+        if (resetButton) {
+            resetButton.addEventListener('click', resetDates);
+        }
+    });
+</script>
 </body>
 </html>

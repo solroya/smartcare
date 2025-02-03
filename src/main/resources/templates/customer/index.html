@@ -5,216 +5,328 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SQL Query Tool</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
+        /* 1. 기본 설정 */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
-        #container {
+        /* 2. 레이아웃 컨테이너 */
+        .chat-container {
             max-width: 800px;
-            margin: 50px auto;
+            margin: 20px auto;
             padding: 20px;
-            background: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            height: 900px;
+            display: flex;
+            flex-direction: column;
+            background-color: #f5f5f5;
             border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        #newsQuery {
-            width: 100%;
+        /* 3. 헤더 영역 */
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .chat-header h2 {
+            font-size: 18px;
+            color: #333;
+            margin: 0;
+        }
+
+        /* 4. 메시지 표시 영역 */
+        #chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
             padding: 10px;
+            background-color: white;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .message {
             margin-bottom: 15px;
-            font-size: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
         }
 
-        #searchBtn {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 1rem;
+        .message.user {
+            align-items: flex-end;
+        }
+
+        .message.ai {
+            align-items: flex-start;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .user .message-content {
+            background-color: #007bff;
             color: white;
-            background: #007bff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.3s ease;
         }
 
-        #searchBtn:hover {
-            background: #0056b3;
+        .ai .message-content {
+            background-color: #e9ecef;
+            color: #333;
         }
 
-        #loading {
-            display: none;
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        #loading span {
-            display: inline-block;
-            padding: 10px;
-            font-size: 1.2rem;
-            color: #555;
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
-
-        .alert {
-            padding: 10px;
-            border: 1px solid transparent;
-            border-radius: 4px;
-            margin-top: 20px;
-        }
-
-        .alert-info {
-            color: #0c5460;
-            background-color: #d1ecf1;
-            border-color: #bee5eb;
-        }
-
-        .alert-danger {
-            color: #721c24;
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-        }
-
-        .table-responsive {
+        /* SQL 결과 테이블 스타일 */
+        .table-container {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
             overflow-x: auto;
-            margin-top: 20px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         th, td {
-            border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
         }
 
         th {
-            background-color: #f1f1f1;
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        /* 7. 입력 영역 */
+        .input-container {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 8px;
+        }
+
+        #newsQuery {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            resize: none;
+        }
+
+        #searchBtn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #searchBtn:hover {
+            background-color: #0056b3;
+        }
+
+        /* 8. 로딩 애니메이션 */
+        .loading-message {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .loading-dots {
+            display: inline-flex;
+            gap: 4px;
+        }
+
+        .loading-dots span {
+            width: 6px;
+            height: 6px;
+            background-color: #666;
+            border-radius: 50%;
+            animation: loading 1.4s infinite;
+        }
+
+        .loading-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .loading-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes loading {
+            0%, 100% {
+                transform: scale(0.5);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
     </style>
 </head>
 <body>
-<div th:replace="~{/erp/layout/header :: header}"></div>
-<div id="container">
-    <div>
-        <textarea id="newsQuery" placeholder="질문을 입력하세요"></textarea>
+<div class="chat-container" style="height: 100vh; margin: 0; max-width: none;">
+    <div class="chat-header">
+        <h2>데이터베이스 검색</h2>
+    </div>
+
+    <div id="chat-messages">
+        <!-- 시작 메시지 -->
+        <div class="message ai">
+            <div class="message-content">
+                안녕하세요. 데이터베이스 검색 AI 입니다. 검색하실 내용을 입력해주세요.
+            </div>
+        </div>
+    </div>
+
+    <div class="input-container">
+        <textarea
+                id="newsQuery"
+                placeholder="질문을 입력하세요..."
+                rows="1"
+        ></textarea>
         <button id="searchBtn">검색</button>
-    </div>
-    <div id="loading">
-        <span>Loading...</span>
-    </div>
-    <div id="resultContainer">
-        <!-- SQL Query 출력 -->
-        <div id="sqlQueryContainer" class="d-none">
-            <div>
-                <strong>Generated SQL Query:</strong>
-                <pre id="sqlQuery"></pre>
-            </div>
-        </div>
-
-        <!-- 결과 테이블 -->
-        <div id="tableContainer" class="d-none">
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped">
-                    <thead id="tableHead"></thead>
-                    <tbody id="tableBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- AI의 대답 -->
-        <div id="aiResponseContainer" class="d-none">
-            <h3>AI Response</h3>
-            <p id="aiResponse"></p>
-        </div>
-
-        <!-- 알림 메시지 -->
-        <div id="alertContainer"></div>
     </div>
 </div>
 
 <script>
-    document.getElementById("searchBtn").addEventListener("click", function () {
+    document.getElementById("searchBtn").addEventListener("click", async function() {
         const query = document.getElementById("newsQuery").value.trim();
-        const sqlQueryContainer = document.getElementById("sqlQueryContainer");
-        const tableContainer = document.getElementById("tableContainer");
-        const aiResponseContainer = document.getElementById("aiResponseContainer");
-        const alertContainer = document.getElementById("alertContainer");
-        const loading = document.getElementById("loading");
-        const tableHead = document.getElementById("tableHead");
-        const tableBody = document.getElementById("tableBody");
-        const sqlQuery = document.getElementById("sqlQuery");
-        const aiResponse = document.getElementById("aiResponse");
+        if (!query) {
+            alert("질문을 입력해 주세요.");
+            return;
+        }
 
-        // 초기화
-        sqlQueryContainer.classList.add("d-none");
-        tableContainer.classList.add("d-none");
-        aiResponseContainer.classList.add("d-none");
-        alertContainer.innerHTML = '';
-        tableHead.innerHTML = '';
-        tableBody.innerHTML = '';
-        loading.style.display = "block";
+        // 사용자 메시지 표시
+        appendMessage(query, true);
+        document.getElementById("newsQuery").value = '';
 
-        // 서버 요청
-        fetch('/ai/sql', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({ question: query })
-        })
-            .then(response => response.json())
-            .then(data => {
-                loading.style.display = "none";
+        // 로딩 메시지 표시
+        const loadingMsg = showLoadingMessage();
 
-                // SQL Query 출력
-                sqlQuery.textContent = data.sqlQuery || "No SQL query generated.";
-                sqlQueryContainer.classList.remove("d-none");
-
-                // 테이블 생성
-                if (data.results && data.results.length > 0) {
-                    // 테이블 헤더 생성
-                    tableHead.innerHTML = `
-                    <tr>
-                        ${Object.keys(data.results[0]).map(key => `<th>${key}</th>`).join('')}
-                    </tr>
-                `;
-
-                    // 테이블 본문 생성
-                    tableBody.innerHTML = data.results.map(row => `
-                    <tr>
-                        ${Object.values(row).map(value => `<td>${value}</td>`).join('')}
-                    </tr>
-                `).join('');
-
-                    tableContainer.classList.remove("d-none");
-                } else {
-                    alertContainer.innerHTML = `
-                    <div class="alert alert-info">No results found for the query.</div>
-                `;
-                }
-
-                // AI의 자연어 응답 표시
-                aiResponse.textContent = data.naturalResponse || "No response from AI.";
-                aiResponseContainer.classList.remove("d-none");
-            })
-            .catch(error => {
-                loading.style.display = "none";
-                alertContainer.innerHTML = `
-                <div class="alert alert-danger">Error loading results: ${error.message || error}</div>
-            `;
+        try {
+            const response = await fetch('/ai/sql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({ question: query })
             });
+
+            const data = await response.json();
+
+            // 로딩 메시지 제거
+            loadingMsg.remove();
+
+            // AI 응답 메시지와 함께 결과 표시
+            let responseContent = data.naturalResponse || "검색 결과가 없습니다.";
+
+            // 결과가 있으면 테이블 추가
+            if (data.results && data.results.length > 0) {
+                responseContent += createTableHTML(data.results);
+            }
+
+            appendMessage(responseContent, false);
+
+        } catch (error) {
+            loadingMsg.remove();
+            appendMessage("오류가 발생했습니다. 다시 시도해주세요.", false);
+            console.error("Error:", error);
+        }
     });
 
+    function appendMessage(content, isUser) {
+        const messagesContainer = document.getElementById('chat-messages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+
+        if (content.includes('<table>')) {
+            // HTML 테이블이 포함된 경우
+            contentDiv.innerHTML = content;
+        } else {
+            contentDiv.textContent = content;
+        }
+
+        messageDiv.appendChild(contentDiv);
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function showLoadingMessage() {
+        const messagesContainer = document.getElementById('chat-messages');
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'message ai';
+        loadingDiv.innerHTML = `
+            <div class="loading-message">
+                검색 중
+                <div class="loading-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        `;
+        messagesContainer.appendChild(loadingDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        return loadingDiv;
+    }
+
+    function createTableHTML(results) {
+        return `
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            ${Object.keys(results[0]).map(key => `<th>${key}</th>`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${results.map(row => `
+                            <tr>
+                                ${Object.values(row).map(value => `<td>${value}</td>`).join('')}
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    // Enter 키 이벤트 처리
+    document.getElementById("newsQuery").addEventListener("keypress", function(e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            document.getElementById("searchBtn").click();
+        }
+    });
 </script>
 </body>
 </html>

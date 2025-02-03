@@ -2,41 +2,147 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>검색 결과</title>
+    <link rel="stylesheet" th:href="@{/css/erp/index.css}">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-light);
+            margin: 0;
+            padding: 20px;
+        }
 
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            margin-top: 80px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-container .table th {
+            background-color: var(--primary-light);
+            color: var(--text-light);
+            font-weight: bold;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .table th, .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .table th {
+            background-color: var(--primary-light);
+            color: var(--text-light);
+            font-weight: bold;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .table td {
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-select {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-select:hover {
+            background-color: #4ca5c3;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .pagination a {
+            padding: 8px 12px;
+            text-decoration: none;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .pagination a:hover {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+        }
+
+        .pagination .active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+    </style>
 </head>
 <body>
-<h1>검색 결과</h1>
-<table>
-    <thead>
-    <tr>
-        <th>번호</th>
-        <th>이름</th>
-        <th>생년월일</th>
-        <th>이메일</th>
-        <th>전화번호</th>
-        <th>선택</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="member : ${members}">
-        <td th:text="${member.memberNo}"></td>
-        <td th:text="${member.memberName}"></td>
-        <td th:text="${member.memberBirthday}"></td>
-        <td th:text="${member.memberEmail}"></td>
-        <td th:text="${member.memberPhoneNumber}"></td>
-        <td>
-            <button
-                    th:attr="data-member-no=${member.memberNo}, data-member-name=${member.memberName}, data-member-birthday=${member.memberBirthday}, data-member-email=${member.memberEmail}, data-member-phone-number=${member.memberPhoneNumber}"
-                    onclick="selectMember(this)">
-                선택
-            </button>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<div>
+    <h1>검색 결과</h1>
+</div>
 
-<div th:replace="~{fragments/pagination :: pagination(${page}, ${size}, ${totalElements}, '/erp/patients/all')}"></div>
+<div class="table-container">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>번호</th>
+            <th>이름</th>
+            <th>생년월일</th>
+            <th>이메일</th>
+            <th>전화번호</th>
+            <th>선택</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="member : ${members}">
+            <td th:text="${member.memberNo}"></td>
+            <td th:text="${member.memberName}"></td>
+            <td th:text="${member.memberBirthday}"></td>
+            <td th:text="${member.memberEmail}"></td>
+            <td th:text="${member.memberPhoneNumber}"></td>
+            <td>
+                <button
+                        th:attr="data-member-no=${member.memberNo}, data-member-name=${member.memberName}, data-member-birthday=${member.memberBirthday}, data-member-email=${member.memberEmail}, data-member-phone-number=${member.memberPhoneNumber}"
+                        class="btn btn-select"
+                        onclick="selectMember(this)">
+                    선택
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:replace="~{fragments/pagination :: pagination(${page}, ${size}, ${totalElements}, '/erp/patients/all')}"></div>
+</div>
 
 <script>
     function selectMember(button) {
@@ -54,5 +160,6 @@
         }
     }
 </script>
+
 </body>
 </html>
