@@ -33,7 +33,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
@@ -42,7 +42,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     // https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc11
-	implementation 'com.oracle.database.jdbc:ojdbc11:21.3.0.0'
+    implementation 'com.oracle.database.jdbc:ojdbc11:21.3.0.0'
 
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
@@ -59,12 +59,13 @@ dependencies {
     // openAI
     implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
 
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+        }
     }
-}
 
-tasks.named('test') {
-    useJUnitPlatform()
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
 }
