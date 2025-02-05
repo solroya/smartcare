@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <link rel="stylesheet" th:href="@{/css/reset.css}">
+    <style>
+        .error-container {
+            width: 100%;
+            max-width: 1620px;
+            margin: 120px auto 0;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 150px;
+        }
+
+        .error-title {
+            font-size: 24px;
+            color: #1C3D5A;
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .return-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #5BC0DE;
+            color: #fff;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .return-btn:hover {
+            background-color: #1C3D5A;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{layout/header :: header}"></div>
+
+<div class="error-container">
+    <h1 class="error-title">오류가 발생했습니다</h1>
+    <p class="error-message" th:text="${error}">시스템 오류가 발생했습니다.</p>
+    <a href="/main" class="return-btn">메인으로 돌아가기</a>
+</div>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+</body>
+</html>

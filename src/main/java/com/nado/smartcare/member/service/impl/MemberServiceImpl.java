@@ -43,7 +43,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public List<MemberDto> searchByName(String memberName) {
         return memberRepository.findByMemberName(memberName).stream()
-                .map(member -> new MemberDto(member.memberNo(), member.memberId(), member.memberPass(), member.memberName(), member.memberEmail(), member.memberGender(), member.memberPhoneNumber(), member.memberBirthday(), member.isSocial(), member.createdAt(), member.updatedAt()))
+                .map(member -> new MemberDto(member.memberNo(), member.memberId(), member.memberPass(), member.memberName(), member.memberEmail(), member.memberGender(), member.memberPhoneNumber(), member.memberBirthday(), member.isSocial(), member.patientRecordCards(), member.createdAt(), member.updatedAt()))
                 .toList();
     }
 
@@ -73,7 +73,8 @@ public class MemberServiceImpl implements MemberService {
                 memberDto.memberGender(),
                 memberDto.memberPhoneNumber(),
                 memberDto.memberBirthday(),
-                memberDto.isSocial()
+                memberDto.isSocial(),
+                memberDto.patientRecordCards()
         );
 
         return MemberDto.from(memberRepository.save(member));
@@ -101,7 +102,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public List<MemberDto> findByNameAndMemberBirthday(String memberName, LocalDate memberBirthday) {
         return memberRepository.findByMemberNameAndMemberBirthday(memberName, memberBirthday).stream()
-                .map(member -> new MemberDto(member.memberNo(), member.memberId(), member.memberPass(), member.memberName(), member.memberEmail(), member.memberGender(), member.memberPhoneNumber(), member.memberBirthday(), member.isSocial(), member.createdAt(), member.updatedAt()))
+                .map(member -> new MemberDto(member.memberNo(), member.memberId(), member.memberPass(), member.memberName(), member.memberEmail(), member.memberGender(), member.memberPhoneNumber(), member.memberBirthday(), member.isSocial(), member.patientRecordCards(), member.createdAt(), member.updatedAt()))
                 .toList();
     }
     

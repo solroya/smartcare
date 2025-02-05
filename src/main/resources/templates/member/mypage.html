@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>My Page</title>
+  <link rel="stylesheet" th:href="@{/css/reset.css}">
+  <link rel="stylesheet" th:href="@{/css/member/mypage.css}">
+</head>
+<body>
+<div th:replace="~{layout/header :: header}"></div>
+<div class="content">
+
+  <!-- Title Section -->
+  <div class="titlewrap">
+    <div class="title">
+      <div class="titleText">
+        <span>진료 기록과 건강 관리를 한눈에</span>
+        <p>스마트케어 <b>마이페이지</b></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Profile Section -->
+  <div class="profile-section">
+    <div class="profile-content">
+      <div class="profile-header">
+        <h2>내 정보</h2>
+        <button class="edit-btn">정보 수정</button>
+      </div>
+      <div class="profile-grid">
+        <div class="profile-item">
+          <label>이름</label>
+          <span th:text="${member.memberName}">홍길동</span>
+        </div>
+        <div class="profile-item">
+          <label>이메일</label>
+          <span th:text="${member.memberEmail}">email@example.com</span>
+        </div>
+        <div class="profile-item">
+          <label>전화번호</label>
+          <span th:text="${member.memberPhoneNumber}">010-1234-5678</span>
+        </div>
+        <div class="profile-item">
+          <label>생년월일</label>
+          <span th:text="${#temporals.format(member.memberBirthday, 'yyyy년 MM월 dd일')}">1990년 01월 01일</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Medical Records Section -->
+  <div class="healthContentwrap">
+    <div class="healthContent">
+      <div class="healthTitle">
+        <span>SMART CARE</span>
+        <div class="healthSubTitle">
+          <p>진료기록<br><b>타임라인</b></p>
+          <div class="healthLine"></div>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="timeline">
+        <div class="timeline-items" th:if="${not #lists.isEmpty(records)}">
+          <th:block th:each="record, iterStat : ${records}">
+            <div class="record-card post-row" th:style="${iterStat.index >= 2} ? 'display: none;' : ''">
+              <div class="record-date">
+                <span class="date" th:text="${#temporals.format(record.clinicDate, 'MM.dd')}">02.04</span>
+              </div>
+              <div class="record-content">
+                <div class="record-header">
+                  <h3 th:text="${record.clinicName}">진료명</h3>
+                  <span class="status-badge" th:text="${record.clinicStatus}">상태</span>
+                </div>
+                <div class="record-body">
+                  <p class="doctor-info">
+                    담당의: <span th:text="${record.employee.employeeName}">김의사</span>
+                    <span> | </span>
+                    <span th:text="${record.employee.department.departmentName}">내과</span>
+                  </p>
+                  <p class="diagnosis">
+                    진단명: <span th:text="${record.diseaseList.diseaseName}">감기</span>
+                  </p>
+                  <p class="manifestation" th:text="${record.clinicManifestation}">
+                    진료 소견 내용...
+                  </p>
+                </div>
+              </div>
+            </div>
+          </th:block>
+        </div>
+        <div class="no-records" th:if="${#lists.isEmpty(records)}">
+          <p>진료 기록이 없습니다.</p>
+        </div>
+      </div>
+
+      <!-- 더보기 버튼 -->
+      <div class="load-more-container">
+        <button id="moreView-btn" class="load-more-btn">더보기</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+  <div th:replace="~{layout/footer :: footer}"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const rows = document.querySelectorAll(".post-row");
+      const loadMoreBtn = document.getElementById("moreView-btn");
+      let visibleCount = 2; // 처음 보여줄 데이터 개수
+
+      loadMoreBtn.addEventListener("click", function() {
+        let hiddenRows = Array.from(rows).filter(row => getComputedStyle(row).display === "none");
+
+        for (let i = 0; i < 2 && i < hiddenRows.length; i++) {
+          hiddenRows[i].style.display = "";
+        }
+
+        // 더 이상 숨겨진 데이터가 없으면 버튼 숨김
+        if (Array.from(rows).every(row => getComputedStyle(row).display !== "none")) {
+          loadMoreBtn.style.display = "none";
+        }
+      });
+
+      // 초기 숨김 상태 설정
+      rows.forEach((row, index) => {
+        if (index >= visibleCount) {
+          row.style.display = "none";
+        }
+      });
+    });
+  </script>
+</body>
+</html>

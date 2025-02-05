@@ -9,12 +9,16 @@ import com.nado.smartcare.employee.domain.type.WorkingStatus;
 import com.nado.smartcare.patient.domain.PatientRecordCard;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Slf4j
 @Getter
 @Entity
+@ToString
 public class Employee extends BaseEntity {
 
     @Id
@@ -54,7 +58,12 @@ public class Employee extends BaseEntity {
     private Department department; // 부서명
 
     @OneToMany(mappedBy = "employee")
+    @ToString.Exclude
     private List<PatientRecordCard> patientRecordCards; // 이 의사가 담당한 진료 기록
+
+    public void setPatientRecordCards(List<PatientRecordCard> patientRecordCards) {
+        this.patientRecordCards = patientRecordCards;
+    }
 
     public Employee(String employeeId, String employeeName, String employeePass, String employeeEmail, boolean employeeGender, LocalDate employeeBirthday, String employeePhoneNumber, boolean isSocial, EmployeeStatus employeeStatus, TypeOfEmployee typeOfEmployee, WorkingStatus workingStatus, Department department) {
         this.employeeId = employeeId;
@@ -77,8 +86,18 @@ public class Employee extends BaseEntity {
     public static Employee of(String employeeId, String employeeName, String employeePass, String employeeEmail, boolean employeeGender, LocalDate employeeBirthday,
                               String employeePhoneNumber, boolean isSocial, Department department) {
         EmployeeStatus employeeStatus = EmployeeStatus.PENDING;
-        TypeOfEmployee typeOfEmployee = TypeOfEmployee.STAFF;
         WorkingStatus workingStatus = WorkingStatus.WORKING;
+
+        // Department 이름을 기반으로 직원 타입 결정
+        TypeOfEmployee typeOfEmployee = TypeOfEmployee.STAFF;
+
+        // Doctor 여부 판단
+        long deptId = department.getDepartmentId();
+        log.info("deptId: {}", deptId);
+        if (deptId < 4) {
+            typeOfEmployee = TypeOfEmployee.DOCTOR;
+        }
+
         return new Employee(employeeId, employeeName, employeePass, employeeEmail, employeeGender, employeeBirthday, employeePhoneNumber,
                 isSocial, employeeStatus, typeOfEmployee, workingStatus, department);
     }

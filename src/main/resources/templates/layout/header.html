@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <th:block th:fragment="header">
     <link rel="stylesheet" th:href="@{/css/layout/header.css}">
     <link rel="stylesheet" th:href="@{/css/reset.css}">
@@ -50,7 +51,7 @@
              <div class="user-info">
 			    <a th:href="@{/member/login}" class="login-btn">로그인</a>
 			    <a th:href="@{/logout}" class="logout-btn" style="display: none;">로그아웃</a>
-			    <a href="#" class="my-page">
+			    <a th:href="@{/member/mypage}" class="my-page">
 			        <img alt="mypage" th:src="@{/img/mypage.png}">
 			    </a>
 			    <div class="gnb-btn" title="전체메뉴 열기">
@@ -62,8 +63,11 @@
          </nav>
          <div class="expanded-content">
 			<div class="menu-header">
-				<p class="user-name">안녕하세요, <span id="userName">Guest</span>님!</p>
-				<a href="#" class="my-page-link">
+                <!-- 로그인하지 않은 경우 -->
+                <p class="user-name" sec:authorize="!isAuthenticated()">안녕하세요, Guest님!</p>
+                <!-- 로그인한 경우 -->
+                <p class="user-name" sec:authorize="isAuthenticated()">안녕하세요, <span sec:authentication="principal.username"></span>님!</p>
+				<a th:href="@{/member/mypage}" class="my-page-link">
 					<img alt="MY PAGE" th:src="@{/img/mypage.png}">
 				</a>
 			</div>
@@ -71,7 +75,11 @@
 				<li><a th:href="@{/company/company}">회사소개</a>
 				<li><a th:href="@{/discharge/discharge}">입퇴원 안내</a>
 				<li><a th:href="@{/health/health}">나의 건강관리</a>
-				<li><a href="#">고객센터</a>
+				<li><a th:href="@{/member/mypage}">고객센터</a>
+                <!-- Employee만 볼 수 있는 ERP 메뉴 -->
+                <li sec:authorize="hasRole('ROLE_EMPLOYEE')">
+                    <a th:href="@{/erp}">ERP PAGE</a>
+                </li>
 			</ul>
          </div>
      </header>

@@ -51,13 +51,22 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .map(EmployeeDto::from);
     }
 
+    @Transactional
     @Override
     public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
     	String encodedPassword = passwordEncoder.encode(employeeDto.employeePass());
-    	log.info("employee에 저장된 departmentId는? ==> : {}", employeeDto.departmentId());
-/*        Department department = departmentRepository.findById(employeeDto.departmentId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Department ID"));*/
 
+
+        // 1. DTO 전체 내용 로깅
+        log.info("전체 DTO 데이터: {}", employeeDto);
+
+        // 2. Department 정보 상세 로깅
+        Department dept = employeeDto.departmentId();
+        log.info("Department 상세 정보: id={}, name={}",
+                dept.getDepartmentId(), dept.getDepartmentName());
+
+        // 3. Employee 객체 생성 전후 로깅
+        log.info("Employee 객체 생성 시작");
         Employee employee = Employee.of(
                 employeeDto.employeeId(),
                 employeeDto.employeeName(),
@@ -69,6 +78,17 @@ public class EmployeeServiceImpl implements EmployeeService {
                 employeeDto.isSocial(),
                 employeeDto.departmentId()
         );
+        log.info("생성된 Employee 객체: employeeId={}, name={}, status={}, type={}, workingStatus={}",
+                employee.getEmployeeId(),
+                employee.getEmployeeName(),
+                employee.getEmployeeStatus(),
+                employee.getTypeOfEmployee(),
+                employee.getWorkingStatus()
+        );
+
+        // 4. 저장 시도
+        Employee savedEmployee = employeeRepository.save(employee);
+        log.info("저장된 Employee: {}", savedEmployee);
 
         return EmployeeDto.from(employeeRepository.save(employee));
     }
