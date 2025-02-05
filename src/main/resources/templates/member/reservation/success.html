@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>예약 완료 - 스마트 케어</title>
+  <link rel="stylesheet" th:href="@{/css/reset.css}">
+  <link rel="stylesheet" th:href="@{/css/member/reservation.css}">
+</head>
+<body>
+<div th:replace="~{layout/header :: header}"></div>
+
+<div class="content">
+  <div class="reservation-container">
+    <!-- 예약 완료 메시지 -->
+    <div class="success-header">
+      <h2 class="success-title">예약이 완료되었습니다</h2>
+      <p class="success-subtitle">아래 예약 정보를 확인해주세요</p>
+    </div>
+
+    <!-- 예약 정보 요약 -->
+    <div class="reservation-summary">
+      <div class="summary-box">
+        <div class="summary-row">
+          <span class="summary-label">예약 번호</span>
+          <span class="summary-value" th:text="${reservation.reservationNo}">1234</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">환자명</span>
+          <span class="summary-value" th:text="${member.memberName}">홍길동</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">담당 의사</span>
+          <span class="summary-value" th:text="${employeeName}">김의사</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">예약 일자</span>
+          <span class="summary-value" th:text="${#temporals.format(reservationDate, 'yyyy년 MM월 dd일')}">2025년 2월 5일</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">예약 시간</span>
+          <span class="summary-value" th:text="${timeSlot.displayName}">오전</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 안내 메시지 -->
+    <div class="info-box">
+      <h3>예약 안내사항</h3>
+      <ul>
+        <li>진료 시작 10분 전까지 내원해 주시기 바랍니다.</li>
+        <li>예약 변경 및 취소는 진료 하루 전까지 가능합니다.</li>
+        <li>문의사항은 고객센터(1588-1234)로 연락해 주세요.</li>
+      </ul>
+    </div>
+
+    <!-- 버튼 그룹 -->
+    <div class="button-group">
+      <a th:href="@{/member/mypage}" class="btn-secondary">마이페이지로 이동</a>
+      <a th:href="@{/main}" class="btn-primary">메인으로 이동</a>
+    </div>
+  </div>
+</div>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+</body>
+</html>

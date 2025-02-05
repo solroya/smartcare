@@ -1,6 +1,7 @@
 package com.nado.smartcare.reservation.repository;
 
 import com.nado.smartcare.reservation.domain.Reservation;
+import com.nado.smartcare.reservation.domain.dto.ReservationDto;
 import com.nado.smartcare.reservation.domain.type.TimeSlot;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,4 +25,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("startOfWeek") LocalDate startOfWeek,
             @Param("endOfWeek") LocalDate endOfWeek
     );
+
+    List<Reservation> findByMember_MemberNo(Long memberMemberNo);
 }

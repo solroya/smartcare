@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>진료 예약</title>
+    <link rel="stylesheet" th:href="@{/css/reset.css}">
+    <link rel="stylesheet" th:href="@{/css/member/reservation.css}">
+</head>
+<body>
+<div th:replace="~{layout/header :: header}"></div>
+
+<div class="content">
+    <div class="reservation-container">
+        <h2 class="reservation-title">진료 예약</h2>
+
+        <form th:action="@{/member/reservation/create}" method="post" class="reservation-form">
+            <!-- 진료과 & 의사 선택 섹션 -->
+            <section class="department-section">
+                <div class="search-form">
+                    <div class="form-group">
+                        <label class="form-label" for="department">진료과</label>
+                        <select id="department" name="department" class="form-control" required>
+                            <option value="">진료과 선택</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="doctor">담당의</label>
+                        <select id="doctor" name="employeeNo" class="form-control" required>
+                            <option value="">의사 선택</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 예약 정보 입력 -->
+            <div class="form-group">
+                <label for="timeSlot">진료 시간</label>
+                <select id="timeSlot" name="timeSlot" required>
+                    <option value="">시간을 선택해주세요</option>
+                    <option th:each="slot : ${timeSlots}"
+                            th:value="${slot}"
+                            th:text="${slot.displayName}">오전</option>
+                </select>
+            </div>
+
+            <!-- 중요: hidden input 추가 -->
+            <input type="hidden" id="reservationDate" name="reservationDate">
+
+            <!-- 예약 가능 날짜 표시 영역 -->
+            <div id="availableDates" class="calendar-grid">
+                <!-- JavaScript로 동적 생성됨 -->
+            </div>
+
+            <!-- 선택된 날짜 표시 영역 추가 -->
+            <div class="selected-date-info">
+                <p>선택된 날짜: <span id="selectedDateDisplay">선택해주세요</span></p>
+            </div>
+
+            <button type="submit" class="submit-btn" disabled>예약하기</button>
+        </form>
+    </div>
+</div>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+
+<script>
+    async function loadDepartmentsAndDoctors() {
+        const departmentSelect = document.getElementById('department');
+        const doctorSelect = document.getElementById('doctor');
+        const loadingDiv = document.getElementById('loading');
+        const errorDiv = document.getElementById('error');
+
+        try {
+            if (loadingDiv) loadingDiv.style.display = 'block';
+            if (errorDiv) errorDiv.style.display = 'none';
+
+            // fetch 함수를 직접 사용하고 올바른 경로 지정
+            const response = await fetch('/member/reservation/departments');
+            if (!response.ok) {
+                throw new Error('Failed to fetch departments');
+            }
+            const departments = await response.json();
+
+            // 진료과 옵션 추가
+            departmentSelect.innerHTML = '<option value="">진료과 선택</option>';
+            departments.forEach(dept => {
+                const option = document.createElement('option');
+                option.value = dept.departmentId;
+                option.textContent = dept.departmentName;
+                departmentSelect.appendChild(option);
+            });
+
+            // 진료과 선택 이벤트 리스너
+            departmentSelect.addEventListener('change', function () {
+                const selectedDeptId = this.value;
+                updateDoctors(departments, selectedDeptId);
+            });
+
+        } catch (error) {
+            console.error('Error:', error);
+            if (errorDiv) {
+                errorDiv.textContent = '진료과와 의사 정보를 불러오는데 실패했습니다.';
+                errorDiv.style.display = 'block';
+            }
+        } finally {
+            if (loadingDiv) loadingDiv.style.display = 'none';
+        }
+    }
+
+    function updateDoctors(departments, selectedDeptId) {
+        const doctorSelect = document.getElementById('doctor');
+        doctorSelect.innerHTML = '<option value="">의사 선택</option>';
+
+        if (!selectedDeptId) return;
+
+        const selectedDept = departments.find(d => d.departmentId === parseInt(selectedDeptId));
+        if (selectedDept && selectedDept.doctors) {
+            selectedDept.doctors.forEach(doctor => {
+                const option = document.createElement('option');
+                option.value = doctor.employeeNo;
+                option.textContent = doctor.employeeName;
+                doctorSelect.appendChild(option);
+            });
+        }
+    }
+
+    // 의사 선택 시 예약 가능 날짜 조회
+    document.getElementById('doctor').addEventListener('change', function () {
+        const doctorId = this.value;
+        document.getElementById('selectedDoctorId').value = doctorId;
+        loadAvailableDates();
+    });
+
+    // 시간대 선택 시 예약 가능 날짜 갱신
+    document.getElementById('timeSlot').addEventListener('change', loadAvailableDates);
+
+    // 의사와 시간대 선택시 날짜 조회
+    function loadAvailableDates() {
+        const doctorId = document.getElementById('doctor').value;
+        const timeSlot = document.getElementById('timeSlot').value;
+        const availableDatesDiv = document.getElementById('availableDates');
+
+        if (!doctorId || !timeSlot) {
+            availableDatesDiv.innerHTML = '<p class="notice">의사와 진료 시간을 먼저 선택해주세요.</p>';
+            return;
+        }
+
+        fetch(`/member/reservation/available-dates?employeeNo=${doctorId}&timeSlot=${timeSlot}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch available dates');
+                }
+                return response.json();
+            })
+            .then(dates => {
+                console.log("Available dates:", dates); // 데이터 확인용 로그
+                displayCalendar(dates);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                availableDatesDiv.innerHTML = '<p class="error">날짜를 불러오는데 실패했습니다.</p>';
+            });
+    }
+
+    function displayCalendar(availableDates) {
+        const calendarDiv = document.getElementById('availableDates');
+        const currentDate = new Date();
+
+        // 날짜 문자열을 Date 객체로 변환하고 시간 정보를 제거
+        const availableDateStrings = availableDates.map(date => {
+            const d = new Date(date);
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        });
+
+        calendarDiv.innerHTML = `
+        <div class="calendar-container">
+            <div class="calendar-header">
+                ${['일', '월', '화', '수', '목', '금', '토'].map(day =>
+            `<div class="calendar-weekday">${day}</div>`
+        ).join('')}
+            </div>
+            <div class="calendar-dates"></div>
+        </div>
+    `;
+
+        const datesContainer = calendarDiv.querySelector('.calendar-dates');
+        const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+
+        // 첫 주의 빈 칸 추가
+        for (let i = 0; i < firstDay.getDay(); i++) {
+            datesContainer.appendChild(createDateElement());
+        }
+
+        // 날짜 추가
+        for (let date = 1; date <= lastDay.getDate(); date++) {
+            const currentDateToCheck = new Date(currentDate.getFullYear(), currentDate.getMonth(), date);
+            const dateString = `${currentDateToCheck.getFullYear()}-${String(currentDateToCheck.getMonth() + 1).padStart(2, '0')}-${String(currentDateToCheck.getDate()).padStart(2, '0')}`;
+
+            // 날짜 비교를 문자열 기반으로 수행
+            const isAvailable = availableDateStrings.includes(dateString);
+
+            // 디버깅을 위한 로그
+            if (date === 8) {
+                console.log('Checking February 8:', {
+                    dateString,
+                    isAvailable,
+                    availableDates: availableDateStrings
+                });
+            }
+
+            datesContainer.appendChild(createDateElement(date, isAvailable, dateString));
+        }
+    }
+
+    function createDateElement(date, isAvailable, dateString) {
+        const dateDiv = document.createElement('div');
+        dateDiv.className = 'calendar-date';
+
+        if (!date) {
+            dateDiv.className += ' empty';
+            return dateDiv;
+        }
+
+        dateDiv.textContent = date;
+
+        if (isAvailable) {
+            dateDiv.className += ' available';
+            dateDiv.dataset.date = dateString;
+            dateDiv.addEventListener('click', () => handleDateSelection(dateDiv, dateString));
+
+            // 디버깅을 위한 로그
+            console.log('Created available date element:', {
+                date,
+                dateString
+            });
+        } else {
+            dateDiv.className += ' unavailable';
+        }
+
+        return dateDiv;
+    }
+
+    // 날짜 선택 처리 함수
+    function handleDateSelection(dateDiv, dateString) {
+        // 이전 선택 제거
+        document.querySelectorAll('.calendar-date.selected').forEach(el =>
+            el.classList.remove('selected')
+        );
+
+        // 새로운 선택 적용
+        dateDiv.classList.add('selected');
+
+        // hidden input에 날짜 저장
+        const reservationDateInput = document.getElementById('reservationDate');
+        if (reservationDateInput) {
+            reservationDateInput.value = dateString;
+        }
+
+        // 선택된 날짜 표시
+        const displayElement = document.getElementById('selectedDateDisplay');
+        if (displayElement) {
+            const formattedDate = new Date(dateString).toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                weekday: 'long'
+            });
+            displayElement.textContent = formattedDate;
+        }
+
+        // 콘솔에 로그 출력
+        console.log('Selected date:', dateString);
+
+        // 예약 버튼 상태 업데이트
+        updateSubmitButton();
+    }
+
+    function updateSubmitButton() {
+        const doctor = document.getElementById('doctor')?.value;
+        const timeSlot = document.getElementById('timeSlot')?.value;
+        const reservationDate = document.getElementById('reservationDate')?.value;
+        const submitButton = document.querySelector('.submit-btn');
+
+        if (!submitButton) return;
+
+        const isValid = doctor && timeSlot && reservationDate;
+        submitButton.disabled = !isValid;
+
+        if (isValid) {
+            submitButton.classList.add('active');
+            submitButton.removeAttribute('disabled');
+        } else {
+            submitButton.classList.remove('active');
+            submitButton.setAttribute('disabled', 'disabled');
+        }
+    }
+
+    // 이벤트 리스너 설정
+    document.addEventListener('DOMContentLoaded', function() {
+        const doctorSelect = document.getElementById('doctor');
+        const timeSlotSelect = document.getElementById('timeSlot');
+
+        if (doctorSelect) {
+            doctorSelect.addEventListener('change', function() {
+                const employeeNoInput = document.getElementById('employeeNo');
+                if (employeeNoInput) {
+                    employeeNoInput.value = this.value;
+                }
+                loadAvailableDates();
+            });
+        }
+
+        if (timeSlotSelect) {
+            timeSlotSelect.addEventListener('change', loadAvailableDates);
+        }
+    });
+
+    
+
+    // 페이지 로드 시 실행
+    document.addEventListener('DOMContentLoaded', loadDepartmentsAndDoctors);
+</script>
+</body>
+</html>

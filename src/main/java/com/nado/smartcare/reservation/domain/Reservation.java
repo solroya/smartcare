@@ -6,6 +6,7 @@ import com.nado.smartcare.employee.domain.type.WorkingStatus;
 import com.nado.smartcare.member.domain.Member;
 import com.nado.smartcare.patient.domain.PatientRecordCard;
 import com.nado.smartcare.reservation.domain.dto.ReservationDto;
+import com.nado.smartcare.reservation.domain.type.ReservationStatus;
 import com.nado.smartcare.reservation.domain.type.TimeSlot;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -43,6 +44,14 @@ public class Reservation extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "patient_record_card_no", nullable = true)
     private PatientRecordCard patientRecordCard;
+
+    @Enumerated(EnumType.STRING)
+    private ReservationStatus reservationStatus = ReservationStatus.CONFIRMED;  // 기본값을 설정함
+
+    // 취소 기능을 위한 메서드
+    public void cancel() {
+        this.reservationStatus = ReservationStatus.CANCELLED;
+    }
 
     public void setEmployee(Employee employee) {
         this.employee = employee;

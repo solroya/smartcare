@@ -5,8 +5,10 @@ import com.nado.smartcare.employee.domain.type.WorkingStatus;
 import com.nado.smartcare.employee.repository.DepartmentRepository;
 import com.nado.smartcare.employee.repository.EmployeeRepository;
 import com.nado.smartcare.employee.service.EmployeeService;
+import com.nado.smartcare.member.domain.Member;
 import com.nado.smartcare.member.repository.MemberRepository;
 import com.nado.smartcare.member.service.MemberService;
+import com.nado.smartcare.reservation.domain.Reservation;
 import com.nado.smartcare.reservation.domain.dto.EmployeeResponse;
 import com.nado.smartcare.reservation.domain.dto.ReservationRequest;
 import com.nado.smartcare.reservation.domain.dto.ReservationResponse;
@@ -21,15 +23,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -102,32 +111,69 @@ public class ReservationController {
 
 
     @PostMapping("/create")
-    public String createReservation(@ModelAttribute ReservationRequest request, Model model) {
-        log.info("Create reservation: {}", request);
-
+    @ResponseBody  // JSON 응답을 위해 추가
+    public ResponseEntity<?> processReservation(@AuthenticationPrincipal UserDetails userDetails,
+                                                @Valid @ModelAttribute ReservationRequest request) {
         try {
+            Member currentMember = memberRepository.findByMemberId(userDetails.getUsername())
+                    .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+
+            // 예약 생성
             reservationService.createReservation(
-                    request.getMemberNo(),
+                    currentMember.getMemberNo(),
                     request.getReservationDate(),
                     request.getTimeSlot(),
                     request.getEmployeeNo(),
                     request.getPatientRecordCardNo(),
-                    request.getStatus()
+                    WorkingStatus.WORKING
             );
 
-            Employee employee = employeeRepository.findByEmployeeNo(request.getEmployeeNo())
-                            .orElseThrow(() -> new RuntimeException("Employee not found"));
+            // 성공 응답 반환
+            return ResponseEntity.ok()
+                    .body(Map.of("success", true,
+                            "message", "예약이 완료되었습니다.",
+                            "redirectUrl", "/member/mypage"));
 
-            model.addAttribute("employeeName", employee.getEmployeeName());
-            model.addAttribute("reservationDate", request.getReservationDate());
-            model.addAttribute("timeSlot", request.getTimeSlot().getDisplayName());
-
-            return "reservation/success"; // 예약 성공 페이지
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "redirect:/reservation/register";
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("success", false,
+                            "message", "예약 중 오류가 발생했습니다."));
         }
     }
+
+    @GetMapping("/success")
+    public String showReservationSuccess(@RequestParam Long reservationNo,
+                                         Model model,
+                                         @AuthenticationPrincipal UserDetails userDetails,
+                                         RedirectAttributes redirectAttributes) {
+        try {
+            Member currentMember = memberRepository.findByMemberId(userDetails.getUsername())
+                    .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+
+            Reservation reservation = reservationService.getReservation(reservationNo);
+
+            if (!reservation.getMember().getMemberNo().equals(currentMember.getMemberNo())) {
+                throw new AccessDeniedException("Invalid reservation access");
+            }
+
+            Employee doctor = employeeRepository.findByEmployeeNo(reservation.getEmployee().getEmployeeNo())
+                    .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
+
+            model.addAttribute("member", currentMember);
+            model.addAttribute("reservation", reservation);
+            model.addAttribute("employeeName", doctor.getEmployeeName());
+            model.addAttribute("reservationDate", reservation.getReservationDate());
+            model.addAttribute("timeSlot", reservation.getTimeSlot());
+
+            return "member/reservation/success";
+
+        } catch (Exception e) {
+            // 에러 발생 시 Flash Attribute 사용
+            redirectAttributes.addFlashAttribute("errorMessage", "예약 정보를 불러올 수 없습니다.");
+            return "redirect:/member/reservation/new";
+        }
+    }
+
 
     @GetMapping("/available-dates")
     public String availableDates(@RequestParam("employeeNo") Long employeeNo,
@@ -142,9 +188,7 @@ public class ReservationController {
         model.addAttribute("selectedMemberNo", memberNo);
         model.addAttribute("status", status);
 
-
         return "reservation/available-dates";
     }
-
 
 }

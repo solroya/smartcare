@@ -5,6 +5,7 @@ import com.nado.smartcare.member.domain.Member;
 import com.nado.smartcare.patient.domain.PatientRecordCard;
 import com.nado.smartcare.patient.domain.Reception;
 import com.nado.smartcare.reservation.domain.Reservation;
+import com.nado.smartcare.reservation.domain.type.ReservationStatus;
 import com.nado.smartcare.reservation.domain.type.TimeSlot;
 
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ public record ReservationDto(
         Member memberNo,
         Employee employeeNo,
         PatientRecordCard patientRecordCard,
+        ReservationStatus reservationStatus,
         LocalDateTime createdAt,
         LocalDateTime updatedAt) {
 
@@ -28,6 +30,7 @@ public record ReservationDto(
                 reservation.getMember(),
                 reservation.getEmployee(),
                 reservation.getPatientRecordCard(),
+                reservation.getReservationStatus(),
                 reservation.getCreatedAt(),
                 reservation.getUpdatedAt()
         );
