@@ -8,7 +8,7 @@
 	<div th:fragment="detailContent">
 		<div class="content">
 			<div class="detailwrap">
-		        <div class="detail" th:attr="data-fno=${foodPlace.fno}">
+		        <div class="detail" th:attr="data-fno=${foodPlace.fno}, data-latitude=${foodPlace.latitude}, data-longitude=${foodPlace.longitude}">
 		            <div class="detailImage">
 		                <img th:src="${foodPlace.imageUrl}" alt="음식점 이미지">
 		            </div>
@@ -49,40 +49,43 @@
 		                </div>
 		            </div>
 		            <div class="detailContentLine"></div>
-		            <div class="comentAndRating">
-		            	<div class="comentHeader">
-		            		<h3 th:text="'댓글 ' + ${coments.size()} + '개'"></h3>
-		            	</div>
-		            	<div class="comentList">
-		            		<ul>
-		            			<li th:each="coment : ${coments}">
-									<p th:text="${coment.content}"></p>
-									<div class="comentInfo">
-										<b th:text="${coment.author}"></b>
-										<small th:text="${coment.createAt}"></small>
-										<span th:text="${'★'.repeat(${coment.rating}}"></span>
-									</div>
-		            			</li>
-		            		</ul>
-		            	</div>
-		            	<div class="comentFormwrap">
-						    <form id="comentForm">
-						        <div class="rating">
-						            <div class="stars">
-						                <span class="star" data-rating="1">★</span>
-						                <span class="star" data-rating="2">★</span>
-						                <span class="star" data-rating="3">★</span>
-						                <span class="star" data-rating="4">★</span>
-						                <span class="star" data-rating="5">★</span>
-						            </div>
-						            <input type="hidden" id="rating" name="rating" value="0">
-						        </div>
-						        <textarea id="comentContent" name="content" placeholder="댓글을 입력하세요" required></textarea>
-						        <input type="text" id="comentAuthor" name="author" placeholder="작성자 이름" required>
-						        <button type="submit">등록</button>
-						    </form>
-						</div>
-		            </div>
+		            <th:block th:if="${coments}">
+					    <div class="comentAndRating">
+					        <div class="comentHeader">
+					            <h3 th:text="'댓글 ' + ${coments.size()} + '개'"></h3>
+					        </div>
+					        <div class="comentList">
+					            <ul>
+					                <li th:each="coment : ${coments}">
+					                    <p th:text="${coment.content}"></p>
+					                    <div class="comentInfo">
+					                        <b th:text="${coment.author}"></b>
+					                        <small th:text="${#temporals.format(coment.createdAt, 'yyyy-MM-dd')}"></small>
+					                        <span th:text="${'★'.repeat(coment.rating)}"></span>
+					                    </div>
+					                </li>
+					            </ul>
+					        </div>
+					    </div>
+					</th:block>
+					
+					<div class="comentFormwrap">
+					    <form id="comentForm">
+					        <div class="rating">
+					            <div class="stars">
+					                <span class="star" data-rating="1">★</span>
+					                <span class="star" data-rating="2">★</span>
+					                <span class="star" data-rating="3">★</span>
+					                <span class="star" data-rating="4">★</span>
+					                <span class="star" data-rating="5">★</span>
+					            </div>
+					            <input type="hidden" id="rating" name="rating" value="0">
+					        </div>
+					        <textarea id="comentContent" name="content" placeholder="댓글을 입력하세요" required></textarea>
+					        <input type="text" id="comentAuthor" name="author" placeholder="작성자 이름" required>
+					        <button type="submit">등록</button>
+					    </form>
+					</div>
 		        </div>
 			</div>
 		</div>

@@ -1,0 +1,18 @@
+package com.nado.smartcare.tmap.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class RouteDTO {
+	private String type;
+	private String description;
+	private double distance;
+	private int time;
+	private String coordinates;
+}
