@@ -88,5 +88,20 @@ public class FoodPlaceServiceImpl implements IFoodPlaceService {
 		foodPlace.setViews(foodPlace.getViews() + 1);
 		iFoodPlaceRepository.save(foodPlace);
 	}
+
+	@Override
+	public List<FoodPlaceDTO> getAllFoodPlaces() {
+		log.info("DB에서 모든 음식점 데이터를 조회합니다.");
+		
+		return iFoodPlaceRepository.findAll().stream()
+                .map(foodPlace -> FoodPlaceDTO.builder()
+                        .fno(foodPlace.getFno())
+                        .foodName(foodPlace.getFoodName())
+                        .foodAddressRoad(foodPlace.getFoodAddressRoad())
+                        .latitude(foodPlace.getLatitude())
+                        .longitude(foodPlace.getLongitude())
+                        .build())
+                .collect(Collectors.toList());
+	}
 	
 }

@@ -16,4 +16,6 @@ public interface IFoodPlaceService {
 	
 	// 조회수
 	void incrementViews(Long fno);
+	
+	List<FoodPlaceDTO> getAllFoodPlaces();
 }

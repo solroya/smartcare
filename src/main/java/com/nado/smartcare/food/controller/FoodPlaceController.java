@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,9 +31,13 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/food")
 public class FoodPlaceController {
 	
+	@Value("${kakao.scriptApi.key}")
+	private String kakaoScriptApiKey;
+	
 	private final IFoodPlaceService iFoodPlaceService;
 	private final ICategoryService iCategoryService;
 	private final IComentService iComentService;
+	
 	
 	@GetMapping("/list/{category}")
 	public String getFoodPlaceList(@PathVariable("category") String category, Model model) {
@@ -44,10 +49,22 @@ public class FoodPlaceController {
 		model.addAttribute("foodPlaces", foodPlaces);
 		model.addAttribute("currentCategory", category);
 		model.addAttribute("selectedCategory", selectedCategory);
+		model.addAttribute("scriptKey", kakaoScriptApiKey);
 		
 		log.info("선택된 카테고리 정보는? ==> {}", selectedCategory);
 		
 		return "food/list";
+	}
+	
+	@GetMapping("/location")
+	@ResponseBody
+	public List<FoodPlaceDTO> getAllFoodPlaces() {
+	    log.info("음식점 위치 정보를 JSON으로 반환합니다.");
+	    
+	    List<FoodPlaceDTO> foodPlaces = iFoodPlaceService.getAllFoodPlaces();
+	    foodPlaces.forEach(food -> log.info("📌 음식점 데이터: {}, {}, {}", food.getFoodName(), food.getLatitude(), food.getLongitude()));
+
+	    return foodPlaces;
 	}
 	
 	@PostMapping("/like/{fno}")
