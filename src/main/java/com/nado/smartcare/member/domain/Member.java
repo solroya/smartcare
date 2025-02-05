@@ -1,5 +1,6 @@
 package com.nado.smartcare.member.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.nado.smartcare.config.BaseEntity;
 import com.nado.smartcare.member.domain.dto.MemberDto;
 import com.nado.smartcare.patient.domain.PatientRecordCard;
@@ -46,7 +47,7 @@ public class Member extends BaseEntity {
     public Member() {
     }
 
-    public Member(String memberId, String memberPass, String memberName, String memberEmail, boolean memberGender, String memberPhoneNumber, LocalDate memberBirthday, boolean isSocial) {
+    public Member(String memberId, String memberPass, String memberName, String memberEmail, boolean memberGender, String memberPhoneNumber, LocalDate memberBirthday, boolean isSocial, List<PatientRecordCard> patientRecordCards) {
         this.memberId = memberId;
         this.memberPass = memberPass;
         this.memberName = memberName;
@@ -55,11 +56,13 @@ public class Member extends BaseEntity {
         this.memberPhoneNumber = memberPhoneNumber;
         this.memberBirthday = memberBirthday;
         this.isSocial = isSocial;
+        this.patientRecordCards = patientRecordCards;
     }
 
+
     public static Member of(String memberId, String memberPass, String memberName, String memberEmail, boolean memberGender,
-                            String memberPhoneNumber, LocalDate memberBirthDay, boolean isSocial) {
-        return new Member(memberId, memberPass, memberName, memberEmail, memberGender, memberPhoneNumber, memberBirthDay, isSocial);
+                            String memberPhoneNumber, LocalDate memberBirthDay, boolean isSocial, List<PatientRecordCard> patientRecordCards) {
+        return new Member(memberId, memberPass, memberName, memberEmail, memberGender, memberPhoneNumber, memberBirthDay, isSocial, patientRecordCards);
     }
 
     public Member updateMember(String newMemberPass, String newMemberPhoneNumber) {
@@ -81,7 +84,8 @@ public class Member extends BaseEntity {
                 dto.memberGender(),
                 dto.memberPhoneNumber(),
                 dto.memberBirthday(),
-                dto.isSocial()
+                dto.isSocial(),
+                dto.patientRecordCards()
         );
     }
 }

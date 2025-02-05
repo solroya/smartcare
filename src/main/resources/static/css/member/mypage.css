@@ -1,0 +1,306 @@
+@charset "UTF-8";
+
+.content {
+    width : 100%;
+    margin-top : 270px;
+    margin-bottom: 150px;
+}
+
+/* visual 영역 시작 */
+
+.visualwrap {
+    width: 100%;
+    height: 600px;
+    position: relative;
+    margin-bottom : 100px;
+}
+
+.visual-bg {
+    position : absolute;
+    background-color: #000;
+    width: 100%;
+    height: 100%;
+}
+
+.visualboxwrap {
+    position : relative;
+    width: 100%;
+    height: 100%;
+}
+
+.visualboxwrap {
+    position: absolute;
+    opacity: 50%;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+}
+
+.visualbox {
+    width : 100%;
+    height : 100%;
+    position : relative;
+    display : flex;
+    flex-direction: column;
+    margin : 0 auto;
+    align-items: center;
+    justify-content: center;
+}
+
+.visualbox p {
+    font-size : 80px;
+    font-weight: bold;
+    letter-spacing: -0.25px;
+    color : #fff;
+    margin-bottom : 20px;
+}
+
+.homeIcon img {
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+}
+
+.subMenuTab a {
+    font-size : 20px;
+    letter-spacing: -0.25px;
+    color: #fff;
+}
+
+.subMenuTab a:nth-child(5) {
+    font-weight: bold;
+}
+
+/* visual 영역 끝 health 영역 시작 */
+.healthContentwrap {
+    width: 1620px;
+    margin : 0 auto;
+}
+
+.titlewrap {
+    width: 100%;
+    margin-bottom : 60px;
+}
+
+.title {
+    width : 100%;
+    max-width: 1620px;
+    margin : 0 auto;
+    display :flex;
+    align-items: center;
+}
+
+.titleText {
+    margin : 0 auto;
+    text-align : center;
+    display : flex;
+    flex-direction: column;
+}
+
+.titleText span {
+    font-size : 24px;
+    letter-spacing: -25%;
+    color : #1C3D5A;
+    margin-bottom : 20px;
+    font-weight: bold;
+    margin-bottom : 15px;
+}
+
+.titleText p {
+    font-size : 50px;
+    color : #333333;
+}
+
+.titleText p b {
+    font-weight: bold;
+}
+
+.profile-section {
+    width: 100%;
+    max-width: 1620px;
+    margin: 0 auto 80px;
+}
+
+.profile-content {
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.profile-header h2 {
+    font-size: 28px;
+    color: #1C3D5A;
+    font-weight: bold;
+}
+
+.edit-btn {
+    background-color: #5BC0DE;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.edit-btn:hover {
+    background-color: #1C3D5A;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+}
+
+.profile-item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.profile-item label {
+    color: #666;
+    font-size: 16px;
+}
+
+.profile-item span {
+    color: #333;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+
+/* Timeline Styles */
+.timeline {
+    margin-top: 40px;
+    width: 1620px;
+}
+
+.filter-controls select {
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    font-size: 16px;
+    color: #1C3D5A;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.record-card {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 30px;
+    background: #fff;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.record-date {
+    min-width: 80px;
+    text-align: center;
+}
+
+.record-date .date {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1C3D5A;
+}
+
+.record-content {
+    flex: 1;
+}
+
+.record-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.record-header h3 {
+    font-size: 22px;
+    font-weight: bold;
+    color: #1C3D5A;
+}
+
+.status-badge {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: #5BC0DE;
+    color: #fff;
+}
+
+.record-body {
+    color: #666;
+    line-height: 1.6;
+}
+
+.record-body p {
+    margin-bottom: 10px;
+}
+
+.doctor-info, .diagnosis {
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.manifestation {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+}
+
+.no-records {
+    text-align: center;
+    padding: 40px;
+    background: #f5f5f5;
+    border-radius: 15px;
+    color: #666;
+    font-size: 18px;
+}
+
+/* 필터링 기능 */
+.status-badge {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.filter-controls select:focus {
+    outline: none;
+    border-color: #5BC0DE;
+    box-shadow: 0 0 0 2px rgba(91, 192, 222, 0.25);
+}
+
+.load-more-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.load-more-btn {
+    background-color: #5BC0DE;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.load-more-btn:hover {
+    background-color: #1C3D5A;
+}

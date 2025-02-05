@@ -1,5 +1,6 @@
 package com.nado.smartcare.patient.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.nado.smartcare.config.BaseEntity;
 import com.nado.smartcare.disease.domain.DiseaseCategory;
 import com.nado.smartcare.disease.domain.DiseaseList;
@@ -11,6 +12,7 @@ import com.nado.smartcare.reservation.domain.Reservation;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,7 +42,7 @@ public class PatientRecordCard extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
-    private Member member; //
+    private Member member;
 
     @ManyToOne
     @JoinColumn(name = "employee_no", nullable = false)

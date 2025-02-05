@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Map;
@@ -130,5 +131,37 @@ public class PatientRecordCardServiceImpl implements PatientRecordCardService {
     public Page<PatientRecordCardDto> findByDateRange(LocalDate startDate, LocalDate endDate, Pageable pageable) {
         return patientRecordCardRepository.findByClinicDateBetween(startDate, endDate, pageable)
                 .map(PatientRecordCardDto::from);
+    }
+
+    @Override
+    public List<PatientRecordCardDto> getPatientRecordsByMemberId(Long memberNo) {
+        return patientRecordCardRepository.findByMember_MemberNo(memberNo)
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PatientRecordCardDto> getPatientRecordsWithLimit(Long memberNo, int offset, int limit) {
+        return patientRecordCardRepository
+                .findByMemberNoOrderByClinicDateDesc(memberNo, offset, limit)
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public long getTotalRecordCount(Long memberNo) {
+        return patientRecordCardRepository.countByMemberNo(memberNo);
+    }
+
+    @Override
+    public List<PatientRecordCardDto> getNextPatientRecords(Long memberNo, int offset, int limit) {
+        List<PatientRecordCard> records = patientRecordCardRepository.findRecordsWithPagination(memberNo, offset, limit);
+        return records.stream().map(PatientRecordCardDto::from).collect(Collectors.toList());
+    }
+
+    private PatientRecordCardDto convertToDto(PatientRecordCard record) {
+        return PatientRecordCardDto.from(record);
     }
 }

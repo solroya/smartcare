@@ -1,6 +1,7 @@
 package com.nado.smartcare.member.domain.dto;
 
 import com.nado.smartcare.member.domain.Member;
+import com.nado.smartcare.patient.domain.PatientRecordCard;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,6 +9,7 @@ import jakarta.validation.constraints.Pattern;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record MemberDto(
         Long memberNo,
@@ -35,6 +37,8 @@ public record MemberDto(
 
         boolean isSocial,
 
+        List<PatientRecordCard> patientRecordCards,
+
         LocalDateTime createdAt,
         LocalDateTime updatedAt) {
 
@@ -49,6 +53,7 @@ public record MemberDto(
                 member.getMemberPhoneNumber(),
                 member.getMemberBirthday(),
                 member.isSocial(),
+                member.getPatientRecordCards(),
                 member.getCreatedAt(),
                 member.getUpdatedAt()
         );

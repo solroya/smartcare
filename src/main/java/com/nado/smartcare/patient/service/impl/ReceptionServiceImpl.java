@@ -112,6 +112,17 @@ public class ReceptionServiceImpl implements ReceptionService {
     // 예약없이 현장 접수 되는 경우 사용
     @Override
     public ReceptionDto getOrCreateReception(Long memberNo, Long employeeNo) {
+
+        // 가장 최근의 접수 기록을 찾도록 수정(중복 접수 오류 처리)
+        List<Reception> existingReceptions = receptionRepository
+                .findByMember_MemberNoAndEmployee_EmployeeNoOrderByCreatedAtDesc(memberNo, employeeNo);
+
+        if (!existingReceptions.isEmpty()) {
+            // 가장 최근 접수 기록 반환
+            return ReceptionDto.from(existingReceptions.get(0));
+        }
+
+
         // 해당 환자와 의사의 기존 접수가 있는지 확인
         return receptionRepository.findByMember_MemberNoAndEmployee_EmployeeNo(memberNo, employeeNo)
                 .map(ReceptionDto::from)
