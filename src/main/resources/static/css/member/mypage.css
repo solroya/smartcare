@@ -304,3 +304,125 @@
 .load-more-btn:hover {
     background-color: #1C3D5A;
 }
+
+/* 예약 취소 관련 css */
+.reservation-section {
+    width: 100%;
+    max-width: 1620px;
+    margin: 0 auto 80px;
+    padding: 20px;
+}
+
+.reservation-header {
+    margin-bottom: 40px;
+}
+
+.reservation-header span {
+    font-size: 24px;
+    color: #1C3D5A;
+    font-weight: bold;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.reservation-title p {
+    font-size: 40px;
+    line-height: 50px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.reservation-title b {
+    font-weight: bold;
+}
+
+.titleLine {
+    width: 550px;
+    height: 3px;
+    background-color: #1C3D5A;
+    opacity: 0.2;
+    margin-bottom: 40px;
+}
+
+.reservation-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.reservation-card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.reservation-date {
+    margin-bottom: 15px;
+}
+
+.reservation-date .date {
+    font-size: 18px;
+    font-weight: bold;
+    color: #1C3D5A;
+    margin-right: 10px;
+}
+
+.reservation-date .time {
+    color: #666;
+}
+
+.doctor-info {
+    margin-bottom: 15px;
+}
+
+.doctor-info span {
+    color: #333;
+    margin-right: 10px;
+}
+
+.cancel-btn {
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cancel-btn:hover {
+    background-color: #cc0000;
+}
+
+.status-completed {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.reservation-card.past {
+    opacity: 0.7;
+}
+
+.no-reservations {
+    text-align: center;
+    padding: 40px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.make-reservation-btn {
+    display: inline-block;
+    background-color: #5BC0DE;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 4px;
+    text-decoration: none;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+.make-reservation-btn:hover {
+    background-color: #1C3D5A;
+}

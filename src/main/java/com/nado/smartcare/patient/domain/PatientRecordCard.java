@@ -5,20 +5,21 @@ import com.nado.smartcare.config.BaseEntity;
 import com.nado.smartcare.disease.domain.DiseaseCategory;
 import com.nado.smartcare.disease.domain.DiseaseList;
 import com.nado.smartcare.employee.domain.Employee;
+import com.nado.smartcare.member.controller.MemberController;
 import com.nado.smartcare.member.domain.Member;
 import com.nado.smartcare.patient.domain.dto.PatientRecordCardDto;
 import com.nado.smartcare.patient.domain.dto.type.ClinicStatus;
 import com.nado.smartcare.reservation.domain.Reservation;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 public class PatientRecordCard extends BaseEntity {
 
     @Id

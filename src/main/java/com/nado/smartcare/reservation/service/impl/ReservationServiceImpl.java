@@ -16,6 +16,7 @@ import com.nado.smartcare.patient.service.PatientRecordCardService;
 import com.nado.smartcare.reservation.domain.Reservation;
 import com.nado.smartcare.reservation.domain.dto.ReservationDto;
 import com.nado.smartcare.reservation.domain.dto.ReservationScheduleDto;
+import com.nado.smartcare.reservation.domain.type.ReservationStatus;
 import com.nado.smartcare.reservation.domain.type.TimeSlot;
 import com.nado.smartcare.reservation.repository.ReservationRepository;
 import com.nado.smartcare.reservation.service.ReservationService;
@@ -155,6 +156,30 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationRepository.findAll().stream()
                 .map(ReservationDto::from)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ReservationDto> getReservationsByMemberId(Long memberNo) {
+        return reservationRepository.findByMember_MemberNo(memberNo).stream()
+                .map(ReservationDto::from)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void cancelReservation(Long reservationNo) {
+        // 예약 정보 조회
+        Reservation reservation = reservationRepository.findById(reservationNo)
+                .orElseThrow(() -> new IllegalArgumentException("예약 정보를 찾을 수 없습니다."));
+
+        // 이미 취소된 예약인지 확인 (예약 상태 enum이 있다고 가정)
+        if (reservation.getReservationStatus() == ReservationStatus.CANCELLED) {
+            throw new IllegalStateException("이미 취소된 예약입니다.");
+        }
+
+        // 예약 상태를 취소로 변경
+        reservation.cancel();
+
+        reservationRepository.save(reservation);
     }
 
 }

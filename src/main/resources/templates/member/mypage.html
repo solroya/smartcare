@@ -48,6 +48,74 @@
     </div>
   </div>
 
+  <!-- Reservation Section -->
+  <div class="reservation-section">
+    <div class="reservation-content">
+      <div class="reservation-header">
+        <span>SMART CARE</span>
+        <div class="reservation-title">
+          <p>진료예약<br><b>현황</b></p>
+          <div class="titleLine"></div>
+        </div>
+      </div>
+
+      <!-- 예약 목록 -->
+      <div class="reservation-list">
+        <!-- 진행중인 예약 -->
+        <div class="upcoming-reservations" th:if="${not #lists.isEmpty(upcomingReservations)}">
+          <h3>진행중인 예약</h3>
+          <div class="reservation-cards">
+            <div class="reservation-card" th:each="reservation : ${upcomingReservations}"
+                 th:if="${reservation.reservationStatus != null and reservation.reservationStatus == T(com.nado.smartcare.reservation.domain.type.ReservationStatus).CONFIRMED}">
+              <div class="reservation-info">
+                <div class="reservation-date">
+                  <span class="date" th:text="${#temporals.format(reservation.reservationDate, 'yyyy.MM.dd')}">2025.02.05</span>
+                  <span class="time" th:text="${reservation.timeSlot.displayName}">오전</span>
+                </div>
+                <div class="doctor-info">
+                  <span th:text="${reservation.employeeNo().department.getDepartmentName()}">내과</span>
+                  <span th:text="${reservation.employeeNo().employeeName}">김의사</span>
+                </div>
+                <button class="cancel-btn"
+                        th:data-reservation-id="${reservation.reservationNo}"
+                        onclick="cancelReservation(this)">예약 취소</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <!-- 지난 예약 -->
+      <div class="past-reservations" th:if="${not #lists.isEmpty(pastReservations)}">
+        <h3>지난 예약</h3>
+        <div class="reservation-cards">
+          <div class="reservation-card past" th:each="reservation : ${pastReservations}"
+               th:if="${reservation.reservationStatus != null and reservation.reservationStatus == T(com.nado.smartcare.reservation.domain.type.ReservationStatus).COMPLETED}">
+            <div class="reservation-info">
+              <div class="reservation-date">
+                <span class="date" th:text="${#temporals.format(reservation.reservationDate, 'yyyy.MM.dd')}">2025.02.05</span>
+                <span class="time" th:text="${reservation.timeSlot.displayName}">오전</span>
+              </div>
+              <div class="doctor-info">
+                <span th:text="${reservation.employee.department.departmentName}">내과</span>
+                <span th:text="${reservation.employee.employeeName}">김의사</span>
+              </div>
+              <span class="status-completed">진료 완료</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- 예약이 없는 경우 -->
+        <div class="no-reservations" th:if="${#lists.isEmpty(upcomingReservations) and #lists.isEmpty(pastReservations)}">
+          <p>예약 내역이 없습니다.</p>
+          <a href="/member/reservation/new" class="make-reservation-btn">예약하기</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Medical Records Section -->
   <div class="healthContentwrap">
     <div class="healthContent">
@@ -105,6 +173,37 @@
   <div th:replace="~{layout/footer :: footer}"></div>
 
   <script>
+
+    async function cancelReservation(button) {
+      if (!confirm('예약을 취소하시겠습니까?')) {
+        return;
+      }
+
+      const reservationId = button.getAttribute('data-reservation-id');
+
+      try {
+        const response = await fetch(`/member/reservation/cancel/${reservationId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          alert('예약이 취소되었습니다.');
+          // 페이지 새로고침
+          window.location.reload();
+        } else {
+          alert(result.message || '예약 취소에 실패했습니다.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('예약 취소 처리 중 오류가 발생했습니다.');
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
       const rows = document.querySelectorAll(".post-row");
       const loadMoreBtn = document.getElementById("moreView-btn");
@@ -130,6 +229,8 @@
         }
       });
     });
+
+
   </script>
 </body>
 </html>

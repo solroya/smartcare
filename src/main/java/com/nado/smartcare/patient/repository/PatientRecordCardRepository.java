@@ -1,5 +1,6 @@
 package com.nado.smartcare.patient.repository;
 
+import com.nado.smartcare.member.domain.Member;
 import com.nado.smartcare.patient.domain.PatientRecordCard;
 import com.nado.smartcare.reservation.domain.PatientRecordCardWithCount;
 import org.springframework.data.domain.Page;
@@ -56,5 +57,6 @@ public interface PatientRecordCardRepository extends JpaRepository<PatientRecord
             @Param("limit") int limit);
 
 
+    PatientRecordCard findByMember(Member member);
 
 }
