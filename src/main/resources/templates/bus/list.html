@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>음식점 추천 경로</title>
+<link rel="stylesheet" th:href="@{/css/reset.css}">
+<link rel="stylesheet" th:href="@{/css/bus/list.css}">
+<script th:src="@{/js/bus/list.js}"></script>
+<script type="text/javascript" th:src="@{'//dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${scriptKey}}"></script>
+<style>
+	#map-container {
+      width: 100%;
+      height: 100vh;
+    }
+    
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+</style>
+</head>
+<body>
+	<div class="content">
+		<div class="listwrap">
+			<div class="list">
+				<div class="header">
+					<div class="gnb-btn" title="전체메뉴 열기">
+				        <div class="bar"></div>
+				        <div class="bar"></div>
+				        <div class="bar"></div>
+				    </div>
+				    <a th:href="@{/main}">SmartCare</a>
+				</div>
+				<div class="aiRecommentBox">
+                    <p class="aiText-title"><b>ooo님</b>이 선택하신 음식점 추천 경로</p>
+                    <div class="aiBusBox">
+                        <img th:src="${foodPlace.imageUrl}" alt="음식점 이미지">
+                        <div class="busText">
+                            <div class="busText-Text">
+                                <p>• 추천 경로</p>
+                                <div class="heightLine"></div>
+                                <!-- 추가 내용 -->
+                            </div>
+                            <span class="busText-subText">AI를 기반으로 <b>ooo님</b>이 선택하신<br>
+                            음식점의 최적의 경로를 추천드립니다.</span>
+                        </div>
+                    </div>
+                </div>
+				<div class="busListwrap">
+				    <p class="busList-Title">추천 경로</p>
+				    <div class="busList">
+				        <div class="busListBox">
+				            <ul id="busRoutes">
+				                <!-- 추천 경로 리스트가 동적으로 추가됩니다 -->
+				            </ul>
+				        </div>
+				    </div>
+				</div>
+			</div>
+		</div>
+		<!-- 지도 자리 -->
+		<div id="map-container">
+			<div id="map"></div>
+		</div>
+	</div>
+</body>
+</html>
