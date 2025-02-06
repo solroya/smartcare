@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>이벤트 - 스마트케어</title>
+  <link rel="stylesheet" th:href="@{/css/member/common.css}">
+  <style>
+    .event-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* 히어로 섹션 스타일 */
+    .hero-section {
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 4rem 2rem;
+      text-align: center;
+      border-radius: 15px;
+      margin-bottom: 3rem;
+    }
+
+    .hero-section h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero-section p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    /* 이벤트 그리드 스타일 */
+    .event-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .event-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .event-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .event-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .event-content {
+      padding: 1.5rem;
+    }
+
+    .event-title {
+      font-size: 1.25rem;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .event-period {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 1rem;
+    }
+
+    .event-description {
+      color: #333;
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    .event-tag {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      background-color: var(--background-light);
+      color: var(--primary-color);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-right: 0.5rem;
+    }
+
+    /* 탭 네비게이션 스타일 */
+    .event-tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+      gap: 1rem;
+    }
+
+    .event-tab {
+      padding: 0.8rem 1.5rem;
+      border: none;
+      background: none;
+      color: #666;
+      cursor: pointer;
+      font-size: 1.1rem;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .event-tab.active {
+      color: var(--primary-color);
+      border-bottom-color: var(--primary-color);
+    }
+
+    /* 반응형 디자인 */
+    @media (max-width: 768px) {
+      .hero-section {
+        padding: 2rem 1rem;
+      }
+
+      .hero-section h1 {
+        font-size: 2rem;
+      }
+
+      .event-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<div th:replace="~{layout/header :: header}"></div>
+
+<main class="event-container">
+  <!-- 히어로 섹션 -->
+  <section class="hero-section">
+    <h1>스마트케어 특별 이벤트</h1>
+    <p>더 건강한 삶을 위한 특별한 혜택을 만나보세요</p>
+  </section>
+
+  <!-- 이벤트 탭 -->
+  <div class="event-tabs">
+    <button class="event-tab active">전체 이벤트</button>
+    <button class="event-tab">진행중</button>
+    <button class="event-tab">종료</button>
+  </div>
+
+  <!-- 이벤트 그리드 -->
+  <div class="event-grid">
+    <!-- 이벤트 카드 예시 -->
+    <article class="event-card">
+      <img src="/api/placeholder/400/200" alt="건강검진 이벤트" class="event-image">
+      <div class="event-content">
+        <h3 class="event-title">봄맞이 건강검진 20% 할인</h3>
+        <p class="event-period">2025.02.01 - 2025.03.31</p>
+        <p class="event-description">
+          새로운 계절을 맞아 건강한 시작을 준비하세요.
+          종합건강검진 패키지를 특별 할인된 가격으로 만나보세요.
+        </p>
+        <span class="event-tag">진행중</span>
+        <span class="event-tag">건강검진</span>
+      </div>
+    </article>
+
+    <!-- 추가 이벤트 카드들 -->
+  </div>
+</main>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+
+<script>
+  // 탭 전환 기능
+  document.querySelectorAll('.event-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.event-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      // 여기에 탭 필터링 로직 추가
+    });
+  });
+</script>
+</body>
+</html>
