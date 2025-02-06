@@ -54,6 +54,7 @@
 	height: 52px;
 	background-color : #1C3D5A;
 	margin-bottom : 5px;
+	cursor: pointer;
 }
 
 .form-group:nth-child(1) {
@@ -77,6 +78,7 @@
 .form-group-2 button {
 	font-size : 18px;
 	color : #fff;
+	cursor: pointer;
 }
 
 .info-find {
