@@ -40,18 +40,15 @@ import java.util.stream.Collectors;
 public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
-    private final PatientRecordCardService patientRecordCardService;
-    private final MemberService memberService;
-    private final EmployeeService employeeService;
     private final EmployeeRepository employeeRepository;
     private final MemberRepository memberRepository;
     private final PatientRecordCardRepository patientRecordCardRepository;
 
     @Override
-    public Reservation createReservation(Long memberNo, LocalDate localDate, TimeSlot timeSlot, Long employeeNo, Long patientRecordCardNo, WorkingStatus status) {
+    public Reservation createReservation(Long memberNo, LocalDate localDate, TimeSlot timeSlot, Long employeeNo, Long patientRecordCardNo, WorkingStatus status, ReservationStatus reservationStatus) {
 
         // 동일 시간대 예약 여부 확인
-        if (reservationRepository.existsByEmployee_EmployeeNoAndReservationDateAndTimeSlot(employeeNo, localDate, timeSlot)) {
+        if (reservationRepository.existsByEmployee_EmployeeNoAndReservationDateAndTimeSlotAndReservationStatus(employeeNo, localDate, timeSlot, ReservationStatus.CONFIRMED)) {
             throw new IllegalArgumentException("이미 예약이 되어 있습니다.");
         }
 
@@ -80,9 +77,9 @@ public class ReservationServiceImpl implements ReservationService {
                 timeSlot,
                 employee,
                 status,
-                patientRecordCard
+                patientRecordCard,
+                reservationStatus
         );
-
         return reservationRepository.save(reservation);
 
     }
@@ -98,6 +95,25 @@ public class ReservationServiceImpl implements ReservationService {
         List<LocalDate> availableDates = new ArrayList<>();
         for (LocalDate date = today; !date.isAfter(lastDayOfMonth); date = date.plusDays(1)) {
             if (!reservationByEmployeeNoAndTimeSlot.contains(date)) {
+                log.info("예약가능 날짜로 되는 날짜: {}", date);
+                availableDates.add(date);
+            }
+        }
+        return availableDates;
+    }
+
+    @Override
+    public List<LocalDate> findNonCancelledReservationsDates(Long employeeNo, TimeSlot timeSlot) {
+        List<LocalDate> reservationByEmployeeNoAndTimeSlot = reservationRepository.findNonCancelledReservationDates(employeeNo, timeSlot);
+
+        // 당월 날짜 조회
+        LocalDate today = LocalDate.now();
+        LocalDate lastDayOfMonth = today.withDayOfMonth(today.lengthOfMonth());
+
+        List<LocalDate> availableDates = new ArrayList<>();
+        for (LocalDate date = today; !date.isAfter(lastDayOfMonth); date = date.plusDays(1)) {
+            if (!reservationByEmployeeNoAndTimeSlot.contains(date)) {
+                log.info("예약가능 날짜로 되는 날짜(취소예약 내역 포함): {}", date);
                 availableDates.add(date);
             }
         }
@@ -116,9 +132,12 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public Page<ReservationDto> findAllWithPagination(Pageable pageable) {
-        return reservationRepository.findAll(pageable)
-                .map(ReservationDto::from);
+    public Page<ReservationDto> findAllWithPagination(Pageable pageable, ReservationStatus reservationStatus) {
+        Page<Reservation> confirmedReservations = reservationRepository.findAllByReservationStatus(
+                ReservationStatus.CONFIRMED, pageable
+        );
+
+        return confirmedReservations.map(ReservationDto::from);
     }
 
     @Override
@@ -138,17 +157,21 @@ public class ReservationServiceImpl implements ReservationService {
 
         List<Reservation> reservations = reservationRepository
                 .findReservationsForCurrentWeek(startOfWeek, endOfWeek);
-
         log.info("조회된 예약 수: {}", reservations.size());
+
         // 상세 로깅 추가
         reservations.forEach(r -> log.info("예약 정보: 날짜={}, 시간대={}, 의사번호={}",
                 r.getReservationDate(),
                 r.getTimeSlot(),
                 r.getEmployee().getEmployeeNo()));
 
-        return reservations.stream()
+        // 예약 취소 기능 추가에 따른 상세 내역 필터 기능 추가
+        List<ReservationScheduleDto> confirmedReservations = reservations.stream()
+                .filter(r -> r.getReservationStatus() == ReservationStatus.CONFIRMED)
                 .map(ReservationScheduleDto::from)
                 .collect(Collectors.toList());
+
+        return confirmedReservations;
     }
 
     @Override
@@ -178,6 +201,18 @@ public class ReservationServiceImpl implements ReservationService {
 
         // 예약 상태를 취소로 변경
         reservation.cancel();
+
+        reservationRepository.save(reservation);
+    }
+
+    @Override
+    public void updateReservationStatus(Long reservationNo) {
+        // 예약 정보 조회
+        Reservation reservation = reservationRepository.findById(reservationNo)
+                .orElseThrow(() -> new IllegalArgumentException("예약 정보를 찾을 수 없습니다."));
+
+        // 예약 상태값 변경
+        reservation.updateReservation();
 
         reservationRepository.save(reservation);
     }

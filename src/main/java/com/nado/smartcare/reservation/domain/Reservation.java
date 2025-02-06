@@ -53,6 +53,11 @@ public class Reservation extends BaseEntity {
         this.reservationStatus = ReservationStatus.CANCELLED;
     }
 
+    // 상태 업데이트
+    public void updateReservation(){
+        this.reservationStatus = ReservationStatus.COMPLETED;
+    }
+
     public void setEmployee(Employee employee) {
         this.employee = employee;
     }
@@ -60,17 +65,18 @@ public class Reservation extends BaseEntity {
     public Reservation() {
     }
 
-    public Reservation(LocalDate reservationDate, TimeSlot timeSlot, Member member, Employee employee, WorkingStatus status, PatientRecordCard patientRecordCard) {
+    public Reservation(LocalDate reservationDate, TimeSlot timeSlot, Member member, Employee employee, WorkingStatus status, PatientRecordCard patientRecordCard, ReservationStatus reservationStatus) {
         this.reservationDate = reservationDate;
         this.timeSlot = timeSlot;
         this.member = member;
         this.employee = employee;
         this.status = status;
         this.patientRecordCard = patientRecordCard;
+        this.reservationStatus = reservationStatus;
     }
 
-    public static Reservation of(LocalDate reservationDate, Member member, TimeSlot timeSlot, Employee employee, WorkingStatus status, PatientRecordCard patientRecordCard) {
-        return new Reservation(reservationDate, timeSlot, member, employee, status, patientRecordCard);
+    public static Reservation of(LocalDate reservationDate, Member member, TimeSlot timeSlot, Employee employee, WorkingStatus status, PatientRecordCard patientRecordCard, ReservationStatus reservationStatus) {
+        return new Reservation(reservationDate, timeSlot, member, employee, status, patientRecordCard, reservationStatus);
     }
 
     public static Reservation toEntity(ReservationDto reservationDto) {
@@ -80,7 +86,8 @@ public class Reservation extends BaseEntity {
                 reservationDto.memberNo(),
                 reservationDto.employeeNo(),
                 reservationDto.employeeNo().getWorkingStatus(),
-                reservationDto.patientRecordCard()
+                reservationDto.patientRecordCard(),
+                reservationDto.reservationStatus()
         );
     }
 }

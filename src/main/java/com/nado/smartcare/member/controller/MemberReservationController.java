@@ -11,6 +11,7 @@ import com.nado.smartcare.patient.domain.PatientRecordCard;
 import com.nado.smartcare.patient.repository.PatientRecordCardRepository;
 import com.nado.smartcare.reservation.domain.Reservation;
 import com.nado.smartcare.reservation.domain.dto.ReservationRequest;
+import com.nado.smartcare.reservation.domain.type.ReservationStatus;
 import com.nado.smartcare.reservation.domain.type.TimeSlot;
 import com.nado.smartcare.reservation.service.ReservationService;
 import jakarta.validation.Valid;
@@ -51,11 +52,43 @@ public class MemberReservationController {
         Member currentMember = memberRepository.findByMemberId(userDetails.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
+        // 페이지 렌더링을 위한 기본값 설정
+        model.addAttribute("preSelected", false);
+        model.addAttribute("selectedDoctor", null);
+
         // 의사 정보가 URL 파라미터로 전달된 경우
         if (employeeNo != null) {
             Employee selectedDoctor = employeeRepository.findByEmployeeNo(employeeNo)
                     .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
+            // 선택된 의사와 진료과 정보를 모델에 추가
             model.addAttribute("selectedDoctor", selectedDoctor);
+            model.addAttribute("selectedDepartment", selectedDoctor.getDepartment().getDepartmentName());
+            model.addAttribute("preSelected", true); // 미리 선택되었음을 표시
+        }
+
+        model.addAttribute("member", currentMember);
+        model.addAttribute("timeSlots", TimeSlot.values());
+
+        return "member/reservation/new";
+    }
+
+    @GetMapping("/new?{employeeNo}&{departmentId}")
+    public String createReservationWithReservationData(@PathVariable Long employeeNo,
+                                    @PathVariable Long departmentId,
+                                    @AuthenticationPrincipal UserDetails userDetails,
+                                    Model model) {
+        // 현재 로그인한 멤버 정보 조회
+        Member currentMember = memberRepository.findByMemberId(userDetails.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+
+        // 의사 정보가 URL 파라미터로 전달된 경우
+        if (employeeNo != null) {
+            Employee selectedDoctor = employeeRepository.findByEmployeeNo(employeeNo)
+                    .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
+            // 선택된 의사와 진료과 정보를 모델에 추가
+            model.addAttribute("selectedDoctor", selectedDoctor);
+            model.addAttribute("selectedDepartment", selectedDoctor.getDepartment().getDepartmentName());
+            model.addAttribute("preSelected", true); // 미리 선택되었음을 표시
         }
 
         model.addAttribute("member", currentMember);
@@ -79,13 +112,21 @@ public class MemberReservationController {
                     request.getTimeSlot(),
                     request.getEmployeeNo(),
                     request.getPatientRecordCardNo(),
-                    WorkingStatus.WORKING
+                    WorkingStatus.WORKING,
+                    ReservationStatus.CONFIRMED
             );
 
             return "redirect:/member/reservation/success/" + reservation.getReservationNo();
 
 
         } catch (IllegalArgumentException e) {
+            log.error("예약확정 중 예러 발생" , e);
+            Employee selectedDoctor = employeeRepository.findById(request.getEmployeeNo())
+                    .orElse(null);
+
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("selectedDoctor", selectedDoctor);
+            model.addAttribute("timeSlots", TimeSlot.values());
             model.addAttribute("error", e.getMessage());
             return "member/reservation/new";
         }
@@ -132,15 +173,10 @@ public class MemberReservationController {
     public ResponseEntity<List<LocalDate>> getAvailableDates(
             @RequestParam("employeeNo") Long employeeNo,
             @RequestParam("timeSlot") TimeSlot timeSlot) {
-        List<LocalDate> availableDates = reservationService.getAvailableDates(employeeNo, timeSlot);
-        return ResponseEntity.ok(availableDates);
-    }
 
-    private PatientRecordCard createNewPatientRecordCard(Member member) {
-        PatientRecordCard newCard = PatientRecordCard.builder()
-                .member(member)
-                .build();
-        return patientRecordCardRepository.save(newCard);
+
+        List<LocalDate> availableDates = reservationService.findNonCancelledReservationsDates(employeeNo, timeSlot);
+        return ResponseEntity.ok(availableDates);
     }
 
     @GetMapping("/departments")

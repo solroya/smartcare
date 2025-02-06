@@ -20,21 +20,21 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @RequiredArgsConstructor
 public class BusArrivalServiceImpl implements IBusArrivalService {
-	
+
 	@Autowired
 	private final RestTemplate restTemplate;
-	
+
 	@Value("${gwangju.arrival.api.url}")
 	private String arrivalApiUrl;
-	
+
 	@Value("${gwangju.api.key}")
 	private String apiKey;
-	
+
 	@Override
 	public List<BusArrivalDTO> getArrivalInfoByBusStopId(int busStopId) {
 		String url = arrivalApiUrl + "?key=" + apiKey + "&BUSSTOP_ID=" + busStopId;
 		List<BusArrivalDTO> busArrivals = new ArrayList<>();
-		
+
 		try {
 			String response = restTemplate.getForObject(url, String.class);
 			ObjectMapper objectMapper = new ObjectMapper();
@@ -46,12 +46,12 @@ public class BusArrivalServiceImpl implements IBusArrivalService {
 					busArrivals.add(dto);
 				}
 			}
-			
+
 			log.info("정류자 {}의 도착 정보를 성공적으로 가져왔습니다. {}", busStopId, busArrivals);
 		} catch (Exception e) {
 			log.error("정류장 도착 정보 호출 중 오류 발생 : ", e);
 		}
-		
+
 		return busArrivals;
 	}
 

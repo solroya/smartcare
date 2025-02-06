@@ -108,7 +108,7 @@ public class PatientController {
         return "erp/patients/search-results";
     }
 
-    @GetMapping("searchByName")
+    @GetMapping("/searchByName")
     public String searchPatientsByName(@RequestParam("memberName") String memberName,
                                        @RequestParam(defaultValue = "0") int page,
                                        @RequestParam(defaultValue = "10") int size,
@@ -218,6 +218,7 @@ public class PatientController {
 
         model.addAttribute("reception", receptionDto);
         model.addAttribute("categories", categories);
+        model.addAttribute("reservationNo", reservationNo);
 
         return "erp/patients/reception/register";
     }
@@ -238,14 +239,19 @@ public class PatientController {
     @PostMapping("/{receptionNo}/record")
     public String registerPatientRecordCard(
             @RequestParam("receptionNo") Long receptionNo,
+            @RequestParam("reservationNo") Long reservationNo,
             PatientRecordCardDto patientRecordCardDto) {
         log.info("받은 receptionNo: {}", receptionNo);
         log.info("넘겨받은 환자 기록 카드 정보: {}", patientRecordCardDto);
+        log.info("받은 reservationNo: {}", reservationNo);
 
         // DB에서 Reception 조회
         Reception reception = receptionRepository.findById(receptionNo)
                 .orElseThrow(() -> new IllegalArgumentException("Reception not found with id=" + receptionNo));
         log.info("DB에서 조회된 reception: {}", reception);
+
+        // 기존 예약 상태 변경
+        reservationService.updateReservationStatus(reservationNo);
 
         // 새로운 PatientRecordCard 생성
         patientRecordCardService.registerPatientRecordCard(patientRecordCardDto);

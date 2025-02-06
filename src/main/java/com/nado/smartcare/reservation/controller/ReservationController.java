@@ -12,6 +12,7 @@ import com.nado.smartcare.reservation.domain.Reservation;
 import com.nado.smartcare.reservation.domain.dto.EmployeeResponse;
 import com.nado.smartcare.reservation.domain.dto.ReservationRequest;
 import com.nado.smartcare.reservation.domain.dto.ReservationResponse;
+import com.nado.smartcare.reservation.domain.type.ReservationStatus;
 import com.nado.smartcare.reservation.domain.type.TimeSlot;
 import com.nado.smartcare.reservation.domain.dto.AllowedUserResponse;
 import com.nado.smartcare.reservation.service.ReservationService;
@@ -125,7 +126,8 @@ public class ReservationController {
                     request.getTimeSlot(),
                     request.getEmployeeNo(),
                     request.getPatientRecordCardNo(),
-                    WorkingStatus.WORKING
+                    WorkingStatus.WORKING,
+                    ReservationStatus.CONFIRMED
             );
 
             // 성공 응답 반환

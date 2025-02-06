@@ -7,6 +7,7 @@ import com.nado.smartcare.employee.repository.EmployeeRepository;
 import com.nado.smartcare.member.repository.MemberRepository;
 import com.nado.smartcare.reservation.domain.Reservation;
 import com.nado.smartcare.reservation.domain.dto.ReservationRequest;
+import com.nado.smartcare.reservation.domain.type.ReservationStatus;
 import com.nado.smartcare.reservation.domain.type.TimeSlot;
 import com.nado.smartcare.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
@@ -80,7 +81,8 @@ public class NewApplyController {
                     request.getTimeSlot(),
                     request.getEmployeeNo(),
                     request.getPatientRecordCardNo(),
-                    WorkingStatus.WORKING
+                    WorkingStatus.WORKING,
+                    ReservationStatus.CONFIRMED
             );
 
             // 성공 시 예약 완료 페이지로 리다이렉트

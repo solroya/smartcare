@@ -204,7 +204,7 @@
             <input type="hidden" name="receptionNo" th:value="${reception.receptionNo()}" />
             <input type="hidden" name="member" th:value="${reception.member().memberNo}" />
             <input type="hidden" name="employee" th:value="${reception.employee().getEmployeeNo()}" />
-
+            <input type="hidden" name="reservationNo" th:value="${reservationNo}" />
             <div class="form-row">
                 <!--<div class="form-group">
                     <label for="diseaseCategory">진료 카테고리</label>
@@ -226,6 +226,7 @@
                     <label for="departmentName">진료과</label>
                     <input type="text" id="departmentName" name="departmentName" class="form-control"
                            th:value="${reception.employee().getDepartment().getDepartmentName()}" readonly />
+                    <input type="hidden" name="departmentNo" id="departmentNo" th:value="${reception.employee().department.getDepartmentId()}" />
                 </div>
 
                 <div class="form-group">
@@ -261,14 +262,14 @@
                           class="form-control"></textarea>
             </div>
 
-            <div class="form-group">
+<!--            <div class="form-group">
                 <label for="clinicReservationDate">진료 예약 일자</label>
                 <input type="datetime-local" id="clinicReservationDate"
                        name="clinicReservationDate" class="form-control" required />
-            </div>
+            </div>-->
 
             <input type="hidden" name="clinicStatus" value="SCHEDULED" />
-
+            <!-- 예약 번호 -->
             <div class="button-group">
                 <a th:href="@{/erp/patients/list}" class="back-btn">목록으로 돌아가기</a>
                 <button type="submit" class="submit-btn">등록</button>
@@ -282,6 +283,12 @@
 
 
 <script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        // 페이지 로드 시 진료과에 해당하는 질병 목록을 자동으로 로드
+        const departmentName = document.getElementById('departmentNo').value;
+        loadDiseaseList(departmentName);
+    });
+
     function loadDiseaseList(categoryNo) {
         const diseaseListSelect = document.getElementById('diseaseList');
         diseaseListSelect.innerHTML = '<option>Loading...</option>';

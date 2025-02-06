@@ -20,6 +20,7 @@ import com.nado.smartcare.patient.service.PatientRecordCardService;
 import com.nado.smartcare.patient.service.ReceptionService;
 import com.nado.smartcare.reservation.domain.Reservation;
 import com.nado.smartcare.reservation.domain.dto.ReservationDto;
+import com.nado.smartcare.reservation.domain.type.ReservationStatus;
 import com.nado.smartcare.reservation.domain.type.TimeSlot;
 import com.nado.smartcare.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
@@ -57,10 +58,12 @@ public class PatientRecordCardController {
     @GetMapping("/list")
     public String listOfPatientRecords( @RequestParam(defaultValue = "0") int page,
                                         @RequestParam(defaultValue = "10") int size,
+                                        ReservationStatus reservationStatus,
                                         Model model) {
 
         Page<ReservationDto> reservations = reservationService.findAllWithPagination(
-                PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "reservationDate"))
+                PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "reservationDate")),
+                reservationStatus
         );
         log.info("reservations: {}", reservations);
 

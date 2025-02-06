@@ -15,15 +15,17 @@ import java.util.Optional;
 
 public interface ReservationService {
 
-    Reservation createReservation(Long memberNo, LocalDate localDate, TimeSlot timeSlot, Long employeeNo, Long patientRecordCardNo, WorkingStatus status);
+    Reservation createReservation(Long memberNo, LocalDate localDate, TimeSlot timeSlot, Long employeeNo, Long patientRecordCardNo, WorkingStatus status, ReservationStatus reservationStatus);
 
     List<LocalDate> getAvailableDates(Long employeeNo, TimeSlot timeSlot);
+
+    List<LocalDate> findNonCancelledReservationsDates(Long employeeNo, TimeSlot timeSlot);
 
     List<LocalDate> getAvailableDates(Long employeeNo, TimeSlot timeSlot, LocalDate now, LocalDate localDate);
 
     Reservation getReservation(Long reservationNo);
 
-    Page<ReservationDto> findAllWithPagination(Pageable pageable);
+    Page<ReservationDto> findAllWithPagination(Pageable pageable, ReservationStatus reservationStatus);
 
     Optional<ReservationDto> findReservationById(Long reservationNo);
 
@@ -34,5 +36,7 @@ public interface ReservationService {
     List<ReservationDto> getReservationsByMemberId(Long memberNo);
 
     void cancelReservation(Long reservationNo);
+
+    void updateReservationStatus(Long reservationNo);
 
 }

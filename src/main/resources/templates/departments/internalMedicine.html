@@ -100,7 +100,7 @@
               </table>
             </div>
           </div>
-          <a href="#" class="reservation-btn">
+          <a th:href="@{/member/reservation/new(employeeNo=${doctor.employeeNo}, departmentId=${doctor.departmentId().getDepartmentId()})}" class="reservation-btn">
             <img th:src="@{/img/department/calendar-icon.png}" alt="예약">
             <span>예약하기</span>
           </a>

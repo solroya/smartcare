@@ -325,3 +325,35 @@ select:focus, textarea:focus {
 .btn-secondary:hover {
     background-color: #e9ecef;
 }
+
+/* 의사 선택 페이지에서 넘어올경우 CSS 요소 수정*/
+
+.selected-info {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.info-display h3 {
+    color: #1C3D5A;
+    font-size: 20px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.info-item {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.info-item label {
+    width: 100px;
+    color: #666;
+    font-weight: 500;
+}
+
+.info-item span {
+    color: #1C3D5A;
+    font-weight: 600;
+}
