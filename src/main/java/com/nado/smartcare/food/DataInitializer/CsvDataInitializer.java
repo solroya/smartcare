@@ -25,7 +25,7 @@ public class CsvDataInitializer implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		
-//		Path csvPath = Paths.get("D:\\spring boot\\문서파일\\foodPlace.csv");
+//		Path csvPath = Paths.get("D:\\spring boot\\문서파일\\NHNfoodPlace.csv");
 //		
 //		List<FoodPlace> foodPlaces = Files.lines(csvPath)
 //			.skip(1)
