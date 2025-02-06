@@ -1,8 +1,6 @@
 package com.nado.smartcare.health.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Controller;
@@ -26,7 +24,7 @@ public class HealthController {
 	private final ICategoryService iCategoryService; 
 	
 	@GetMapping("/health")
-	public String healthForm(@RequestParam(name = "memberNo", required = false) Long memberNo, Model model) {
+	public String healthForm(@RequestParam("memberNo") Long memberNo, Model model) {
 		log.info("healthController에 들어왔나?");
 		List<CategoryDTO> categories = iCategoryService.getCategoriesForMember(memberNo);
 		log.info("회원 {}에게 추천된 카테고리: {}", memberNo, categories);
