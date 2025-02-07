@@ -18,7 +18,7 @@ INSERT INTO employee (
 ) VALUES (
              employee_seq.NEXTVAL,
              'internal_doc1',
-             '이순신',
+             '나이준',
              'pass123',
              'doc1.internal@example.com',
           0,
@@ -52,7 +52,7 @@ INSERT INTO employee (
 ) VALUES (
              employee_seq.NEXTVAL,
              'internal_doc2',
-             '김구',
+             '나도윤',
              'pass456',
              'doc2.internal@example.com',
           0,
@@ -86,7 +86,7 @@ INSERT INTO employee (
 ) VALUES (
              employee_seq.NEXTVAL,
              'internal_doc3',
-             '안중근',
+             '나하준',
              'pass456',
              'doc3.internal@example.com',
           0,
@@ -225,7 +225,7 @@ INSERT INTO employee (
 ) VALUES (
              employee_seq.NEXTVAL,
              'psychiatry_doc1',
-             '박주연',
+             '이서준',
              'pass345',
              'doc1.psychiatry@example.com',
           0,
@@ -259,7 +259,7 @@ INSERT INTO employee (
 ) VALUES (
              employee_seq.NEXTVAL,
              'psychiatry_doc2',
-             '장영실',
+             '이시우',
              'pass678',
              'doc2.psychiatry@example.com',
           1,
@@ -294,7 +294,7 @@ INSERT INTO employee (
 ) VALUES (
              employee_seq.NEXTVAL,
              'psychiatry_doc3',
-             '세종대왕',
+             '이지호',
              'pass678',
              'doc3.psychiatry@example.com',
           1,

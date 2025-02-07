@@ -2,16 +2,11 @@ package com.nado.smartcare.reservation.controller;
 
 import com.nado.smartcare.employee.domain.Employee;
 import com.nado.smartcare.employee.domain.type.WorkingStatus;
-import com.nado.smartcare.employee.repository.DepartmentRepository;
 import com.nado.smartcare.employee.repository.EmployeeRepository;
-import com.nado.smartcare.employee.service.EmployeeService;
 import com.nado.smartcare.member.domain.Member;
 import com.nado.smartcare.member.repository.MemberRepository;
-import com.nado.smartcare.member.service.MemberService;
 import com.nado.smartcare.reservation.domain.Reservation;
-import com.nado.smartcare.reservation.domain.dto.EmployeeResponse;
 import com.nado.smartcare.reservation.domain.dto.ReservationRequest;
-import com.nado.smartcare.reservation.domain.dto.ReservationResponse;
 import com.nado.smartcare.reservation.domain.type.ReservationStatus;
 import com.nado.smartcare.reservation.domain.type.TimeSlot;
 import com.nado.smartcare.reservation.domain.dto.AllowedUserResponse;
@@ -22,7 +17,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,12 +29,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -48,16 +39,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/reservation")
 public class ReservationController {
     RestTemplate restTemplate = new RestTemplate();
+
     private final ReservationService reservationService;
-
-    private final MemberService memberService;
-
     // TODO : 임시 조회 기능 -> 시큐리티 도입 후 수정
     private final MemberRepository memberRepository;
     private final EmployeeRepository employeeRepository;
-    private final DepartmentRepository departmentRepository;
-
-    private final EmployeeService employeeService;
 
     @Value("${external.queue-service-url}")
     private String queueServiceUrl; // 외부 서비스 URL

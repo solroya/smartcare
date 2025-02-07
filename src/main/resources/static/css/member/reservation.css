@@ -1,126 +1,128 @@
+.content {
+    max-width: 1620px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
 .reservation-container {
+    margin: 180px auto 80px;
     max-width: 800px;
-    margin: 270px auto 80px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+/* Hero Section */
+.reservation-header {
+    background: #1C3D5A;
     padding: 40px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    color: white;
+    text-align: center;
+}
+
+.reservation-header span {
+    display: block;
+    color: #8AE4FF;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
 .reservation-title {
     font-size: 32px;
-    color: #1C3D5A;
+    margin: 0;
+    font-weight: bold;
+}
+
+/* Form Container */
+.reservation-form-container {
+    padding: 40px;
+}
+
+/* Selected Info Section */
+.selected-info {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 25px;
     margin-bottom: 40px;
-    text-align: center;
-    font-weight: bold;
+    border: 1px solid rgba(28, 61, 90, 0.1);
 }
 
-.selected-doctor {
-    background-color: #f5f5f5;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 30px;
-}
-
-.selected-doctor h3 {
-    font-size: 18px;
+.info-display h3 {
     color: #1C3D5A;
-    margin-bottom: 10px;
+    font-size: 20px;
     font-weight: bold;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(28, 61, 90, 0.1);
 }
 
-.selected-doctor p {
+.info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.info-item:last-child {
+    margin-bottom: 0;
+}
+
+.info-item label {
+    width: 100px;
+    color: #666;
+    font-weight: 500;
+}
+
+.info-item span {
+    color: #1C3D5A;
+    font-weight: 600;
     font-size: 16px;
-    color: #333;
-    margin-bottom: 5px;
 }
 
+/* Form Groups */
 .form-group {
-    margin-bottom: 25px;
+    margin-bottom: 30px;
 }
 
 .form-group label {
     display: block;
     font-size: 16px;
     color: #1C3D5A;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     font-weight: bold;
 }
 
-select, textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-    color: #333;
-}
-
-select:focus, textarea:focus {
-    border-color: #5BC0DE;
-    outline: none;
-}
-
-.visit-type-options {
-    display: flex;
-    gap: 20px;
-}
-
-.visit-type-options label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-}
-
-.available-dates {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 10px;
-    margin-bottom: 30px;
-}
-
-.date-option {
-    padding: 10px;
-    text-align: center;
-    background-color: #f5f5f5;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.date-option:hover {
-    background-color: #5BC0DE;
-    color: white;
-}
-
-.date-option.selected {
-    background-color: #1C3D5A;
-    color: white;
-}
-
-.submit-btn {
+select {
     width: 100%;
     padding: 15px;
-    background-color: #5BC0DE;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #333;
+    background-color: white;
+    transition: all 0.3s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%231C3D5A' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: calc(100% - 15px) center;
+    padding-right: 40px;
 }
 
-.submit-btn:hover {
-    background-color: #1C3D5A;
+select:focus {
+    border-color: #5BC0DE;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(91, 192, 222, 0.25);
+}
+
+/* Calendar Styles */
+.calendar-section {
+    margin-bottom: 40px;
 }
 
 .calendar-container {
-    width: 100%;
-    margin-top: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
     overflow: hidden;
 }
 
@@ -129,19 +131,20 @@ select:focus, textarea:focus {
     grid-template-columns: repeat(7, 1fr);
     background-color: #1C3D5A;
     color: white;
-    padding: 10px 0;
+    padding: 15px 0;
 }
 
 .calendar-weekday {
     text-align: center;
     font-weight: bold;
+    font-size: 14px;
 }
 
 .calendar-dates {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 1px;
-    background-color: #f5f5f5;
+    background-color: #e9ecef;
 }
 
 .calendar-date {
@@ -150,13 +153,15 @@ select:focus, textarea:focus {
     align-items: center;
     justify-content: center;
     background-color: white;
+    font-size: 16px;
     cursor: pointer;
     transition: all 0.3s ease;
+    position: relative;
 }
 
 .calendar-date.available {
     color: #1C3D5A;
-    font-weight: bold;
+    font-weight: 500;
 }
 
 .calendar-date.available:hover {
@@ -167,6 +172,7 @@ select:focus, textarea:focus {
 .calendar-date.unavailable {
     color: #ccc;
     cursor: not-allowed;
+    background-color: #f8f9fa;
 }
 
 .calendar-date.selected {
@@ -175,30 +181,99 @@ select:focus, textarea:focus {
 }
 
 .calendar-date.empty {
-    background-color: #f5f5f5;
+    background-color: #f8f9fa;
 }
 
+/* Selected Date Display */
+.selected-date-info {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 30px 0;
+    border: 2px solid #e9ecef;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.selected-date-info.has-selection {
+    background: #1C3D5A;
+    color: white;
+    border-color: #1C3D5A;
+}
+
+.selected-date-info p {
+    font-size: 16px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.selected-date-info .date-label {
+    font-weight: 500;
+    color: inherit;
+}
+
+.selected-date-info #selectedDateDisplay {
+    font-weight: bold;
+    color: inherit;
+}
+
+/* Submit Button */
+.submit-btn {
+    width: 100%;
+    padding: 18px;
+    background-color: #5BC0DE;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+}
+
+.submit-btn:disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.submit-btn.active {
+    opacity: 1;
+}
+
+.submit-btn.active:hover {
+    background-color: #1C3D5A;
+}
+
+/* Notice and Error Messages */
 .notice {
     text-align: center;
-    padding: 20px;
+    padding: 30px;
     color: #666;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin: 20px 0;
 }
 
 .error {
     text-align: center;
     padding: 20px;
     color: #dc3545;
+    background: #fff5f5;
+    border-radius: 8px;
+    margin: 20px 0;
 }
+
+
 
 /* 예약 성공 화면 디자인*/
-
-.content {
-    max-width: 1620px;
-    margin: 0 auto;
-}
 .reservation-container {
     max-width: 800px;
-    margin: 120px auto 80px;
+    margin: 150px auto 80px;
     padding: 40px;
     background-color: #fff;
     border-radius: 8px;

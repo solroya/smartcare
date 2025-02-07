@@ -100,7 +100,7 @@ public class NewApplyController {
 
     // 예약 완료 페이지
     @GetMapping("/success")
-    public String success(@RequestParam Long reservationNo, Model model) {
+    public String success(@RequestParam("reservationNo") Long reservationNo, Model model) {
         Reservation reservation = reservationService.getReservation(reservationNo);
         log.info("Reservation data: " + reservation);
         Optional<Employee> byEmployeeNo = employeeRepository.findByEmployeeNo(reservation.getEmployee().getEmployeeNo());
@@ -114,80 +114,4 @@ public class NewApplyController {
         model.addAttribute("timeSlot", reservation.getTimeSlot());
         return "reservation/success";
     }
-
-    // AJAX: 진료과별 의사 목록 조회
-  /*  @GetMapping("/doctors")
-    @ResponseBody
-    public ResponseEntity<List<EmployeeResponse>> getDoctorsByDepartment(
-            @RequestParam Long departmentId) {
-        List<Employee> doctors = employeeService.findByDepartmentIdAndStatus(
-                departmentId,
-                WorkingStatus.WORKING
-        );
-
-        List<EmployeeResponse> response = doctors.stream()
-                .map(EmployeeResponse::from)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(response);
-    }
-
-    // AJAX: 의사별 예약 가능 날짜 조회
-    @GetMapping("/available-dates")
-    @ResponseBody
-    public ResponseEntity<List<LocalDate>> getAvailableDates(
-            @RequestParam Long employeeNo,
-            @RequestParam TimeSlot timeSlot) {
-        List<LocalDate> availableDates = reservationService.getAvailableDates(
-                employeeNo,
-                timeSlot,
-                LocalDate.now(),
-                LocalDate.now().plusMonths(1)  // 한 달 치 예약 가능 날짜 제공
-        );
-        return ResponseEntity.ok(availableDates);
-    }*/
-/*
-
-    // AJAX: 특정 날짜의 예약 가능 시간대 조회
-    @GetMapping("/available-times")
-    @ResponseBody
-    public ResponseEntity<List<TimeSlot>> getAvailableTimeSlots(
-            @RequestParam Long employeeNo,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        List<TimeSlot> availableSlots = reservationService.getAvailableTimeSlots(
-                employeeNo,
-                date
-        );
-        return ResponseEntity.ok(availableSlots);
-    }
-
-    // 예약 생성
-    @PostMapping("/create")
-    @ResponseBody
-    public ResponseEntity<?> createReservation(@Valid @RequestBody ReservationRequest request) {
-        try {
-            ReservationResponse reservation = reservationService.createReservation(
-                    request.getMemberNo(),
-                    request.getReservationDate(),
-                    request.getTimeSlot(),
-                    request.getEmployeeNo(),
-                    request.getPatientRecordCardNo(),
-                    WorkingStatus.WORKING  // 기본 상태 설정
-            );
-
-            return ResponseEntity.ok(reservation);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest()
-                    .body(new ErrorResponse("예약 생성 실패", e.getMessage()));
-        }
-    }
-
-    // 예약 완료 페이지
-    @GetMapping("/success")
-    public String success(@RequestParam Long reservationId, Model model) {
-        ReservationResponse reservation = reservationService.getReservation(reservationId);
-        model.addAttribute("reservation", reservation);
-        return "reservation/success";
-    }
-*/
 }

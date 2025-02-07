@@ -2,235 +2,189 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>My Page</title>
-  <link rel="stylesheet" th:href="@{/css/reset.css}">
+  <title>Smart Care MyPage</title>
   <link rel="stylesheet" th:href="@{/css/member/mypage.css}">
 </head>
 <body>
 <div th:replace="~{layout/header :: header}"></div>
-<div class="content">
 
-  <!-- Title Section -->
-  <div class="titlewrap">
-    <div class="title">
-      <div class="titleText">
-        <span>진료 기록과 건강 관리를 한눈에</span>
-        <p>스마트케어 <b>마이페이지</b></p>
+<!-- Hero Section -->
+<div class="hero-section">
+  <div class="hero-content">
+    <div class="hero-subtitle">SMART CARE</div>
+    <h1 class="hero-title">진료 기록과 건강 관리를<br><b>한눈에</b></h1>
+    <p class="hero-description">스마트케어와 함께 더 건강한 삶을 시작하세요.</p>
+  </div>
+</div>
+
+<div class="main-content">
+  <!-- Profile Section -->
+  <div class="card-section">
+    <div class="section-header">
+      <div class="section-title">
+        <span>PROFILE</span>
+        <p>내 정보 <b>관리</b></p>
+      </div>
+      <button class="action-button">정보 수정</button>
+    </div>
+
+    <div class="profile-grid">
+      <div class="profile-item">
+        <label>이름</label>
+        <span th:text="${member.memberName}">홍길동</span>
+      </div>
+      <div class="profile-item">
+        <label>이메일</label>
+        <span th:text="${member.memberEmail}">email@example.com</span>
+      </div>
+      <div class="profile-item">
+        <label>전화번호</label>
+        <span th:text="${member.memberPhoneNumber}">010-1234-5678</span>
+      </div>
+      <div class="profile-item">
+        <label>생년월일</label>
+        <span th:text="${#temporals.format(member.memberBirthday, 'yyyy년 MM월 dd일')}">1990년 01월 01일</span>
       </div>
     </div>
   </div>
 
-  <!-- User Profile Section -->
-  <div class="profile-section">
-    <div class="profile-content">
-      <div class="profile-header">
-        <h2>내 정보</h2>
-        <button class="edit-btn">정보 수정</button>
-      </div>
-      <div class="profile-grid">
-        <div class="profile-item">
-          <label>이름</label>
-          <span th:text="${member.memberName}">홍길동</span>
-        </div>
-        <div class="profile-item">
-          <label>이메일</label>
-          <span th:text="${member.memberEmail}">email@example.com</span>
-        </div>
-        <div class="profile-item">
-          <label>전화번호</label>
-          <span th:text="${member.memberPhoneNumber}">010-1234-5678</span>
-        </div>
-        <div class="profile-item">
-          <label>생년월일</label>
-          <span th:text="${#temporals.format(member.memberBirthday, 'yyyy년 MM월 dd일')}">1990년 01월 01일</span>
-        </div>
+  <!-- Reservations Section -->
+  <div class="card-section">
+    <div class="section-header">
+      <div class="section-title">
+        <span>RESERVATION</span>
+        <p>진료예약 <b>현황</b></p>
       </div>
     </div>
-  </div>
 
-  <!-- Reservation Section -->
-  <div class="reservation-section">
-    <div class="reservation-content">
-      <div class="reservation-header">
-        <span>SMART CARE</span>
-        <div class="reservation-title">
-          <p>진료예약<br><b>현황</b></p>
-          <div class="titleLine"></div>
+    <div class="reservation-cards" th:if="${not #lists.isEmpty(upcomingReservations)}">
+      <div class="reservation-card" th:each="reservation : ${upcomingReservations}">
+        <div class="reservation-date">
+          <span th:text="${#temporals.format(reservation.reservationDate, 'yyyy.MM.dd')}">2024.02.05</span>
+          <span th:text="${reservation.timeSlot.displayName}">오전</span>
         </div>
-      </div>
-
-      <!-- 예약 목록 -->
-      <div class="reservation-list">
-        <!-- 진행중인 예약 -->
-        <div class="upcoming-reservations" th:if="${not #lists.isEmpty(upcomingReservations)}">
-          <h3>진행중인 예약</h3>
-          <div class="reservation-cards">
-            <div class="reservation-card" th:each="reservation : ${upcomingReservations}"
-                 th:if="${reservation.reservationStatus != null and reservation.reservationStatus == T(com.nado.smartcare.reservation.domain.type.ReservationStatus).CONFIRMED}">
-              <div class="reservation-info">
-                <div class="reservation-date">
-                  <span class="date" th:text="${#temporals.format(reservation.reservationDate, 'yyyy.MM.dd')}">2025.02.05</span>
-                  <span class="time" th:text="${reservation.timeSlot.displayName}">오전</span>
-                </div>
-                <div class="doctor-info">
-                  <span th:text="${reservation.employeeNo().department.getDepartmentName()}">내과</span>
-                  <span th:text="${reservation.employeeNo().employeeName}">김의사</span>
-                </div>
-                <button class="cancel-btn"
-                        th:data-reservation-id="${reservation.reservationNo}"
-                        onclick="cancelReservation(this)">예약 취소</button>
-              </div>
-            </div>
-          </div>
+        <div class="doctor-info">
+          <span th:text="${reservation.employeeNo().department.getDepartmentName()}">내과</span>
+          <span th:text="${reservation.employeeNo().employeeName}">김의사</span>
         </div>
+        <button class="cancel-btn"
+                th:data-reservation-id="${reservation.reservationNo}"
+                onclick="cancelReservation(this)">예약 취소</button>
       </div>
+    </div>
 
-        <!-- 지난 예약 -->
-      <div class="past-reservations" th:if="${not #lists.isEmpty(pastReservations)}">
-        <h3>지난 예약</h3>
-        <div class="reservation-cards">
-          <div class="reservation-card past" th:each="reservation : ${pastReservations}"
-               th:if="${reservation.reservationStatus != null and reservation.reservationStatus == T(com.nado.smartcare.reservation.domain.type.ReservationStatus).COMPLETED}">
-            <div class="reservation-info">
-              <div class="reservation-date">
-                <span class="date" th:text="${#temporals.format(reservation.reservationDate, 'yyyy.MM.dd')}">2025.02.05</span>
-                <span class="time" th:text="${reservation.timeSlot.displayName}">오전</span>
-              </div>
-              <div class="doctor-info">
-                <span th:text="${reservation.employee.department.departmentName}">내과</span>
-                <span th:text="${reservation.employee.employeeName}">김의사</span>
-              </div>
-              <span class="status-completed">진료 완료</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-      <!-- 예약이 없는 경우 -->
-        <div class="no-reservations" th:if="${#lists.isEmpty(upcomingReservations) and #lists.isEmpty(pastReservations)}">
-          <p>예약 내역이 없습니다.</p>
-          <a href="/member/reservation/new" class="make-reservation-btn">예약하기</a>
-        </div>
-      </div>
+    <div class="empty-state" th:if="${#lists.isEmpty(upcomingReservations)}">
+      <p>현재 예약된 진료가 없습니다.</p>
     </div>
   </div>
 
   <!-- Medical Records Section -->
-  <div class="healthContentwrap">
-    <div class="healthContent">
-      <div class="healthTitle">
-        <span>SMART CARE</span>
-        <div class="healthSubTitle">
-          <p>진료기록<br><b>타임라인</b></p>
-          <div class="healthLine"></div>
+  <div class="card-section">
+    <div class="section-header">
+      <div class="section-title">
+        <span>MEDICAL RECORD</span>
+        <p>진료기록 <b>타임라인</b></p>
+      </div>
+    </div>
+
+    <div class="timeline" th:if="${not #lists.isEmpty(records)}">
+      <div class="record-card" th:each="record, iterStat : ${records}"
+           th:if="${iterStat.index < 2}">
+        <div class="record-header">
+          <h3 th:text="${record.clinicName}">진료명</h3>
+          <span class="status-badge" th:text="${record.clinicStatus}">상태</span>
+        </div>
+        <div class="record-content">
+          <p class="doctor-info">
+            담당의: <span th:text="${record.employee.employeeName}">김의사</span>
+            <span th:text="${record.employee.department.departmentName}">내과</span>
+          </p>
+          <p class="diagnosis">
+            진단명: <span th:text="${record.diseaseList.diseaseName}">감기</span>
+          </p>
+          <p class="manifestation" th:text="${record.clinicManifestation}">
+            진료 소견 내용이 이곳에 표시됩니다.
+          </p>
         </div>
       </div>
+    </div>
 
-      <!-- Timeline -->
-      <div class="timeline">
-        <div class="timeline-items" th:if="${not #lists.isEmpty(records)}">
-          <th:block th:each="record, iterStat : ${records}">
-            <div class="record-card post-row" th:style="${iterStat.index >= 2} ? 'display: none;' : ''">
-              <div class="record-date">
-                <span class="date" th:text="${#temporals.format(record.clinicDate, 'MM.dd')}">02.04</span>
-              </div>
-              <div class="record-content">
-                <div class="record-header">
-                  <h3 th:text="${record.clinicName}">진료명</h3>
-                  <span class="status-badge" th:text="${record.clinicStatus}">상태</span>
-                </div>
-                <div class="record-body">
-                  <p class="doctor-info">
-                    담당의: <span th:text="${record.employee.employeeName}">김의사</span>
-                    <span> | </span>
-                    <span th:text="${record.employee.department.departmentName}">내과</span>
-                  </p>
-                  <p class="diagnosis">
-                    진단명: <span th:text="${record.diseaseList.diseaseName}">감기</span>
-                  </p>
-                  <p class="manifestation" th:text="${record.clinicManifestation}">
-                    진료 소견 내용...
-                  </p>
-                </div>
-              </div>
-            </div>
-          </th:block>
-        </div>
-        <div class="no-records" th:if="${#lists.isEmpty(records)}">
-          <p>진료 기록이 없습니다.</p>
-        </div>
-      </div>
+    <div class="empty-state" th:if="${#lists.isEmpty(records)}">
+      <p>아직 진료 기록이 없습니다.</p>
+    </div>
 
-      <!-- 더보기 버튼 -->
-      <div class="load-more-container">
-        <button id="moreView-btn" class="load-more-btn">더보기</button>
-      </div>
-
+    <div class="load-more-container" th:if="${not #lists.isEmpty(records)}">
+      <button id="moreView-btn" class="action-button">더보기</button>
     </div>
   </div>
 </div>
-  <div th:replace="~{layout/footer :: footer}"></div>
 
-  <script>
+<div th:replace="~{layout/footer :: footer}"></div>
 
-    async function cancelReservation(button) {
-      if (!confirm('예약을 취소하시겠습니까?')) {
-        return;
-      }
-
-      const reservationId = button.getAttribute('data-reservation-id');
-
-      try {
-        const response = await fetch(`/member/reservation/cancel/${reservationId}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          alert('예약이 취소되었습니다.');
-          // 페이지 새로고침
-          window.location.reload();
-        } else {
-          alert(result.message || '예약 취소에 실패했습니다.');
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('예약 취소 처리 중 오류가 발생했습니다.');
-      }
+<script>
+  // 예약 취소 함수
+  async function cancelReservation(button) {
+    if (!confirm('예약을 취소하시겠습니까?')) {
+      return;
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-      const rows = document.querySelectorAll(".post-row");
-      const loadMoreBtn = document.getElementById("moreView-btn");
-      let visibleCount = 2; // 처음 보여줄 데이터 개수
+    const reservationId = button.getAttribute('data-reservation-id');
 
-      loadMoreBtn.addEventListener("click", function() {
-        let hiddenRows = Array.from(rows).filter(row => getComputedStyle(row).display === "none");
-
-        for (let i = 0; i < 2 && i < hiddenRows.length; i++) {
-          hiddenRows[i].style.display = "";
-        }
-
-        // 더 이상 숨겨진 데이터가 없으면 버튼 숨김
-        if (Array.from(rows).every(row => getComputedStyle(row).display !== "none")) {
-          loadMoreBtn.style.display = "none";
+    try {
+      const response = await fetch(`/member/reservation/cancel/${reservationId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
         }
       });
 
-      // 초기 숨김 상태 설정
-      rows.forEach((row, index) => {
-        if (index >= visibleCount) {
-          row.style.display = "none";
-        }
-      });
+      const result = await response.json();
+
+      if (result.success) {
+        alert('예약이 취소되었습니다.');
+        window.location.reload();
+      } else {
+        alert(result.message || '예약 취소에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('예약 취소 처리 중 오류가 발생했습니다.');
+    }
+  }
+
+  // 더보기 기능
+  document.addEventListener('DOMContentLoaded', function() {
+    const records = document.querySelectorAll(".record-card");
+    const loadMoreBtn = document.getElementById("moreView-btn");
+    const recordsPerPage = 2;
+
+    // 초기 상태 설정
+    records.forEach((record, index) => {
+      if (index >= recordsPerPage) {
+        record.style.display = "none";
+      }
     });
 
+    // 더보기 버튼 클릭 이벤트
+    loadMoreBtn.addEventListener("click", function() {
+      const hiddenRecords = Array.from(records).filter(
+              record => record.style.display === "none"
+      );
 
-  </script>
+      hiddenRecords.slice(0, recordsPerPage).forEach(record => {
+        record.style.display = "";
+      });
+
+      if (hiddenRecords.length <= recordsPerPage) {
+        loadMoreBtn.style.display = "none";
+      }
+    });
+
+    // 더 보여줄 기록이 없으면 버튼 숨기기
+    if (records.length <= recordsPerPage) {
+      loadMoreBtn.style.display = "none";
+    }
+  });
+</script>
 </body>
 </html>

@@ -255,4 +255,108 @@
 
 .header.expanded .expanded-content {
     display: block;
-} 
+}
+
+/* Improved Menu Header */
+.menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 50px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgba(28, 61, 90, 0.1);
+}
+
+.user-name {
+    position: relative;
+    color: #1C3D5A;
+    font-size: 24px;
+    font-weight: bold;
+    padding-left: 15px;
+}
+
+.user-name::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 24px;
+    background: #5BC0DE;
+    border-radius: 2px;
+}
+
+/* Enhanced Menu List */
+.menu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.menu-list li {
+    position: relative;
+    transition: all 0.3s ease;
+    cursor:pointer;
+}
+
+.menu-list li a {
+    display: block;
+    color: #1C3D5A;
+    font-size: 20px;
+    text-decoration: none;
+    padding: 15px 20px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.menu-list li:hover a {
+    background: rgba(91, 192, 222, 0.1);
+    color: #5BC0DE;
+    transform: translateX(10px);
+}
+
+/* Menu Footer */
+.menu-footer {
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 2px solid rgba(28, 61, 90, 0.1);
+}
+
+.menu-footer .contact-info {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.menu-footer .social-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.menu-footer .social-link {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.menu-footer .social-link:hover {
+    background: #5BC0DE;
+    transform: translateY(-2px);
+}
+
+.menu-footer .social-link img {
+    width: 20px;
+    height: 20px;
+    filter: brightness(0.7);
+}
+
+.menu-footer .social-link:hover img {
+    filter: brightness(2);
+}
