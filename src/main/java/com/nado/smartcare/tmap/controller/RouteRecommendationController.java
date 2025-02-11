@@ -23,18 +23,15 @@ public class RouteRecommendationController {
 	private final IRouteRecommendationService iRouteRecommendationService;
 	
 	@GetMapping("/recommend")
-	public ResponseEntity<List<RecommendedRouteDTO>> recommendRoutes(
-		@RequestParam("startLat") double startLat,
-		@RequestParam("startLng") double startLng,
-		@RequestParam("endLat") double endLat,
-		@RequestParam("endLng") double endLng
-	) {
-		log.info("들어왔나? : {}" , startLat);
-		log.info("들어왔나? : {}" , startLng);
-		log.info("들어왔나? : {}" , endLat);
-		log.info("들어왔나? : {}" , endLng);
-		List<RecommendedRouteDTO> routes = iRouteRecommendationService.recommendRoutes(startLat, startLng, endLat, endLng);
-		return ResponseEntity.ok(routes);
-	}
+    public ResponseEntity<List<RecommendedRouteDTO>> recommendRoutes(
+            @RequestParam("startLat") double startLat,
+            @RequestParam("startLng") double startLng,
+            @RequestParam("endLat") double endLat,
+            @RequestParam("endLng") double endLng) {
+		log.info("recommendRoutes에 들어왔나??");
+        log.info("추천경로 요청: start=({}, {}), end=({}, {})", startLat, startLng, endLat, endLng);
+        List<RecommendedRouteDTO> routes = iRouteRecommendationService.recommendRoutes(startLat, startLng, endLat, endLng);
+        return ResponseEntity.ok(routes);
+    }
 	
 }
