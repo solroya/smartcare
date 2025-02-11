@@ -39,8 +39,6 @@ public class MemberReservationController {
     private final MemberRepository memberRepository;
     private final EmployeeRepository employeeRepository;
     private final ReservationService reservationService;
-    private final PatientRecordCardRepository patientRecordCardRepository;
-
     private final DepartmentService departmentService;
 
     // 예약 페이지 진입점
@@ -73,8 +71,8 @@ public class MemberReservationController {
     }
 
     @GetMapping("/new?{employeeNo}&{departmentId}")
-    public String createReservationWithReservationData(@PathVariable Long employeeNo,
-                                    @PathVariable Long departmentId,
+    public String createReservationWithReservationData(@PathVariable("employeeNo") Long employeeNo,
+                                    @PathVariable("departmentId") Long departmentId,
                                     @AuthenticationPrincipal UserDetails userDetails,
                                     Model model) {
         // 현재 로그인한 멤버 정보 조회
@@ -133,7 +131,7 @@ public class MemberReservationController {
     }
 
     @GetMapping("/success/{reservationNo}")
-    public String showReservationSuccess(@PathVariable Long reservationNo,
+    public String showReservationSuccess(@PathVariable("reservationNo") Long reservationNo,
                                          Model model,
                                          @AuthenticationPrincipal UserDetails userDetails,
                                          RedirectAttributes redirectAttributes) {
@@ -188,7 +186,7 @@ public class MemberReservationController {
     @PostMapping("/cancel/{reservationNo}")
     @ResponseBody
     public ResponseEntity<?> cancelReservation(
-            @PathVariable Long reservationNo,
+            @PathVariable("reservationNo") Long reservationNo,
             @AuthenticationPrincipal UserDetails userDetails) {
 
         try {

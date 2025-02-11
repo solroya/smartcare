@@ -239,7 +239,7 @@ public class PatientController {
     @PostMapping("/{receptionNo}/record")
     public String registerPatientRecordCard(
             @RequestParam("receptionNo") Long receptionNo,
-            @RequestParam("reservationNo") Long reservationNo,
+            @RequestParam(value = "reservationNo", required = false) Long reservationNo,
             PatientRecordCardDto patientRecordCardDto) {
         log.info("받은 receptionNo: {}", receptionNo);
         log.info("넘겨받은 환자 기록 카드 정보: {}", patientRecordCardDto);
@@ -250,8 +250,10 @@ public class PatientController {
                 .orElseThrow(() -> new IllegalArgumentException("Reception not found with id=" + receptionNo));
         log.info("DB에서 조회된 reception: {}", reception);
 
-        // 기존 예약 상태 변경
-        reservationService.updateReservationStatus(reservationNo);
+        // reservationNo가 있는 경우에만 예약 상태 업데이트
+        if (reservationNo != null) {
+            reservationService.updateReservationStatus(reservationNo);
+        }
 
         // 새로운 PatientRecordCard 생성
         patientRecordCardService.registerPatientRecordCard(patientRecordCardDto);

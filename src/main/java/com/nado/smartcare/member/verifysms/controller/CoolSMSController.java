@@ -64,7 +64,7 @@ public class CoolSMSController {
     
     @PostMapping("/getTime")
     public ResponseEntity<Long> getTime(@RequestBody @Valid SmsDto smsDto) {
-    	log.info("TTL 조회 요청. 전화번호 : {}", smsDto.getPhone());
+//    	log.info("TTL 조회 요청. 전화번호 : {}", smsDto.getPhone());
     	try {
 			Long ttl = smsService.getTime(smsDto.getPhone());
 			return ResponseEntity.ok(ttl);

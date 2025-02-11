@@ -1,23 +1,16 @@
 package com.nado.smartcare.member.controller;
 
-import com.nado.smartcare.employee.domain.Employee;
-import com.nado.smartcare.employee.repository.EmployeeRepository;
 import com.nado.smartcare.member.domain.Member;
 import com.nado.smartcare.member.domain.dto.MemberDto;
-import com.nado.smartcare.member.repository.MemberRepository;
 import com.nado.smartcare.member.service.MemberService;
 import com.nado.smartcare.member.verifysms.domain.SmsDto;
 import com.nado.smartcare.member.verifysms.service.SmsService;
 
-import com.nado.smartcare.patient.domain.PatientRecordCard;
 import com.nado.smartcare.patient.domain.dto.PatientRecordCardDto;
-import com.nado.smartcare.patient.repository.PatientRecordCardRepository;
 import com.nado.smartcare.patient.service.PatientRecordCardService;
-import com.nado.smartcare.reservation.domain.Reservation;
 import com.nado.smartcare.reservation.domain.dto.ReservationDto;
-import com.nado.smartcare.reservation.domain.type.TimeSlot;
+import com.nado.smartcare.reservation.domain.type.ReservationStatus;
 import com.nado.smartcare.reservation.service.ReservationService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -25,7 +18,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -35,12 +27,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -233,12 +221,15 @@ public class MemberController {
                     .orElseThrow(() -> new RuntimeException("Member not found"));
 
             Member member = Member.of(memberDto.memberId(), memberDto.memberPass(), memberDto.memberName(), memberDto.memberEmail()
-                    ,memberDto.memberGender(), memberDto.memberPhoneNumber(), memberDto.memberBirthday(), memberDto.isSocial(),
+                    , memberDto.memberGender(), memberDto.memberPhoneNumber(), memberDto.memberBirthday(), memberDto.isSocial(),
                     memberDto.patientRecordCards());
 
             // 예약 조회
-            List<ReservationDto> upcomingReservations = reservationService
-                    .getReservationsByMemberId(memberDto.memberNo());
+            List<ReservationDto> allReservation = reservationService.getReservationsByMemberId(memberDto.memberNo());
+            List<ReservationDto> upcomingReservations = allReservation.stream()
+                    .filter(r -> r.reservationStatus() == ReservationStatus.CONFIRMED)
+                    .collect(Collectors.toList());
+
             log.info("조회된 예약 정보: {}", upcomingReservations);
 
 

@@ -62,9 +62,10 @@
 			    </div>
 			 </div>
          </nav>
-         <div class="expanded-content">
-			<div class="menu-header">
-                <!-- 로그인하지 않은 경우 -->
+
+        <!-- Enhanced Side Menu -->
+        <div class="expanded-content">
+            <div class="menu-header">
                 <p class="user-name" sec:authorize="!isAuthenticated()">안녕하세요, Guest님!</p>
                 <!-- 로그인한 경우 -->
                 <p class="user-name" sec:authorize="isAuthenticated()">안녕하세요, <span th:text="${#authentication.name}"></span>님!</p>
@@ -81,8 +82,17 @@
                 <li sec:authorize="hasRole('ROLE_EMPLOYEE')">
                     <a th:href="@{/erp}">ERP PAGE</a>
                 </li>
-			</ul>
-         </div>
+            </ul>
+
+            <!-- Footer Section -->
+            <div class="menu-footer">
+                <div class="contact-info">
+                    <p>고객센터: 1234-5678</p>
+                    <p>운영시간: 평일 09:00 - 18:00</p>
+                </div>
+            </div>
+        </div>
+
      </header>
- 	 <script th:src="@{/js/header.js}"></script>
+    <script th:src="@{/js/header.js}"></script>
 </th:block>

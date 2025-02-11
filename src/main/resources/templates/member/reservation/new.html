@@ -11,54 +11,110 @@
 
 <div class="content">
     <div class="reservation-container">
-        <h2 class="reservation-title">진료 예약</h2>
+        <div class="reservation-header">
+            <span>SMART CARE</span>
+            <h2 class="reservation-title">진료 예약</h2>
+        </div>
 
-        <form th:action="@{/member/reservation/create}" method="post" class="reservation-form">
-            <section class="selected-info">
-                <div class="info-display">
-                    <h3>선택된 진료 정보</h3>
-                    <div class="info-item">
-                        <label>진료과:</label>
-                        <span th:text="${selectedDepartment}">내과</span>
+        <div class="reservation-form-container">
+            <form th:action="@{/member/reservation/create}" method="post" class="reservation-form">
+                <section class="selected-info">
+                    <div class="info-display">
+                        <h3>선택된 진료 정보</h3>
+                        <div class="info-item">
+                            <label>진료과:</label>
+                            <span th:text="${selectedDepartment}">내과</span>
+                        </div>
+                        <div class="info-item">
+                            <label>담당의:</label>
+                            <span th:text="${selectedDoctor.employeeName}">김의사</span>
+                        </div>
+                        <input type="hidden" name="employeeNo" id="employeeNo" th:value="${selectedDoctor.getEmployeeNo()}">
                     </div>
-                    <div class="info-item">
-                        <label>담당의:</label>
-                        <span th:text="${selectedDoctor.employeeName}">김의사</span>
-                    </div>
-                    <input type="hidden" name="employeeNo" id="employeeNo" th:value="${selectedDoctor.getEmployeeNo()}">
+                </section>
+
+                <div class="form-group">
+                    <label for="timeSlot">진료 시간</label>
+                    <select id="timeSlot" name="timeSlot" required>
+                        <option value="">시간을 선택해주세요</option>
+                        <option th:each="slot : ${timeSlots}"
+                                th:value="${slot}"
+                                th:text="${slot.displayName}">오전</option>
+                    </select>
                 </div>
-            </section>
 
-            <div class="form-group">
-                <label for="timeSlot">진료 시간</label>
-                <select id="timeSlot" name="timeSlot" required>
-                    <option value="">시간을 선택해주세요</option>
-                    <option th:each="slot : ${timeSlots}"
-                            th:value="${slot}"
-                            th:text="${slot.displayName}">오전</option>
-                </select>
-            </div>
+                <div class="calendar-section">
+                    <div id="availableDates" class="calendar-grid">
+                        <!-- JavaScript로 동적 생성됨 -->
+                    </div>
+                </div>
 
-            <!-- 예약 가능 날짜 표시 영역 -->
-            <div id="availableDates" class="calendar-grid">
-                <!-- JavaScript로 동적 생성됨 -->
-            </div>
+                <div class="selected-date-info">
+                    <p>
+                        <span class="date-label">선택된 날짜:</span>
+                        <span id="selectedDateDisplay">선택해주세요</span>
+                    </p>
+                </div>
 
-            <!-- 선택된 날짜 표시 -->
-            <div class="selected-date-info">
-                <p>선택된 날짜: <span id="selectedDateDisplay">선택해주세요</span></p>
-            </div>
+                <input type="hidden" id="reservationDate" name="reservationDate">
 
-            <input type="hidden" id="reservationDate" name="reservationDate">
-
-            <button type="submit" class="submit-btn" disabled>예약하기</button>
-        </form>
+                <button type="submit" class="submit-btn" disabled>예약하기</button>
+            </form>
+        </div>
     </div>
 </div>
 
 <div th:replace="~{layout/footer :: footer}"></div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const timeSlotSelect = document.getElementById('timeSlot');
+        const selectedDateInfo = document.querySelector('.selected-date-info');
+
+        if (timeSlotSelect) {
+            timeSlotSelect.addEventListener('change', loadAvailableDates);
+            updateSubmitButton();
+        }
+
+        // Update selected date info styling
+        function updateSelectedDateInfoStyle() {
+            const dateDisplay = document.getElementById('selectedDateDisplay');
+            if (dateDisplay.textContent !== '선택해주세요') {
+                selectedDateInfo.classList.add('has-selection');
+            } else {
+                selectedDateInfo.classList.remove('has-selection');
+            }
+        }
+
+        // Original handleDateSelection function with added styling update
+        window.handleDateSelection = function(dateDiv, dateString) {
+            document.querySelectorAll('.calendar-date.selected').forEach(el =>
+                el.classList.remove('selected')
+            );
+
+            dateDiv.classList.add('selected');
+
+            const reservationDateInput = document.getElementById('reservationDate');
+            if (reservationDateInput) {
+                reservationDateInput.value = dateString;
+            }
+
+            const displayElement = document.getElementById('selectedDateDisplay');
+            if (displayElement) {
+                const formattedDate = new Date(dateString).toLocaleDateString('ko-KR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    weekday: 'long'
+                });
+                displayElement.textContent = formattedDate;
+                updateSelectedDateInfoStyle();
+            }
+
+            updateSubmitButton();
+        };
+    });
+
     document.addEventListener('DOMContentLoaded', function () {
         console.log('페이지 로드 완료: preSelected 모드');
 
