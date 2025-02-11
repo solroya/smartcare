@@ -41,7 +41,6 @@ public class MemberController {
     private final SmsService smsService;
     private final PatientRecordCardService patientRecordCardService;
     private final ReservationService reservationService;
-    private final MemberRepository memberRepository;
 
     @GetMapping("memberIndex")
     public String member(ModelMap map) {
