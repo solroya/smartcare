@@ -1,5 +1,7 @@
 package com.nado.smartcare.tmap.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,4 +17,5 @@ public class RecommendedRouteDTO {
 	private double distance;
 	private int time;
 	private String coordinates;
+	private List<RouteDTO> detailedSteps;
 }
