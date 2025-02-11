@@ -33,7 +33,7 @@ public class CategoryServiceImpl implements ICategoryService {
 	
 	@Override
 	public List<CategoryDTO> getCategoriesForMember(Long memberNo) {
-		log.info("getCategoriesForMember에 들어왔나?");
+		log.info("getCategoriesForMember에 들어왔나? ==> {}", memberNo);
 		List<PatientRecordCard> records = patientRecordCardRepository.findByMember_MemberNo(memberNo);
 		if (records.isEmpty()) {
 			log.info("회원 {}의 진료 기록이 없습니다.", memberNo);
