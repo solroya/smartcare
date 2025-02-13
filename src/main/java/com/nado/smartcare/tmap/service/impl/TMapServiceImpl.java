@@ -18,6 +18,9 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nado.smartcare.bus.entity.BusStop;
+import com.nado.smartcare.bus.entity.LineStation;
+import com.nado.smartcare.bus.repository.ILineStationRepository;
 import com.nado.smartcare.tmap.dto.RouteDTO;
 import com.nado.smartcare.tmap.service.ITMapService;
 
@@ -30,6 +33,8 @@ import lombok.extern.log4j.Log4j2;
 public class TMapServiceImpl implements ITMapService {
 	
 	private final RestTemplate restTemplate;
+	private final ILineStationRepository iLineStationRepository;
+	private final ObjectMapper objectMapper = new ObjectMapper();
 	
 	@Value("${tmap.api.key}")
 	private String tmapApiKey;
@@ -38,93 +43,92 @@ public class TMapServiceImpl implements ITMapService {
 	private static final int MAX_BUS_TIME = 120;
 	private static final int MAX_TRANSFER = 2;
 	
-	private final ObjectMapper objectMapper = new ObjectMapper();
 	
 	@Override
 	public List<RouteDTO> getWalkingRoutes(double startLat, double startLng, double endLat, double endLng) {
-		log.info("getWalkingRoutes 들어왔나?");
-		if (!isValidCoordinate(startLat, startLng, endLat, endLng)) {
-			log.warn("유효하지 않은 좌표 입력됨");
-			return new ArrayList<>();
-		}
-		
-		String url = "https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1";
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Accept", "application/json");
-		headers.set("appKey", tmapApiKey);
-		headers.set("Content-Type", "application/json");
-		
-		Map<String, Object> requestBody = new HashMap<>();
-		requestBody.put("startX", String.format("%.7f", startLng));
-        requestBody.put("startY", String.format("%.7f", startLat));
-        requestBody.put("endX", String.format("%.7f", endLng));
-        requestBody.put("endY", String.format("%.7f", endLat));
-        requestBody.put("reqCoordType", "WGS84GEO");
-        requestBody.put("resCoordType", "WGS84GEO");
-        requestBody.put("searchOption", "0");
-        requestBody.put("count", "3");
-        requestBody.put("format", "json");
-        requestBody.put("lang", "0");
-        requestBody.put("startName", "출발지");
-        requestBody.put("endName", "도착지");
-        
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
-        log.info("TMap 도보 API 요청 : {}", requestBody);
-        
-        try {
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-			List<RouteDTO> routes = parseWalkingRoutes(response.getBody());
-			return routes.stream()
-					.filter(route -> route.getDistance() > 0 && route.getTime() > 0)
-					.filter(route -> route.getDistance() <= 2000)
-					.filter(route -> route.getTime() <= MAX_WALK_TIME)
-					.collect(Collectors.toList());
-		} catch (HttpClientErrorException e) {
-			log.error("도보 경로 요청 오류 : {}", e.getResponseBodyAsString());
-			return new ArrayList<>();
-		}
+	    log.info("getWalkingRoutes 호출됨");
+	    if (!isValidCoordinate(startLat, startLng, endLat, endLng)) {
+	        log.warn("유효하지 않은 좌표 입력됨");
+	        return new ArrayList<>();
+	    }
+	    
+	    String url = "https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1";
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.set("Accept", "application/json");
+	    headers.set("appKey", tmapApiKey);
+	    headers.set("Content-Type", "application/json");
+	    
+	    Map<String, Object> requestBody = new HashMap<>();
+	    requestBody.put("startX", String.format("%.7f", startLng));
+	    requestBody.put("startY", String.format("%.7f", startLat));
+	    requestBody.put("endX", String.format("%.7f", endLng));
+	    requestBody.put("endY", String.format("%.7f", endLat));
+	    requestBody.put("reqCoordType", "WGS84GEO");
+	    requestBody.put("resCoordType", "WGS84GEO");
+	    requestBody.put("searchOption", "0");
+	    requestBody.put("count", "3");
+	    requestBody.put("format", "json");
+	    requestBody.put("lang", "0");
+	    requestBody.put("startName", "출발지");
+	    requestBody.put("endName", "도착지");
+	    
+	    HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+	    log.info("TMap 도보 API 요청 : {}", requestBody);
+	    
+	    try {
+	        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+	        List<RouteDTO> routes = parseWalkingRoutes(response.getBody());
+	        return routes.stream()
+	                .filter(route -> route.getDistance() > 0 && route.getTime() > 0)
+	                .filter(route -> route.getDistance() <= 7000)
+	                .filter(route -> route.getTime() <= MAX_WALK_TIME)
+	                .collect(Collectors.toList());
+	    } catch (HttpClientErrorException e) {
+	        log.error("도보 경로 요청 오류 : {}", e.getResponseBodyAsString());
+	        return new ArrayList<>();
+	    }
 	}
 
 	@Override
 	public List<RouteDTO> getBusRoutes(double startLat, double startLng, double endLat, double endLng) {
-		log.info("getBusRoutes에 들어왔나?");
-		if (!isValidCoordinate(startLat, startLng, endLat, endLng)) {
-			log.warn("유효하지 않은 좌표 입력됨");
-			return new ArrayList<>();
-		}
-		
-		String url = "https://apis.openapi.sk.com/transit/routes";
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Accept", "application/json");
-		headers.set("appKey", tmapApiKey);
-		headers.set("Content-Type", "application/json");
-		
-		Map<String, Object> requestBody = new HashMap<>();
-		requestBody.put("startX", String.format("%.7f", startLng));
-        requestBody.put("startY", String.format("%.7f", startLat));
-        requestBody.put("endX", String.format("%.7f", endLng));
-        requestBody.put("endY", String.format("%.7f", endLat));
-        requestBody.put("reqCoordType", "WGS84GEO");
-        requestBody.put("resCoordType", "WGS84GEO");
-        requestBody.put("count", "3");
-        requestBody.put("format", "json");
-        requestBody.put("lang", "0");
-        requestBody.put("startName", "출발지");
-        requestBody.put("endName", "도착지");
-        requestBody.put("searchOption", "0");
-        requestBody.put("searchDttm", "202502041200");
-		
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
-        log.info("TMap 버스 API POST 요청 : {}", requestBody);
-        
-        try {
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-			log.info("TMap 버스 API 응답 : {}", response.getBody());
-			return parseBusRoutes(response.getBody());
-		} catch (Exception e) {
-			log.error("TMap 버스 API 호출 실패", e);
-			return new ArrayList<>();
-		}
+	    log.info("getBusRoutes 호출됨");
+	    if (!isValidCoordinate(startLat, startLng, endLat, endLng)) {
+	        log.warn("유효하지 않은 좌표 입력됨");
+	        return new ArrayList<>();
+	    }
+	    
+	    String url = "https://apis.openapi.sk.com/transit/routes";
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.set("Accept", "application/json");
+	    headers.set("appKey", tmapApiKey);
+	    headers.set("Content-Type", "application/json");
+	    
+	    Map<String, Object> requestBody = new HashMap<>();
+	    requestBody.put("startX", String.format("%.7f", startLng));
+	    requestBody.put("startY", String.format("%.7f", startLat));
+	    requestBody.put("endX", String.format("%.7f", endLng));
+	    requestBody.put("endY", String.format("%.7f", endLat));
+	    requestBody.put("reqCoordType", "WGS84GEO");
+	    requestBody.put("resCoordType", "WGS84GEO");
+	    requestBody.put("count", "3");
+	    requestBody.put("format", "json");
+	    requestBody.put("lang", "0");
+	    requestBody.put("startName", "출발지");
+	    requestBody.put("endName", "도착지");
+	    requestBody.put("searchOption", "0");
+	    requestBody.put("searchDttm", "202502041200");
+	    
+	    HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+	    log.info("TMap 버스 API POST 요청 : {}", requestBody);
+	    
+	    try {
+	        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+	        log.info("TMap 버스 API 응답 : {}", response.getBody());
+	        return parseBusRoutes(response.getBody());
+	    } catch (Exception e) {
+	        log.error("TMap 버스 API 호출 실패", e);
+	        return new ArrayList<>();
+	    }
 	}
 	
 	private List<RouteDTO> parseWalkingRoutes(String responseBody) {
@@ -136,14 +140,21 @@ public class TMapServiceImpl implements ITMapService {
 			List<List<Double>> allCoords = new ArrayList<>();
 			
 			for (JsonNode feature : features) {
-				JsonNode properties = feature.path("properties");
-				JsonNode geometry = feature.path("geometry");
-				
-				double distance = properties.path("distance").asDouble();
-				int apiTime = properties.path("time").asInt();
-				if (apiTime == 0) apiTime = 1;
-				totalDistance += distance;
-				totalApiTime += apiTime;
+	            JsonNode properties = feature.path("properties");
+	            JsonNode geometry = feature.path("geometry");
+
+	            double distance = properties.path("distance").asDouble();
+	            int apiTime = properties.path("time").asInt();
+	            if(apiTime > 0) {
+	                apiTime = apiTime / 60;
+	                if(apiTime == 0) {
+	                    apiTime = 1;
+	                }
+	            } else {
+	                apiTime = 1;
+	            }
+	            totalDistance += distance;
+	            totalApiTime += apiTime;
 				
 				JsonNode coordsNode = geometry.path("coordinates");
 				List<List<Double>> coords = new ArrayList<>();
@@ -200,29 +211,40 @@ public class TMapServiceImpl implements ITMapService {
 	}
 	
 	private List<RouteDTO> parseBusRoutes(String responseBody) {
-		List<RouteDTO> routes = new ArrayList<>();
-		try {
-			JsonNode root = objectMapper.readTree(responseBody);
-			JsonNode itineraries = root.path("metaData").path("plan").path("itineraries");
-			for (JsonNode itinerary : itineraries) {
-				int totalTimeSec = itinerary.path("totalTime").asInt();
-				int totalTime = totalTimeSec / 60;
-				int transferCount = itinerary.path("transferCount").asInt();
-				if (totalTime > MAX_BUS_TIME || transferCount > MAX_TRANSFER) {
-					continue;
-				}
-				routes.add(RouteDTO.builder()
-						.type("버스")
-						.description("총 소요 시간 : " + totalTime + "분, 환승:  " + transferCount + "회")
-						.time(totalTime)
-						.build());
-				log.info("버스 경로 추가됨 : {}분, 환승 {}회", totalTime, transferCount);
-			}
-			return routes;
-		} catch (Exception e) {
-			log.info("버스 경로 파싱 실패", e);
-			return new ArrayList<>();
-		}
+	    List<RouteDTO> routes = new ArrayList<>();
+	    try {
+	        JsonNode root = objectMapper.readTree(responseBody);
+	        JsonNode itineraries = root.path("metaData").path("plan").path("itineraries");
+	        for (JsonNode itinerary : itineraries) {
+	            int totalTimeSec = itinerary.path("totalTime").asInt();
+	            int totalTime = totalTimeSec / 60;
+	            int transferCount = itinerary.path("transferCount").asInt();
+	            double totalDistance = itinerary.path("totalDistance").asDouble(0.0);
+	            
+	            if (totalTime > MAX_BUS_TIME || transferCount > MAX_TRANSFER) {
+	                continue;
+	            }
+	            
+	            String coords = itinerary.path("passShape").path("linestring").asText(null);
+	            if (coords == null || coords.trim().isEmpty()) {
+	                int routeId = itinerary.path("routeId").asInt();
+	                coords = getBusRouteCoordinatesFromDB(routeId);
+	            }
+	            
+	            routes.add(RouteDTO.builder()
+	                    .type("버스")
+	                    .description("총 소요 시간 : " + totalTime + "분, 환승: " + transferCount + "회, 거리: " + totalDistance + "m")
+	                    .time(totalTime)
+	                    .distance(totalDistance)
+	                    .coordinates(coords)
+	                    .build());
+	            log.info("버스 경로 추가됨 : {}분, 환승 {}회, 거리 {}m", totalTime, transferCount, totalDistance);
+	        }
+	        return routes;
+	    } catch (Exception e) {
+	        log.error("버스 경로 파싱 실패", e);
+	        return new ArrayList<>();
+	    }
 	}
 	
 	private boolean isValidCoordinate(double sLat, double sLng, double eLat, double eLng) {
@@ -255,6 +277,30 @@ public class TMapServiceImpl implements ITMapService {
 			log.error("TMap 도보 경로 API 호출 오류", e);
 			return -1;
 		}
+	}
+	
+	private String getBusRouteCoordinatesFromDB(int routeId) {
+	    List<LineStation> stations = iLineStationRepository.findByLineIdOrderByIdAsc(routeId);
+	    List<List<Double>> coords = new ArrayList<>();
+	    
+	    for (LineStation station : stations) {
+	        if (station.getBusStopAndLineStations() != null && !station.getBusStopAndLineStations().isEmpty()) {
+	            BusStop busStop = station.getBusStopAndLineStations().get(0).getBusStop();
+	            if (busStop != null) {
+	                List<Double> point = new ArrayList<>();
+	                point.add(busStop.getLongitude());
+	                point.add(busStop.getLatitude());
+	                coords.add(point);
+	            }
+	        }
+	    }
+	    
+	    try {
+	        return objectMapper.writeValueAsString(coords);
+	    } catch (Exception e) {
+	        log.error("DB 좌표 직렬화 오류: ", e);
+	        return null;
+	    }
 	}
     
 	

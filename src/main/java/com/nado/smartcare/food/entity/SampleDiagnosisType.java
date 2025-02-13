@@ -1,9 +1,9 @@
 package com.nado.smartcare.food.entity;
 
 public enum SampleDiagnosisType {
-	SMAPLE_INTERNAL_MEDICINE("내과"),
-	SMAPLE_SURGERY("외과"),
-	SMAPLE_PSYCHIATRY("정신과");
+	SMAPLE_INTERNAL_MEDICINE("INTERNAL_MEDICINE"),
+	SMAPLE_SURGERY("SURGERY"),
+	SMAPLE_PSYCHIATRY("PSYCHIATRY");
 	
 	private final String SampleName;
 	

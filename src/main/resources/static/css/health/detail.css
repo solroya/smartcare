@@ -7,6 +7,12 @@
 .detailwrap {
 	width : 450px;
 	height: 100%;
+	flex-shrink: 0;
+	display: none;
+}
+
+.detailwrap.visible {
+    display: block;
 }
 
 .detail {
@@ -203,4 +209,165 @@
 	width : 450px;
 	height: 1px;
 	background-color: #ddd;
+	margin-bottom : 30px;
+}
+
+.comentAndRating {
+  width: 450px;
+  overflow: hidden;
+}
+
+.comentHeader {
+  display: flex;
+  align-items: center;
+  padding-left: 25px;
+  margin-bottom : 15px;
+}
+
+.comentHeader h3 {
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: -0.25px;
+  color: #333;
+}
+
+.comentList {
+  max-height: 175px;
+  overflow-y: scroll;
+}
+
+.comentList li {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  justify-content: center;
+  width : 350px;
+  height : 120px;
+  padding-left : 25px;
+}
+
+.comentList li::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-41.5%);
+  width: 360px;
+  height: 1px;
+  background-color: #ddd;
+}
+
+.comentList li:last-child::after {
+  display: none;
+}
+
+.comentList p {
+  font-size: 18px;
+  letter-spacing: -0.5px;
+  color: #333;
+  margin-bottom : 5px;
+}
+
+.comentInfo {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 16px;
+  color: #AAA;
+  letter-spacing: -0.5px;
+}
+
+.comentInfo small {
+  font-size: 14px;
+}
+
+.comentInfo span {
+  color: #FFD700;
+  font-size: 16px;
+}
+
+.comentFormwrap {
+  width: 450px;
+  padding: 20px 25px;
+}
+
+.comentFormwrap form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.comentFormwrap .rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.writeBox {
+	display : flex;
+}
+
+.comentFormwrap .stars {
+  display: flex;
+  gap: 3px;
+}
+
+.comentFormwrap .stars .star {
+  font-size: 16px;
+  cursor: pointer;
+  color: #ccc;
+  transition: color 0.2s ease;
+}
+
+.comentFormwrap .stars .star.selected {
+  color: #FFD700;
+}
+
+.comentFormwrap textarea,
+.comentFormwrap input[type="text"] {
+  font-size: 16px;
+  padding : 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-family: inherit;
+  justify-content: center;
+}
+
+.comentFormwrap textarea {
+	width : 75%;
+	margin-right : 5px;
+}
+
+.comentFormwrap input {
+	width : 25%;
+}
+
+.comentFormwrap button {
+  padding: 10px;
+  background-color: #1C3D5A;
+  color: #fff;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: -0.25px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.comentFormwrap button:hover {
+  background-color: #163044;
+}
+
+.comentList::-webkit-scrollbar {
+  width: 5px;
+}
+
+.comentList::-webkit-scrollbar-track {
+  background: #F5F5F5;
+}
+
+.comentList::-webkit-scrollbar-thumb {
+  background: #AAAAAA;
+  border-radius: 50px;
 }

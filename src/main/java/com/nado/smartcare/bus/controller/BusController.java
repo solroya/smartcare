@@ -24,19 +24,19 @@ public class BusController {
 	@Value("${kakao.scriptApi.key}")
     private String scriptKey;
     
-    @GetMapping("/map")
+	@GetMapping("/map")
     public String showBusMap(
-    		@RequestParam("fno") Long fno,
+            @RequestParam("fno") Long fno,
             @RequestParam("startLat") double startLat,
             @RequestParam("startLng") double startLng,
             @RequestParam("foodLat") double foodLat,
             @RequestParam("foodLng") double foodLng,
             Model model) {
-    	log.info("BusController - showBusList 호출: fno={}, startLat={}, startLng={}, foodLat={}, foodLng={}",
+        log.info("BusController - showBusMap 호출: fno={}, startLat={}, startLng={}, foodLat={}, foodLng={}",
                 fno, startLat, startLng, foodLat, foodLng);
         
-    	FoodPlaceDTO foodPlace = iFoodPlaceService.getFoodPlaceById(fno);
-    	model.addAttribute("foodPlace", foodPlace);
+        FoodPlaceDTO foodPlace = iFoodPlaceService.getFoodPlaceById(fno);
+        model.addAttribute("foodPlace", foodPlace);
         model.addAttribute("scriptKey", scriptKey);
         model.addAttribute("startLat", startLat);
         model.addAttribute("startLng", startLng);

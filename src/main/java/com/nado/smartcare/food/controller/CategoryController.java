@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.nado.smartcare.food.dto.CategoryDTO;
 import com.nado.smartcare.food.service.ICategoryService;
@@ -23,10 +24,10 @@ public class CategoryController {
 	private final ICategoryService iCategoryService;
 	
 	@GetMapping("/categories")
-	public String getDiagnosisWithCategories(Model model) {
+	public String getDiagnosisWithCategories(@RequestParam("memberNo") Long memberNo, Model model) {
 		log.info("categoryController에 들어왔나?");
-		List<CategoryDTO> categories = iCategoryService.getSampleDiagnosisWithCategories();
-		log.info("컨트롤러에서 받아온 categories 데이터: {}", categories);
+		List<CategoryDTO> categories = iCategoryService.getCategoriesForMember(memberNo);
+		log.info("회원 {}의 추천 카테고리 : {}", memberNo, categories);
 		model.addAttribute("categories", categories);
 		return "health/health";
 	}
