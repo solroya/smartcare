@@ -301,3 +301,11 @@
 #send-button:hover {
     background-color: #5BC0DE;
 }
+
+/* provider 태그를 위한 스타일 */
+.message .provider-tag {
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 5px;
+    display: block;
+}

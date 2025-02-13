@@ -1,9 +1,11 @@
 package com.nado.smartcare.openai.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,10 +14,12 @@ import java.util.Map;
 @Service
 public class OpenAIService {
 
-    private final ChatClient chatClient;
+    private final ChatModel chatModel;
+    private final ChatClient openAiChatClient;
 
-    public OpenAIService(ChatClient chatClient) {
-        this.chatClient = chatClient;
+    public OpenAIService(@Qualifier("openAiChatModel") ChatModel chatModel, ChatClient openAiChatClient) {
+        this.chatModel = chatModel;
+        this.openAiChatClient = openAiChatClient;
     }
 
 
@@ -25,14 +29,29 @@ public class OpenAIService {
                         + results.toString()
                         + "\n단, 결과는 쿼리나 기술적인 용어를 포함하지 말고, 사용자 친화적으로 작성해 주세요.";
         // OpenAI API 요청
-        String request = chatClient.prompt(prompt)
+/*        String request = chatClient.prompt(prompt)
                 .call()
                 .chatResponse()
                 .getResult()
                 .getOutput()
                 .getContent();
 
-        return request;
+        return request;*/
+        return "TEST";
+    }
+
+    public String getResponse(String message) {
+        return chatModel.call(message);
+    }
+
+    public String getResponseWithPrompt(String promptTemplate, Map<String, Object> parameters) {
+        PromptTemplate template = new PromptTemplate(promptTemplate);
+        // create() 메서드는 Prompt 객체를 반환합니다
+        Prompt prompt = template.create(parameters);
+
+        // ChatModel은 Prompt 객체를 직접 처리할 수 있습니다
+        ChatResponse response = chatModel.call(prompt);
+        return response.getResult().getOutput().getContent();
     }
 
 }
