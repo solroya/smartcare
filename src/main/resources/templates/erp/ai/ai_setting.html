@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartCare - AI 설정</title>
+  <link rel="stylesheet" th:href="@{/css/erp/index.css}">
+  <link rel="stylesheet" th:href="@{/css/erp/fragments/sidebar.css}">
+  <style>
+    .ai-config-container {
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+
+    .ai-config-header {
+      color: var(--primary-color);
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--secondary-color);
+    }
+
+    .provider-selection {
+      background: var(--background-light);
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .provider-option {
+      display: flex;
+      align-items: center;
+      margin: 15px 0;
+      padding: 15px;
+      background: white;
+      border-radius: 6px;
+      border: 1px solid #eee;
+      transition: all 0.3s ease;
+    }
+
+    .provider-option:hover {
+      border-color: var(--secondary-color);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .provider-option input[type="radio"] {
+      margin-right: 15px;
+    }
+
+    .provider-option label {
+      font-size: 1.1em;
+      color: var(--text-dark);
+      cursor: pointer;
+    }
+
+    .status-message {
+      padding: 15px;
+      border-radius: 6px;
+      margin: 15px 0;
+    }
+
+    .status-message.success {
+      background-color: #e7f3eb;
+      color: #2d6a4f;
+      border-left: 4px solid #2d6a4f;
+    }
+
+    .status-message.error {
+      background-color: #fff3e6;
+      color: #804d00;
+      border-left: 4px solid #804d00;
+    }
+
+    .current-provider {
+      background: var(--primary-color);
+      color: white;
+      padding: 15px;
+      border-radius: 6px;
+      margin: 20px 0;
+    }
+
+    .save-button {
+      padding: 12px 24px;
+      background-color: var(--secondary-color);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-size: 1.1em;
+    }
+
+    .save-button:hover {
+      background-color: #4ca5c3;
+    }
+
+    .save-button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+<!-- 사이드바 -->
+<th:block th:replace="~{erp/fragments/sidebar :: sidebarFragment}"></th:block>
+
+<!-- 메인 컨텐츠 -->
+<main class="main-content">
+  <div class="dashboard-header">
+    <h1>AI 설정</h1>
+    <div class="dashboard-date"
+         th:text="${#temporals.format(T(java.time.LocalDate).now(), 'yyyy년 MM월 dd일 EEEE')}">
+    </div>
+  </div>
+
+  <div class="ai-config-container">
+    <div class="ai-config-header">
+      <h2>AI 모델 설정</h2>
+      <p>사용할 AI 제공자를 선택해주세요.</p>
+    </div>
+
+    <div id="statusMessages"></div>
+    <div id="currentProvider"></div>
+
+    <div class="provider-selection">
+      <div class="provider-option">
+        <input type="radio" id="ollama" name="provider" value="ollama">
+        <label for="ollama">Ollama (Mistral)</label>
+      </div>
+      <div class="provider-option">
+        <input type="radio" id="openai" name="provider" value="openai">
+        <label for="openai">ChatGPT (OpenAI)</label>
+      </div>
+    </div>
+
+    <button class="save-button" onclick="saveConfig()">설정 저장</button>
+  </div>
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    await checkOllamaStatus();
+  });
+
+  async function checkOllamaStatus() {
+    try {
+      const response = await fetch('/api/ai-config/check-ollama');
+      const data = await response.json();
+
+      const statusDiv = document.getElementById('statusMessages');
+      const ollamaRadio = document.querySelector('input[value="ollama"]');
+      const openaiRadio = document.querySelector('input[value="openai"]');
+
+      statusDiv.innerHTML = '';
+
+      if (data.ollamaRunning) {
+        if (data.mistralInstalled) {
+          statusDiv.innerHTML += `
+                            <div class="status-message success">
+                                Ollama가 정상적으로 실행 중이며 Mistral 모델이 설치되어 있습니다.
+                            </div>
+                        `;
+          ollamaRadio.disabled = false;
+
+          if (data.recommendedProvider === 'ollama') {
+            ollamaRadio.checked = true;
+          }
+        } else {
+          statusDiv.innerHTML += `
+                            <div class="status-message error">
+                                ${data.message}
+                            </div>
+                        `;
+          openaiRadio.checked = true;
+        }
+      } else {
+        statusDiv.innerHTML += `
+                        <div class="status-message error">
+                            Ollama가 실행되고 있지 않습니다. OpenAI를 사용합니다.
+                        </div>
+                    `;
+        openaiRadio.checked = true;
+      }
+
+      updateCurrentProviderDisplay(data.currentProvider);
+
+    } catch (error) {
+      console.error('Error checking Ollama status:', error);
+    }
+  }
+
+  async function saveConfig() {
+    const selectedProvider = document.querySelector('input[name="provider"]:checked').value;
+    const saveButton = document.querySelector('.save-button');
+
+    saveButton.disabled = true;
+
+    try {
+      const response = await fetch('/api/ai-config/provider', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ provider: selectedProvider })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        updateCurrentProviderDisplay(data.newProvider);
+        showMessage(data.message, 'success');
+      } else {
+        showMessage(data.message, 'error');
+      }
+    } catch (error) {
+      showMessage('설정 저장 중 오류가 발생했습니다.', 'error');
+    } finally {
+      saveButton.disabled = false;
+    }
+  }
+
+  function updateCurrentProviderDisplay(provider) {
+    const currentProviderDiv = document.getElementById('currentProvider');
+    currentProviderDiv.innerHTML = `
+                <div class="current-provider">
+                    현재 사용 중인 AI 제공자: <strong>${provider === 'ollama' ? 'Ollama (Mistral)' : 'ChatGPT (OpenAI)'}</strong>
+                </div>
+            `;
+  }
+
+  function showMessage(message, type) {
+    const statusDiv = document.getElementById('statusMessages');
+    statusDiv.innerHTML = `
+                <div class="status-message ${type}">
+                    ${message}
+                </div>
+            `;
+  }
+</script>
+</body>
+</html>
