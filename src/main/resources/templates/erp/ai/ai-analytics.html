@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCare - AI 사용 통계</title>
+    <link rel="stylesheet" th:href="@{/css/erp/index.css}">
+    <link rel="stylesheet" th:href="@{/css/erp/fragments/sidebar.css}">
+    <style>
+        .ai-stats-container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .ai-stats-header {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: var(--background-light);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .stat-box h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .stat-box .number {
+            font-size: 2em;
+            color: var(--text-dark);
+            font-weight: bold;
+        }
+
+        .conversations-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .conversations-table th,
+        .conversations-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9em;
+        }
+
+        .conversations-table th {
+            background-color: var(--background-light);
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .conversations-table tr:hover {
+            background-color: var(--background-light);
+        }
+
+        .table-container {
+            margin-top: 30px;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .table-header {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .status-success {
+            background-color: #e7f3eb;
+            color: #2d6a4f;
+        }
+
+        .status-error {
+            background-color: #ffe5e5;
+            color: #cc0000;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: var(--background-light);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid var(--secondary-color);
+            transition: transform 0.2s;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-box .sub-text {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+<!-- 사이드바 -->
+<th:block th:replace="~{erp/fragments/sidebar :: sidebarFragment}"></th:block>
+
+<!-- 메인 컨텐츠 -->
+<main class="main-content">
+    <div class="dashboard-header">
+        <h1>AI 사용 통계</h1>
+        <div class="dashboard-date"
+             th:text="${#temporals.format(T(java.time.LocalDate).now(), 'yyyy년 MM월 dd일 EEEE')}">
+        </div>
+    </div>
+
+    <div class="ai-stats-container">
+        <div class="ai-stats-header">
+            <h2>통계 현황</h2>
+            <p>전체 AI 서비스 사용 현황을 확인할 수 있습니다.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <h3>총 요청 수</h3>
+                <div class="number" id="totalRequests">-</div>
+            </div>
+            <div class="stat-box">
+                <h3>평균 응답 시간</h3>
+                <div class="number" id="avgResponseTime">-</div>
+            </div>
+            <div class="stat-box">
+                <h3>성공률</h3>
+                <div class="number" id="successRate">-</div>
+            </div>
+
+            <div class="stat-box">
+                <h3>총 토큰 사용량</h3>
+                <div class="number" id="totalTokens">-</div>
+                <div class="sub-text">전체 사용된 토큰 수</div>
+            </div>
+            <div class="stat-box">
+                <h3>평균 토큰 사용량</h3>
+                <div class="number" id="avgTokens">-</div>
+                <div class="sub-text">요청당 평균 토큰 수</div>
+            </div>
+            <div class="stat-box">
+                <h3>최대 토큰 사용량</h3>
+                <div class="number" id="maxTokens">-</div>
+                <div class="sub-text">단일 요청 최대 토큰 수</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <div class="table-header">
+            <h2>대화 내역</h2>
+            <p>최근 AI 대화 내역을 확인할 수 있습니다.</p>
+        </div>
+
+        <table class="conversations-table">
+            <thead>
+            <tr>
+                <th>시간</th>
+                <th>제공자</th>
+                <th>사용자 메시지</th>
+                <th>AI 응답</th>
+                <th>토큰</th>
+                <th>응답시간</th>
+                <th>상태</th>
+            </tr>
+            </thead>
+            <tbody id="conversationsTableBody">
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<script>
+    // 페이지 로드 시 통계 데이터 조회
+    document.addEventListener('DOMContentLoaded', () => {
+        loadStats();
+        loadConversations();
+    });
+
+    // 통계 데이터 로드
+    async function loadStats() {
+        try {
+            const response = await fetch('/erp/ai-analytics/api/stats');
+            const data = await response.json();
+
+            // 기존 통계 업데이트
+            document.getElementById('totalRequests').textContent = data.totalRequests;
+            document.getElementById('avgResponseTime').textContent = data.avgResponseTime;
+            document.getElementById('successRate').textContent = data.successRate;
+
+            // 새로운 토큰 통계 업데이트
+            document.getElementById('totalTokens').textContent = data.totalTokens.toLocaleString();
+            document.getElementById('avgTokens').textContent = data.avgTokens;
+            document.getElementById('maxTokens').textContent = data.maxTokens.toLocaleString();
+        } catch (error) {
+            console.error('통계 데이터 로드 중 오류 발생:', error);
+        }
+    }
+
+    // 대화 내역 로드
+    async function loadConversations() {
+        try {
+            const response = await fetch('/erp/ai-analytics/api/conversations');
+            const conversations = await response.json();
+
+            const tableBody = document.getElementById('conversationsTableBody');
+            tableBody.innerHTML = conversations.map(conv => `
+                <tr>
+                    <td>${formatDateTime(conv.createdAt)}</td>
+                    <td>${conv.provider}</td>
+                    <td>${truncateText(conv.userMessage, 50)}</td>
+                    <td>${truncateText(conv.aiResponse, 50)}</td>
+                    <td>${conv.tokenCount}</td>
+                    <td>${conv.responseTime}ms</td>
+                    <td>
+                        <span class="status-badge ${conv.isSuccess ? 'status-success' : 'status-error'}">
+                            ${conv.isSuccess ? '성공' : '실패'}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        } catch (error) {
+            console.error('대화 내역 로드 중 오류 발생:', error);
+        }
+    }
+
+    // 날짜 포맷팅 함수
+    function formatDateTime(dateStr) {
+        const date = new Date(dateStr);
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+    }
+
+    // 긴 텍스트 자르기 함수
+    function truncateText(text, maxLength) {
+        if (!text) return '';
+        return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    }
+
+
+</script>
+</body>
+</html>

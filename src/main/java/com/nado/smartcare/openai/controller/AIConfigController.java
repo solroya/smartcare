@@ -1,3 +1,4 @@
+
 package com.nado.smartcare.openai.controller;
 
 import com.nado.smartcare.openai.service.AIModelService;
