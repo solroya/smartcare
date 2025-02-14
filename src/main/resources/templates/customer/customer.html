@@ -99,19 +99,26 @@
     // 3. 공통 API 호출 함수
     async function fetchAIResponse(endpoint, question) {
         try {
-            const response = await fetch(`${endpoint}?message=${encodeURIComponent(question)}`);
+            const response = await fetch(`${endpoint}?question=${encodeURIComponent(question)}`);
             if (!response.ok) {
                 throw new Error("API 호출 실패");
             }
-            return await response.text();
+            const data = await response.json(); // 텍스트 대신 JSON으로 파싱
+            return {
+                response: data.response || data, // 응답 내용
+                provider: data.provider // 제공자 정보
+            };
         } catch (error) {
             console.error("API 호출 에러:", error);
-            return "오류가 발생했습니다. 다시 시도해주세요.";
+            return {
+                response: "오류가 발생했습니다. 다시 시도해주세요.",
+                provider: "System"
+            };
         }
     }
 
     // 4. 메시지 표시 함수
-    function appendMessage(content, isUser = false) {
+    function appendMessage(content, isUser = false, provider = null) {
         const messagesContainer = document.getElementById('chat-messages');
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
@@ -127,6 +134,14 @@
         contentDiv.className = 'message-content';
         contentDiv.textContent = content;
         messageDiv.appendChild(contentDiv);
+
+        // provider 정보가 있고 사용자 메시지가 아닌 경우에만 표시
+        if (!isUser && provider) {
+            const providerDiv = document.createElement('div');
+            providerDiv.className = 'provider-tag';
+            providerDiv.textContent = `응답 제공: ${provider}`;
+            messageDiv.appendChild(providerDiv);
+        }
 
         messagesContainer.appendChild(messageDiv);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -152,21 +167,19 @@
         chatMessages.appendChild(loadingElement);
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
-        // 실제 AI 응답 호출 (엔드포인트 예: /ai/answer)
-        const endpoint = `/ai/answer?question=${encodeURIComponent(question)}`;
-        let answer;
+        // AI 응답 호출
+        const endpoint = '/ai/answer';
         try {
-            answer = await fetchAIResponse(endpoint, question);
+            const result = await fetchAIResponse(endpoint, question);
+            // 로딩 메시지 제거
+            loadingElement.remove();
+            // AI 응답 메시지 표시 (제공자 정보 포함)
+            appendMessage(result.response, false, result.provider);
         } catch (err) {
             console.error(err);
-            answer = "오류가 발생했습니다. 다시 시도해주세요.";
+            loadingElement.remove();
+            appendMessage("오류가 발생했습니다. 다시 시도해주세요.", false, "System");
         }
-
-        // 로딩 메시지 제거
-        loadingElement.remove();
-
-        // AI 응답 메시지 표시
-        appendMessage(answer, false);
     }
 
     // 6. Enter 키 이벤트 처리

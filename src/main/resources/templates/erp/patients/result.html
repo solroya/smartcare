@@ -176,7 +176,7 @@
             </tbody>
         </table>
 
-        <div th:replace="~{fragments/pagination :: pagination(${page}, ${size}, ${totalElements}, '/erp/patients/result')}"></div>
+        <div th:replace="~{fragments/pagination :: pagination(${page}, ${size}, ${totalElements}, '/erp/patients/result', ${sortDirection}, ${startDate}, ${endDate}, ${searchTerm})}"></div>
     </div>
 </main>
 

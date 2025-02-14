@@ -27,6 +27,8 @@ public interface PatientRecordCardService {
 
     Page<PatientRecordCardDto> findByDateRange(LocalDate startDate, LocalDate endDate, Pageable pageable);
 
+    Page<PatientRecordCardDto> findByDateRangeAndSearchTerm(LocalDate startDate, LocalDate endDate, String searchTerm, Pageable pageable);
+
     List<PatientRecordCardDto> getPatientRecordsByMemberId(Long memberNo);
 
     List<PatientRecordCardDto> getPatientRecordsWithLimit(Long memberNo, int offset, int limit);

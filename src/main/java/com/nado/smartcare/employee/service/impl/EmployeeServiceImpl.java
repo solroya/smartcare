@@ -2,13 +2,11 @@ package com.nado.smartcare.employee.service.impl;
 
 import com.nado.smartcare.employee.domain.Department;
 import com.nado.smartcare.employee.domain.Employee;
-import com.nado.smartcare.employee.domain.dto.DepartmentDto;
 import com.nado.smartcare.employee.domain.type.TypeOfEmployee;
 import com.nado.smartcare.employee.domain.dto.EmployeeDto;
 import com.nado.smartcare.employee.repository.DepartmentRepository;
 import com.nado.smartcare.employee.repository.EmployeeRepository;
 import com.nado.smartcare.employee.service.EmployeeService;
-import com.nado.smartcare.member.domain.Member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -56,7 +54,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
     	String encodedPassword = passwordEncoder.encode(employeeDto.employeePass());
 
-
         // 1. DTO 전체 내용 로깅
         log.info("전체 DTO 데이터: {}", employeeDto);
 
@@ -86,30 +83,11 @@ public class EmployeeServiceImpl implements EmployeeService {
                 employee.getWorkingStatus()
         );
 
-        // 4. 저장 시도
+        // 4. 저장
         Employee savedEmployee = employeeRepository.save(employee);
         log.info("저장된 Employee: {}", savedEmployee);
 
         return EmployeeDto.from(employeeRepository.save(employee));
-    }
-
-    @Transactional
-    @Override
-    public EmployeeDto updateEmployee(Long EmployeeNo, String newEmployeePass, String newEmployeePhoneNumber) {
-        Employee employee = employeeRepository.findByEmployeeNo(EmployeeNo)
-                .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
-
-        employee.updateEmployee(newEmployeePass, newEmployeePhoneNumber);
-        Employee updatedEmployee = employeeRepository.save(employee);
-        return EmployeeDto.from(updatedEmployee);
-    }
-
-    @Transactional
-    @Override
-    public void deleteEmployee(Long employeeNo) {
-        Employee employee = employeeRepository.findByEmployeeNo(employeeNo)
-                .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
-        employeeRepository.delete(employee);
     }
 
     @Transactional(readOnly = true)
@@ -125,30 +103,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         return doctors.stream()
                 .map(EmployeeDto::from)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<DepartmentDto> getAllDepartmentsWithDoctors() {
-        return departmentRepository.findAll().stream()
-                .map(DepartmentDto::from)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Department getDepartmentById(Long employeeNo) {
-        return departmentRepository.findById(employeeNo)
-                .orElseThrow(() -> new IllegalArgumentException("Department not found"));
-    }
-
-    @Override
-    public Department getDepartmentByEmployeeNo(Long employeeNo) {
-        return employeeRepository.findDepartmentByEmployeeNo(employeeNo)
-                .orElseThrow(() -> new IllegalArgumentException("Department not found for employeeNo: " + employeeNo));
-    }
-
-    @Override
-    public List<Employee> findByEmployeeByDepartment(String departmentName) {
-        return employeeRepository.findByDepartment_DepartmentName(departmentName);
     }
 
 

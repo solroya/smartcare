@@ -56,6 +56,17 @@ public interface PatientRecordCardRepository extends JpaRepository<PatientRecord
             @Param("offset") int offset,
             @Param("limit") int limit);
 
+    @Query(value = """
+    SELECT p FROM PatientRecordCard p
+    WHERE p.clinicDate BETWEEN :startDate AND :endDate
+    AND (p.member.memberName LIKE %:searchTerm% OR p.clinicName LIKE %:searchTerm%)
+""")
+    Page<PatientRecordCard> findByDateRangeAndSearchTerm(
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            @Param("searchTerm") String searchTerm,
+            Pageable pageable
+    );
 
     PatientRecordCard findByMember(Member member);
 

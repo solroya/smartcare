@@ -46,28 +46,34 @@ public class MemberReservationController {
     public String createReservation(@RequestParam(required = false) Long employeeNo,
                                     @AuthenticationPrincipal UserDetails userDetails,
                                     Model model) {
-        // 현재 로그인한 멤버 정보 조회
-        Member currentMember = memberRepository.findByMemberId(userDetails.getUsername())
-                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+        try {
+            // 현재 로그인한 멤버 정보 조회
+            Member currentMember = memberRepository.findByMemberId(userDetails.getUsername())
+                    .orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
-        // 페이지 렌더링을 위한 기본값 설정
-        model.addAttribute("preSelected", false);
-        model.addAttribute("selectedDoctor", null);
+            // 페이지 렌더링을 위한 기본값 설정
+            model.addAttribute("preSelected", false);
+            model.addAttribute("selectedDoctor", null);
 
-        // 의사 정보가 URL 파라미터로 전달된 경우
-        if (employeeNo != null) {
-            Employee selectedDoctor = employeeRepository.findByEmployeeNo(employeeNo)
-                    .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
-            // 선택된 의사와 진료과 정보를 모델에 추가
-            model.addAttribute("selectedDoctor", selectedDoctor);
-            model.addAttribute("selectedDepartment", selectedDoctor.getDepartment().getDepartmentName());
-            model.addAttribute("preSelected", true); // 미리 선택되었음을 표시
+            // 의사 정보가 URL 파라미터로 전달된 경우
+            if (employeeNo != null) {
+                Employee selectedDoctor = employeeRepository.findByEmployeeNo(employeeNo)
+                        .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
+                // 선택된 의사와 진료과 정보를 모델에 추가
+                model.addAttribute("selectedDoctor", selectedDoctor);
+                model.addAttribute("selectedDepartment", selectedDoctor.getDepartment().getDepartmentName());
+                model.addAttribute("preSelected", true); // 미리 선택되었음을 표시
+            }
+
+            model.addAttribute("member", currentMember);
+            model.addAttribute("timeSlots", TimeSlot.values());
+
+            return "member/reservation/new";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "로그인 되지 않은 사용자");
+            return "member/login";
         }
 
-        model.addAttribute("member", currentMember);
-        model.addAttribute("timeSlots", TimeSlot.values());
-
-        return "member/reservation/new";
     }
 
     @GetMapping("/new?{employeeNo}&{departmentId}")
@@ -75,24 +81,31 @@ public class MemberReservationController {
                                     @PathVariable("departmentId") Long departmentId,
                                     @AuthenticationPrincipal UserDetails userDetails,
                                     Model model) {
-        // 현재 로그인한 멤버 정보 조회
-        Member currentMember = memberRepository.findByMemberId(userDetails.getUsername())
-                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
-        // 의사 정보가 URL 파라미터로 전달된 경우
-        if (employeeNo != null) {
-            Employee selectedDoctor = employeeRepository.findByEmployeeNo(employeeNo)
-                    .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
-            // 선택된 의사와 진료과 정보를 모델에 추가
-            model.addAttribute("selectedDoctor", selectedDoctor);
-            model.addAttribute("selectedDepartment", selectedDoctor.getDepartment().getDepartmentName());
-            model.addAttribute("preSelected", true); // 미리 선택되었음을 표시
+        try {
+            // 현재 로그인한 멤버 정보 조회
+            Member currentMember = memberRepository.findByMemberId(userDetails.getUsername())
+                    .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+
+            // 의사 정보가 URL 파라미터로 전달된 경우
+            if (employeeNo != null) {
+                Employee selectedDoctor = employeeRepository.findByEmployeeNo(employeeNo)
+                        .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
+                // 선택된 의사와 진료과 정보를 모델에 추가
+                model.addAttribute("selectedDoctor", selectedDoctor);
+                model.addAttribute("selectedDepartment", selectedDoctor.getDepartment().getDepartmentName());
+                model.addAttribute("preSelected", true); // 미리 선택되었음을 표시
+            }
+
+            model.addAttribute("member", currentMember);
+            model.addAttribute("timeSlots", TimeSlot.values());
+
+            return "member/reservation/new";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", "로그인 되지 않은 사용자");
+            return "member/login";
         }
 
-        model.addAttribute("member", currentMember);
-        model.addAttribute("timeSlots", TimeSlot.values());
-
-        return "member/reservation/new";
     }
 
     @PostMapping("/create")

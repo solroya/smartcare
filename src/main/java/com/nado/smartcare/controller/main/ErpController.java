@@ -66,7 +66,7 @@ public class ErpController {
         model.addAttribute("reservations", reservations);
 
         // DashBoard : 공지사항
-        List<NoticeDto> latestNotices = noticeService.findLatestNotices(6); // 공지사항 4개만 가져옴
+        List<NoticeDto> latestNotices = noticeService.findLatestNotices(6); // 공지사항 6개만 가져옴
         model.addAttribute("latestNotices", latestNotices);
 
         model.addAttribute("content", "erp/index :: content");
@@ -87,5 +87,10 @@ public class ErpController {
         model.addAttribute("employee", employeeDto);
         model.addAttribute("loginStatus", "authenticated");*/
         return "erp/homepage/profile";
+    }
+
+    @GetMapping("/aisetting")
+    public String aisetting(Authentication authentication, Model model) {
+        return "erp/ai/ai_setting";
     }
 }

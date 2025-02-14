@@ -1,6 +1,7 @@
 package com.nado.smartcare.openai.controller;
 
 import com.nado.smartcare.openai.entity.dto.SqlResponse;
+import com.nado.smartcare.openai.service.AIModelService;
 import com.nado.smartcare.openai.service.OpenAIService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.ai.chat.client.ChatClient;
@@ -12,6 +13,8 @@ import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +30,15 @@ import java.util.stream.Collectors;
 @RequestMapping("/ai")
 public class AiController {
 
-    @Value("classpath:/ai/structure.sql")
+    private final AIModelService aiModelService;
+    private final VectorStore vectorStore;
+
+    public AiController(AIModelService aiModelService,@Qualifier("customVectorStore") VectorStore vectorStore) {
+        this.aiModelService = aiModelService;
+        this.vectorStore = vectorStore;
+    }
+
+    /*@Value("classpath:/ai/structure.sql")
     private Resource ddlResource;
 
     @Value("classpath:/ai/sql-prompt-template.st")
@@ -93,38 +104,67 @@ public class AiController {
         return new SqlResponse(query, List.of(), null); // null
     }
 
+     */
+
     // 고객센터 기능
     private String prompt = """
-        You are a friendly and professional customer service assistant for a hospital named SmartCare.
-        Your role is to provide accurate, empathetic, and detailed answers to user questions based on the provided context.
-        Always ensure your responses sound warm, welcoming, and helpful.
-        Use the following pieces of retrieved context to answer the question.
-        If you don't know the answer, politely inform the user that you are unable to find the requested information.
-        Always answer in Korean with a friendly and professional tone.
-        
-        
-        #Question:
-        {input}               
-        
-        #Context :
-        {documents}
-                                         
-        #Answer:                                      
-        """;
+    You are a knowledgeable and professional customer service AI for SmartCare Hospital.
+    Your role is to provide helpful and accurate information while maintaining a good balance between detail and conciseness.
+    
+    Response Guidelines:
+    1. Start with a warm but brief greeting when appropriate
+    2. Provide clear, accurate answers based on the context
+    3. Include relevant details that might be helpful, but avoid overwhelming information
+    4. For questions you can't fully answer with the given context:
+       - Share what information you do know
+       - Politely explain which specific parts require customer service contact
+       - Provide the customer service number (062-362-7897)
+    5. Keep a professional yet friendly tone
+    6. If answering medical questions, always recommend consulting with medical professionals
+    7. End with a brief, helpful closing when appropriate
+    
+    Remember to:
+    - Answer in Korean
+    - Be clear and professional
+    - Stay factual and accurate
+    - Show appropriate empathy
+    - Focus on being helpful
+    - Hospital is "병원"
+    
+    #Question:
+    {input}               
+    
+    #Context:
+    {documents}
+                                     
+    #Answer:                                      
+    """;
 
     @GetMapping("/answer")
-    public String simplify(String question) {
+    public ResponseEntity<Map<String, String>> answer(@RequestParam String question) {
+        try {
+            // PromptTemplate 생성 및 파라미터 설정
+            PromptTemplate template = new PromptTemplate(prompt);
+            Map<String, Object> promptParameters = new HashMap<>();
+            promptParameters.put("input", question);
+            promptParameters.put("documents", findSimilarData(question));
 
-        PromptTemplate template
-                = new PromptTemplate(prompt);
-        Map<String, Object> promptsParameters = new HashMap<>();
-        promptsParameters.put("input", question);
-        promptsParameters.put("documents", findSimilarData(question));
-        return chatModel
-                .call(template.create(promptsParameters))
-                .getResult()
-                .getOutput()
-                .getContent();
+            // AI 응답 생성
+            String response = aiModelService.getResponseWithPrompt(prompt, promptParameters);
+
+            // JSON 응답 생성
+            Map<String, String> jsonResponse = new HashMap<>();
+            jsonResponse.put("response", response);
+            jsonResponse.put("provider", aiModelService.getCurrentProvider());
+
+            return ResponseEntity.ok(jsonResponse);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("response", "죄송합니다. 응답 생성 중 오류가 발생했습니다.");
+            errorResponse.put("provider", "System");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(errorResponse);
+        }
     }
     // # 5.단계 - 검색기(Retriever) 생성---|(Question)<---유사도 검색(similarity)
     // 문서에 포홤되어 있는 정보를 검색하고 생성
@@ -139,4 +179,5 @@ public class AiController {
                 .map(document -> document.getContent().toString())
                 .collect(Collectors.joining());
     }
+
 }

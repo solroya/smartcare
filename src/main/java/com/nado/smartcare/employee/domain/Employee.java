@@ -91,7 +91,7 @@ public class Employee extends BaseEntity {
         // Department 이름을 기반으로 직원 타입 결정
         TypeOfEmployee typeOfEmployee = TypeOfEmployee.STAFF;
 
-        // Doctor 여부 판단
+        // Doctor 여부 판단하는 로직(1~3번이 의사)
         long deptId = department.getDepartmentId();
         log.info("deptId: {}", deptId);
         if (deptId < 4) {

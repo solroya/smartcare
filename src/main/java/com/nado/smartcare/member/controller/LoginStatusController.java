@@ -17,13 +17,22 @@ public class LoginStatusController {
 	
 	@GetMapping("/check-login-status")
 	public Map<String, Object> checkLoginStatus() {
+		// 현재 사용자 인증 정보 가져오기
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		// 로그인 상태 확인
 	    boolean isLoggedIn = authentication != null && authentication.isAuthenticated() &&
 	                         !(authentication instanceof AnonymousAuthenticationToken);
 
 	    Map<String, Object> response = new HashMap<>();
 	    response.put("isLoggedIn", isLoggedIn);
 
+		/* 결과값 예시
+		* {
+		* 	"isLoggedIn" : true,
+		* 	"username":"member",
+		* 	"roles":[{"authority":"ROLE_MEMBER"}],
+		* }
+		* */
 	    if (isLoggedIn) {
 	        response.put("username", authentication.getName());
 	        response.put("roles", authentication.getAuthorities());
