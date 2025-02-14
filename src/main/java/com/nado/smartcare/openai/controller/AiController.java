@@ -30,6 +30,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/ai")
 public class AiController {
 
+    private final AIModelService aiModelService;
+    private final VectorStore vectorStore;
+
+    public AiController(AIModelService aiModelService,@Qualifier("customVectorStore") VectorStore vectorStore) {
+        this.aiModelService = aiModelService;
+        this.vectorStore = vectorStore;
+    }
+
     /*@Value("classpath:/ai/structure.sql")
     private Resource ddlResource;
 
@@ -172,12 +180,4 @@ public class AiController {
                 .collect(Collectors.joining());
     }
 
-    private final AIModelService aiModelService;
-    private final VectorStore vectorStore;
-
-
-    public AiController(AIModelService aiModelService,@Qualifier("customVectorStore") VectorStore vectorStore) {
-        this.aiModelService = aiModelService;
-        this.vectorStore = vectorStore;
-    }
 }

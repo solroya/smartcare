@@ -17,17 +17,9 @@ public interface MemberService {
 
     List<MemberDto> searchByName(String memberName);
 
-    // Containing 은 쿼리의 Like와 동일한 기능을 함
-    Page<MemberDto> findByMemberNameContaining(String memberName, Pageable pageable);
-
-
     Optional<MemberDto> searchMemberEmail(String memberEmail);
 
     MemberDto saveMember(MemberDto memberDto);
-
-    MemberDto updateMember(Long no, String newMemberPass, String newMemberPhoneNumber);
-
-    void deleteMember(Long no);
 
     List<MemberDto> findByNameAndMemberBirthday(String memberName, LocalDate memberBirthday);
     

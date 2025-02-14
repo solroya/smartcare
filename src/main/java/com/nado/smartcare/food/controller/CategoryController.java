@@ -1,7 +1,6 @@
 package com.nado.smartcare.food.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +23,7 @@ public class CategoryController {
 	
 	@GetMapping("/categories")
 	public String getDiagnosisWithCategories(Model model) {
-		log.info("categoryController에 들어왔나?");
+		log.info("categoryController 접속..");
 		List<CategoryDTO> categories = iCategoryService.getSampleDiagnosisWithCategories();
 		log.info("컨트롤러에서 받아온 categories 데이터: {}", categories);
 		model.addAttribute("categories", categories);

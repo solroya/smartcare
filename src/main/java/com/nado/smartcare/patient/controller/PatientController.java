@@ -268,6 +268,7 @@ public class PatientController {
             @RequestParam(defaultValue = "DESC") String sortDirection,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+            @RequestParam(required = false) String searchTerm,
             Model model) {
 
         log.info("Start Date: {}, End Date: {}", startDate, endDate);
@@ -287,7 +288,7 @@ public class PatientController {
                 model.addAttribute("totalElements", 0);
                 model.addAttribute("startDate", startDate);
                 model.addAttribute("endDate", endDate);
-                model.addAttribute("sortDirection", sortDirection); // 현재 정렬 방향 추가
+                model.addAttribute("sortDirection", sortDirection); // 현재 정렬 방향 유지
                 return "erp/patients/result";
             }
         } else {
@@ -296,15 +297,19 @@ public class PatientController {
             startDate = endDate.minusDays(7);
         }
 
-
         // 기본 날짜 필터 설정
         if (startDate == null || endDate == null) {
             endDate = LocalDate.now();
-            startDate = endDate.minusDays(7); // 기본적으로 최근 7일
+            startDate = endDate.minusDays(7); // 최근 7일의 날짜를 조회
         }
 
-        // 데이터 조회
-        Page<PatientRecordCardDto> records = patientRecordCardService.findByDateRange(startDate, endDate, pageRequest);
+        Page<PatientRecordCardDto> records;
+        if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+            // 검색어가 있을 경우: 검색어를 포함한 조회
+            records = patientRecordCardService.findByDateRangeAndSearchTerm(startDate, endDate, searchTerm, pageRequest);
+        } else {
+            records = patientRecordCardService.findByDateRange(startDate, endDate, pageRequest);
+        }
 
         model.addAttribute("records", records);
         model.addAttribute("page", records.getNumber());
@@ -312,6 +317,8 @@ public class PatientController {
         model.addAttribute("totalElements", records.getTotalElements());
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
+        model.addAttribute("searchTerm", searchTerm);
+        model.addAttribute("sortDirection", sortDirection); // 현재 정렬 방향 유지
 
         return "erp/patients/result";
     }

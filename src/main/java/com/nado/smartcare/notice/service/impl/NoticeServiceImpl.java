@@ -10,9 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,61 +61,4 @@ public class NoticeServiceImpl implements NoticeService {
         return NoticeDto.from(noticeRepository.save(notice));
     }
 
-    @Override
-    public NoticeDto updateNotice(Long noticeNo, String newTitle, String newContent, String newImage) {
-        Notice notice = noticeRepository.findById(noticeNo)
-                .orElseThrow(() -> new IllegalArgumentException("No notice found with id: " + noticeNo));
-
-        notice.setTitle(newTitle);
-        notice.setContent(newContent);
-        notice.setEmployee(notice.getEmployee());
-        Notice updatedNotice = noticeRepository.save(notice);
-        return NoticeDto.from(updatedNotice);
-    }
-
-    @Override
-    public void deleteNotice(Long noticeNo) {
-        Notice notice = noticeRepository.findByNoticeNo(noticeNo)
-                .orElseThrow(() -> new IllegalArgumentException("No notice found with id: " + noticeNo));
-        noticeRepository.delete(notice);
-    }
-
-    @Override
-    public List<NoticeDto> findByTitleContainingAndDateBetween(String searchTerm, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
-        LocalDateTime startDateTime = startDate.atStartOfDay();
-        LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
-
-        return noticeRepository.findByTitleContainingAndCreatedAtBetween(
-                        searchTerm,
-                        startDateTime,
-                        endDateTime,
-                        pageRequest)
-                .stream()
-                .map(NoticeDto::from)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<NoticeDto> findByDateBetween(LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
-        LocalDateTime startDateTime = startDate.atStartOfDay();
-        LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
-
-        log.info("Searching notices between {} and {}", startDateTime, endDateTime);
-
-        return noticeRepository.findByCreatedAtBetween(
-                        startDateTime,
-                        endDateTime,
-                        pageRequest)
-                .stream()
-                .map(noticeDto -> NoticeDto.from(noticeDto))
-                .collect(Collectors.toList());
-    }
-
-    @Transactional
-    @Override
-    public void incrementViewCount(Long noticeNo) {
-        Notice notice = noticeRepository.findById(noticeNo)
-                .orElseThrow(() -> new IllegalArgumentException("Notice not found with id: " + noticeNo));
-//        notice.incrementViewCount();
-    }
 }

@@ -46,10 +46,10 @@ public class OpenAIService {
 
     public String getResponseWithPrompt(String promptTemplate, Map<String, Object> parameters) {
         PromptTemplate template = new PromptTemplate(promptTemplate);
-        // create() 메서드는 Prompt 객체를 반환합니다
+        // create() 메서드는 Prompt 객체를 반환
         Prompt prompt = template.create(parameters);
 
-        // ChatModel은 Prompt 객체를 직접 처리할 수 있습니다
+        // ChatModel은 Prompt 객체를 직접 처리
         ChatResponse response = chatModel.call(prompt);
         return response.getResult().getOutput().getContent();
     }

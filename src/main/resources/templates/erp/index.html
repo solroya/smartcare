@@ -21,7 +21,7 @@
              th:text="${#temporals.format(T(java.time.LocalDate).now(), 'yyyy년 MM월 dd일 EEEE')}"></div>
     </div>
 
-    <!-- 통계 카드 -->
+<!--    &lt;!&ndash; 통계 카드 &ndash;&gt;
     <div class="dashboard-stats">
         <div class="stat-card">
             <h3>접수 환자</h3>
@@ -29,7 +29,7 @@
         </div>
         <div class="stat-card">
             <h3>예약 환자</h3>
-            <!-- Thymeleaf 표현식으로 receptionCount 값을 반영 -->
+            &lt;!&ndash; Thymeleaf 표현식으로 receptionCount 값을 반영 &ndash;&gt;
             <div class="number" th:text="${receptionCount > 0 ? receptionCount : 0}">0</div>
         </div>
         <div class="stat-card">
@@ -40,7 +40,7 @@
             <h3>휴가중인 의사</h3>
             <div class="number">3</div>
         </div>
-    </div>
+    </div>-->
 
     <!-- 대시보드 그리드 -->
     <div class="dashboard-grid">

@@ -134,6 +134,12 @@ public class PatientRecordCardServiceImpl implements PatientRecordCardService {
     }
 
     @Override
+    public Page<PatientRecordCardDto> findByDateRangeAndSearchTerm(LocalDate startDate, LocalDate endDate, String searchTerm, Pageable pageable) {
+        return patientRecordCardRepository.findByDateRangeAndSearchTerm(startDate, endDate, searchTerm, pageable)
+                .map(PatientRecordCardDto::from);
+    }
+
+    @Override
     public List<PatientRecordCardDto> getPatientRecordsByMemberId(Long memberNo) {
         return patientRecordCardRepository.findByMember_MemberNo(memberNo)
                 .stream()

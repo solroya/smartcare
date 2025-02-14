@@ -57,10 +57,10 @@ public class NoticeController {
     }
 
     @GetMapping("/mainlist")
-    public String getAllMainNotices(@RequestParam(defaultValue = "0") int page,
-                                @RequestParam(defaultValue = "10") int size,
-                                @RequestParam(defaultValue = "DESC") String sortDirection,
-                                @RequestParam(required = false) String searchTerm,
+    public String getAllMainNotices(@RequestParam(name = "page", defaultValue = "0") int page,
+                                @RequestParam(name = "size", defaultValue = "10") int size,
+                                @RequestParam(name = "sortDirection", defaultValue = "DESC") String sortDirection,
+                                @RequestParam(name = "searchTerm", required = false) String searchTerm,
                                 Model model) {
 
         // 정렬 방향 처리
@@ -85,12 +85,12 @@ public class NoticeController {
         return "notice/mainlist";
     }
 
-    @GetMapping("register")
+    @GetMapping("/register")
     public String register() {
         return "notice/register";
     }
 
-    @PostMapping("register")
+    @PostMapping("/register")
     public String register(NoticeDto noticeDto, @RequestParam("images") List<MultipartFile> files) {
         log.info("register notice: {}", noticeDto);
 

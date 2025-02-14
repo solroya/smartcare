@@ -49,13 +49,6 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<MemberDto> findByMemberNameContaining(String memberName, Pageable pageable) {
-        return memberRepository.findByMemberNameContaining(memberName, pageable)
-                .map(MemberDto::from);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
     public Optional<MemberDto> searchMemberEmail(String memberEmail) {
         return memberRepository.findByMemberEmail(memberEmail)
                 .map(MemberDto::from);
@@ -78,25 +71,6 @@ public class MemberServiceImpl implements MemberService {
         );
 
         return MemberDto.from(memberRepository.save(member));
-    }
-
-    @Transactional
-    @Override
-    public MemberDto updateMember(Long memberNo, String newMemberPass, String newMemberPhoneNumber) {
-        Member member = memberRepository.findByMemberNo(memberNo)
-                .orElseThrow(() -> new IllegalArgumentException("No member found with id: " + memberNo));
-
-        member.updateMember(newMemberPass, newMemberPhoneNumber);
-        Member updatedMember = memberRepository.save(member);
-        return MemberDto.from(updatedMember);
-    }
-
-    @Transactional
-    @Override
-    public void deleteMember(Long memberNo) {
-        Member member = memberRepository.findByMemberNo(memberNo)
-                .orElseThrow(() -> new IllegalArgumentException("No member found with id: " + memberNo));
-        memberRepository.delete(member);
     }
 
     @Override
