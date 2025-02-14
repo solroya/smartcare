@@ -202,15 +202,16 @@ public class MemberController {
     @GetMapping("/mypage")
     public String myPage(Model model) {
         // TODO: 사용자 진료기록 필터링 기능 구현
-
+    	
         // 현재 로그인한 사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
+        
         if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/member/login";
         }
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        log.info("userDetails 값은 ? : {}" , userDetails);
         String memberId = userDetails.getUsername();
 
         try {

@@ -15,7 +15,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByMemberNo(Long memberNo);
 
     Optional<Member> findByMemberId(String memberId);
-
+    
     List<MemberDto> findByMemberName(String memberName);
 
     Optional<Member> findByMemberEmail(String memberEmail);
@@ -27,5 +27,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByMemberIdAndMemberPhoneNumber(String memberId, String memberPhoneNumber);
 
     Page<Member> findByMemberNameContaining(String memberName, Pageable pageable);
-
+    
 }

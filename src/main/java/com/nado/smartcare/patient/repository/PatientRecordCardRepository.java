@@ -20,7 +20,7 @@ public interface PatientRecordCardRepository extends JpaRepository<PatientRecord
     Page<PatientRecordCard> findByClinicDateBetween(LocalDate startDate, LocalDate endDate, Pageable pageable);
 
     @Query("SELECT p FROM PatientRecordCard p WHERE p.member.memberNo = :memberNo")
-    List<PatientRecordCard> findByMember_MemberNo(Long memberNo);
+    List<PatientRecordCard> findByMember_MemberNo(@Param("memberNo") Long memberNo);
 
     @Query(value = """
     SELECT prc.* FROM (

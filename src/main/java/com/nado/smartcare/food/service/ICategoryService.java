@@ -9,7 +9,8 @@ import com.nado.smartcare.food.entity.Category;
 
 public interface ICategoryService {
 	
-	List<CategoryDTO> getSampleDiagnosisWithCategories();
+	
+	List<CategoryDTO> getCategoriesForMember(Long memberNo);
 	
 	CategoryDTO getCategoryByName(String categoryName);
 	

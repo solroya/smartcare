@@ -8,21 +8,20 @@
 	<div th:fragment="detailContent">
 		<div class="content">
 			<div class="detailwrap">
-		        <div class="detail" th:attr="data-fno=${foodPlace.fno}, data-latitude=${foodPlace.latitude}, data-longitude=${foodPlace.longitude}">
-		            <div class="detailImage">
+		         <div class="detail" th:attr="data-fno=${foodPlace.fno}, data-latitude=${foodPlace.latitude}, data-longitude=${foodPlace.longitude}">
 		                <img th:src="${foodPlace.imageUrl}" alt="음식점 이미지">
 		            </div>
 		            <div class="detailTitle">
 		                <h2 th:text="${foodPlace.foodName}"></h2>
-		                <div class="clickBtn">
+		                <div class="clickBtn" th:attr="data-fno=${foodPlace.fno}">
 		                    <span>
 		                        <img class="heart-img" th:src="@{/img/health/heartOff.png}" alt="좋아요">
-		                        <b th:text="${foodPlace.likes} + '개'"></b>
+       							<b th:text="${foodPlace.likes}" th:attr="data-count=${foodPlace.likes}"></b>
 		                    </span>
 		                    <div class="clickBtnLine"></div>
 		                    <span>
 		                        <img th:src="@{/img/health/views.png}" alt="조회수">
-		                        <b th:text="${foodPlace.views} + '개'"></b>
+		                        <b data-count="${foodPlace.likes}" th:text="${foodPlace.likes}"></b>
 		                    </span>
 		                </div>
 		                <button>지도로 보기</button>
@@ -81,14 +80,15 @@
 					            </div>
 					            <input type="hidden" id="rating" name="rating" value="0">
 					        </div>
-					        <textarea id="comentContent" name="content" placeholder="댓글을 입력하세요" required></textarea>
-					        <input type="text" id="comentAuthor" name="author" placeholder="작성자 이름" required>
+					        <div class="writeBox">
+						        <textarea id="comentContent" name="content" placeholder="댓글을 입력하세요" required></textarea>
+						        <input type="text" id="comentAuthor" name="author" placeholder="작성자 이름" required>
+					        </div>
 					        <button type="submit">등록</button>
 					    </form>
 					</div>
 		        </div>
 			</div>
 		</div>
-    </div>
 </body>
 </html>

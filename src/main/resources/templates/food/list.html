@@ -6,15 +6,14 @@
 <link rel="stylesheet" th:href="@{/css/reset.css}">
 <link rel="stylesheet" th:href="@{/css/health/list.css}">
 <link rel="stylesheet" th:href="@{/css/health/detail.css}">
-<script th:src="@{/js/health/list.js}"></script>
 <script th:src="@{/js/health/detail.js}"></script>
-
+<script th:src="@{/js/health/list.js}"></script>
 <script type="text/javascript" th:src="@{'//dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${scriptKey}}"></script>
 <script th:src="@{/js/health/map.js}"></script>
 <style>
 	#map-container {
-	    width: 100%; /* 지도가 차지할 너비 */
-	    height: 100vh; /* 화면 전체 높이 */
+		flex : 1;
+	    height: 100vh;
 	}
 
 	#map {
@@ -55,23 +54,30 @@
 					<div class="foodList">
 						<div class="foodListBox" >
 							<ul>
-								<li th:each="foodPlace, stat : ${foodPlaces}" 
-						        th:data-latitude="${foodPlace.latitude}" 
-						        th:data-longitude="${foodPlace.longitude}" 
-						        th:onclick="'loadDetail(' + ${foodPlace.fno} + ')'" >
-									<p class="foodPlaceFno" th:text="${stat.index + 1}"></p>
-									<img th:src="${foodPlace.imageUrl}" alt="음식점 이미지">
-									<div class="foodListBox-Text">
-										<h3 th:text="${foodPlace.foodName}"></h3>
-										<p th:text="${foodPlace.foodAddressRoad}"></p>
-									</div>
-									<button class="like-btn" th:data-fno="${foodPlace.fno}" th:data-likes="${foodPlace.likes}">
-									    <span class="heart">
-									        <img th:src="@{/img/health/heartOff.png}">
-									    </span>
-									    <span class="likes-count" th:text="${foodPlace.likes}" style="display:none;"></span>
-									</button>
-								</li>
+								<li th:each="foodPlace, stat : ${foodPlaces}"
+				                    th:data-fno="${foodPlace.fno}"
+				                    th:data-latitude="${foodPlace.latitude}"
+				                    th:data-longitude="${foodPlace.longitude}"
+				                    th:onclick="'loadDetail(' + ${foodPlace.fno} + ')'" >
+                                    <p class="foodPlaceFno" th:text="${stat.index + 1}"></p>
+                                    <img th:src="${foodPlace.imageUrl}" alt="음식점 이미지">
+                                    <div class="foodListBox-Text">
+                                        <h3 th:text="${foodPlace.foodName}"></h3>
+                                        <p th:text="${foodPlace.foodAddressRoad}"></p>
+                                    </div>
+                                    <button class="like-btn"
+								            type="button"
+								            th:data-fno="${foodPlace.fno}"
+								            th:data-likes="${foodPlace.likes}">
+                                        <span class="heart">
+                                            <img th:src="@{/img/health/heartOff.png}">
+                                        </span>
+                                        <span class="likes-count"
+									          th:text="${foodPlace.likes}"
+									          data-count="${foodPlace.likes}"
+									          style="display:none;"></span>
+                                    </button>
+                                </li>
 							</ul>
 						</div>
 					</div>
@@ -79,7 +85,7 @@
 			</div>
 		</div>
 		<!-- 상세페이지 자리 -->
-		<div id="detail" class="detailwrap hidden"></div>
+		<div id="detail" class="hidden"></div>
 		<!-- 지도 자리 -->
 		<div id="map-container">
 			<div id="map"></div>
