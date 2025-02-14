@@ -6,42 +6,48 @@
     <link rel="stylesheet" th:href="@{/css/erp/fragments/pagination.css}">
 </head>
 <body>
-<th:block th:fragment="pagination (page, size, totalElements, url)">
-    <ul class="pagination"
-        th:with="totalPages=${totalElements != null and size != null ? (totalElements / size) + (totalElements % size > 0 ? 1 : 0) : 1}">
+<th:block th:fragment="pagination (page, size, totalElements, url, sortDirection, startDate, endDate, searchTerm)">
+    <th:block th:with="
+      extraParams=${(sortDirection != null and sortDirection != '' ? '&sortDirection=' + sortDirection : '') +
+                    (startDate != null ? '&startDate=' + startDate : '') +
+                    (endDate != null ? '&endDate=' + endDate : '') +
+                    (searchTerm != null and searchTerm != '' ? '&searchTerm=' + searchTerm : '')},
+      totalPages=${totalElements != null and size != null ? (totalElements / size) + (totalElements % size > 0 ? 1 : 0) : 1}">
+        <ul class="pagination">
 
-        <!-- 이전 버튼 -->
-        <li class="pagination-item">
-            <a th:if="${page > 0}"
-               th:href="${url + '?page=' + (page - 1) + '&size=' + size}"
-               class="pagination-link pagination-prev">
-                이전
-            </a>
-            <span th:unless="${page > 0}" class="pagination-disabled">
+            <!-- 이전 버튼 -->
+            <li class="pagination-item">
+                <a th:if="${page > 0}"
+                   th:href="${url + '?page=' + (page - 1) + '&size=' + size}"
+                   class="pagination-link pagination-prev">
+                    이전
+                </a>
+                <span th:unless="${page > 0}" class="pagination-disabled">
                 이전
             </span>
-        </li>
+            </li>
 
-        <!-- 페이지 번호 -->
-        <li class="pagination-item" th:each="i : ${#numbers.sequence(0, (totalPages - 1))}">
-            <a th:href="${url + '?page=' + i + '&size=' + size}"
-               th:text="${i + 1}"
-               th:class="${page == i ? 'pagination-link pagination-active' : 'pagination-link'}">
-            </a>
-        </li>
+            <!-- 페이지 번호 -->
+            <li class="pagination-item" th:each="i : ${#numbers.sequence(0, (totalPages - 1))}">
+                <a th:href="${url + '?page=' + i + '&size=' + size}"
+                   th:text="${i + 1}"
+                   th:class="${page == i ? 'pagination-link pagination-active' : 'pagination-link'}">
+                </a>
+            </li>
 
-        <!-- 다음 버튼 -->
-        <li class="pagination-item">
-            <a th:if="${page < totalPages - 1}"
-               th:href="${url + '?page=' + (page + 1) + '&size=' + size}"
-               class="pagination-link pagination-next">
-                다음
-            </a>
-            <span th:unless="${page < totalPages - 1}" class="pagination-disabled">
+            <!-- 다음 버튼 -->
+            <li class="pagination-item">
+                <a th:if="${page < totalPages - 1}"
+                   th:href="${url + '?page=' + (page + 1) + '&size=' + size}"
+                   class="pagination-link pagination-next">
+                    다음
+                </a>
+                <span th:unless="${page < totalPages - 1}" class="pagination-disabled">
                 다음
             </span>
-        </li>
-    </ul>
+            </li>
+        </ul>
+    </th:block>
 </th:block>
 </body>
 </html>

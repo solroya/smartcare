@@ -93,6 +93,16 @@
         .table tr:hover {
             background-color: #f8f9fa;
         }
+
+        .new-reception-btn {
+            padding: 10px 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
     </style>
 </head>
 <body>
@@ -103,28 +113,7 @@
 <main class="main-content">
     <div class="reservation-header">
         <h1>진료 예약 목록</h1>
-        <button class="btn btn-primary">새 예약 등록</button>
-    </div>
-
-    <!-- 검색 컨트롤 -->
-    <div class="search-controls">
-        <div class="search-group">
-            <label>조회기간</label>
-            <input type="date" class="form-control" name="startDate">
-            <span>~</span>
-            <input type="date" class="form-control" name="endDate">
-        </div>
-        <div class="search-group">
-            <label>진료 카테고리</label>
-            <select class="form-control" name="category">
-                <option value="">전체</option>
-            </select>
-        </div>
-        <div class="search-group">
-            <label>검색어</label>
-            <input type="text" class="form-control" placeholder="환자명 또는 진료명">
-        </div>
-        <button class="btn btn-secondary">검색</button>
+        <a th:href="@{/apply/apply}" class="new-reception-btn">새 진료 접수 등록</a>
     </div>
 
     <!-- 진료 예약 목록 테이블 -->
@@ -162,7 +151,7 @@
     </div>
 
     <!-- 페이지네이션 -->
-    <div th:replace="~{fragments/pagination :: pagination(${page}, ${size}, ${totalElements}, '/erp/patients/result')}"></div>
+    <div th:replace="~{fragments/pagination :: pagination(${page}, ${size}, ${totalElements}, '/erp/patients/result', ${sortDirection}, ${startDate}, ${endDate}, ${searchTerm})}"></div>
 
     <!-- 플로팅 채팅 버튼 -->
     <th:block th:replace="~{erp/fragments/floating-chat :: floatingChatFragment}"></th:block>
