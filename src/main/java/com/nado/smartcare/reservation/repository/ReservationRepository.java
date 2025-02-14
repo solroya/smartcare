@@ -42,4 +42,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     );
 
     Page<Reservation> findAllByReservationStatus(ReservationStatus reservationStatus, Pageable pageable);
+
+    // AI Vector store 저장
+    @Query("SELECT r FROM Reservation r JOIN FETCH r.employee JOIN FETCH r.member")
+    List<Reservation> findAllWithEmployee();
 }

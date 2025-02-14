@@ -1,5 +1,6 @@
 package com.nado.smartcare.patient.service.impl;
 
+import com.nado.smartcare.openai.entity.MedicalDataChangeEvent;
 import com.nado.smartcare.patient.domain.PatientRecordCard;
 import com.nado.smartcare.patient.domain.dto.PatientRecordCardDto;
 import com.nado.smartcare.patient.domain.dto.ReceptionDto;
@@ -9,6 +10,7 @@ import com.nado.smartcare.patient.service.PatientRecordCardService;
 import com.nado.smartcare.patient.service.ReceptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,15 +32,15 @@ import java.util.stream.Collectors;
 public class PatientRecordCardServiceImpl implements PatientRecordCardService {
 
     private final PatientRecordCardRepository patientRecordCardRepository;
-
     private final ReceptionService receptionService;
+    private final ApplicationEventPublisher eventPublisher;
 
 
     @Transactional
     @Override
     public void registerPatientRecordCard(PatientRecordCardDto patientRecordCardDto) {
         // 1. 진료 기록 카드 저장
-        patientRecordCardRepository.save(PatientRecordCard.of(
+        PatientRecordCard savedRecord = patientRecordCardRepository.save(PatientRecordCard.of(
                 patientRecordCardDto.clinicName(),
                 patientRecordCardDto.clinicDate(),
                 patientRecordCardDto.clinicReservationDate(),
@@ -54,6 +56,12 @@ public class PatientRecordCardServiceImpl implements PatientRecordCardService {
 
         ReceptionDto receptionDto = ReceptionDto.from(patientRecordCardDto.receptionNo());
         receptionService.updateReceptionStatus(receptionDto, ReceptionStatus.COMPLETED);
+
+        // 이벤트 발행
+        eventPublisher.publishEvent(
+                MedicalDataChangeEvent.createMedicalRecordEvent(savedRecord.getPatientRecordNo())
+        );
+        log.info("새로운 진료 기록 생성 및 이벤트 발행: recordId={}", savedRecord.getPatientRecordNo());
     }
 
     @Override
@@ -124,6 +132,12 @@ public class PatientRecordCardServiceImpl implements PatientRecordCardService {
                 updatedRecord.diseaseList() != null ? updatedRecord.diseaseList() : existingRecord.getDiseaseList(),
                 updatedRecord.reservation() != null ? updatedRecord.reservation() : existingRecord.getReservation()
         );
+
+        // 이벤트 발행
+        eventPublisher.publishEvent(
+                MedicalDataChangeEvent.updateMedicalRecordEvent(existingRecord.getPatientRecordNo())
+        );
+        log.info("진료 기록 업데이트 및 이벤트 발행: recordId={}", existingRecord.getPatientRecordNo());
 
     }
 

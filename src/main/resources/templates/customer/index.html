@@ -1,330 +1,235 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SQL Query Tool</title>
+    <title>SmartCare 의료 상담 도우미</title>
     <style>
-        /* 1. 기본 설정 */
-        * {
+        body {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
         }
 
-        /* 2. 레이아웃 컨테이너 */
         .chat-container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            height: 900px;
             display: flex;
             flex-direction: column;
-            background-color: #f5f5f5;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        /* 3. 헤더 영역 */
-        .chat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
+            height: 100vh;
             background-color: #f8f9fa;
+        }
+
+        .chat-header {
+            background-color: #1C3D5A;
+            color: white;
+            padding: 1rem;
+            text-align: center;
             border-bottom: 1px solid #dee2e6;
-            border-radius: 8px 8px 0 0;
         }
 
-        .chat-header h2 {
-            font-size: 18px;
-            color: #333;
-            margin: 0;
-        }
-
-        /* 4. 메시지 표시 영역 */
-        #chat-messages {
-            flex-grow: 1;
+        .chat-messages {
+            flex: 1;
             overflow-y: auto;
-            padding: 10px;
-            background-color: white;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
         }
 
         .message {
-            margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
+            max-width: 80%;
+            padding: 1rem;
+            border-radius: 1rem;
+            position: relative;
         }
 
-        .message.user {
-            align-items: flex-end;
+        .user-message {
+            background-color: #e3f2fd;
+            margin-left: auto;
+            border-bottom-right-radius: 0.25rem;
         }
 
-        .message.ai {
-            align-items: flex-start;
-        }
-
-        .message-content {
-            max-width: 70%;
-            padding: 10px 15px;
-            border-radius: 15px;
-            font-size: 14px;
-            line-height: 1.4;
-            word-wrap: break-word;
-        }
-
-        .user .message-content {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .ai .message-content {
-            background-color: #e9ecef;
-            color: #333;
-        }
-
-        /* SQL 결과 테이블 스타일 */
-        .table-container {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 10px;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 10px;
-        }
-
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-            font-size: 14px;
-        }
-
-        th {
-            background-color: #f8f9fa;
-            font-weight: bold;
-        }
-
-        /* 7. 입력 영역 */
-        .input-container {
-            display: flex;
-            gap: 10px;
-            padding: 10px;
+        .ai-message {
             background-color: white;
-            border-radius: 8px;
+            margin-right: auto;
+            border-bottom-left-radius: 0.25rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        #newsQuery {
-            flex-grow: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            resize: none;
+        .provider-tag {
+            position: absolute;
+            top: -1.2rem;
+            left: 0;
+            font-size: 0.75rem;
+            color: #666;
+            background-color: #f0f0f0;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.5rem;
         }
 
-        #searchBtn {
-            padding: 10px 20px;
-            background-color: #007bff;
+        .chat-input-container {
+            padding: 1rem;
+            background-color: white;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        #messageInput {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        #messageInput:focus {
+            border-color: #1C3D5A;
+            box-shadow: 0 0 0 2px rgba(28, 61, 90, 0.1);
+        }
+
+        #sendButton {
+            padding: 0.75rem 1.5rem;
+            background-color: #1C3D5A;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 0.5rem;
             cursor: pointer;
+            transition: background-color 0.2s;
         }
 
-        #searchBtn:hover {
-            background-color: #0056b3;
+        #sendButton:hover {
+            background-color: #2a5070;
         }
 
-        /* 8. 로딩 애니메이션 */
-        .loading-message {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 15px;
-            background-color: #f8f9fa;
-            border-radius: 15px;
-            font-size: 14px;
+        .typing-indicator {
+            display: none;
+            padding: 1rem;
             color: #666;
-            margin-bottom: 15px;
-        }
-
-        .loading-dots {
-            display: inline-flex;
-            gap: 4px;
-        }
-
-        .loading-dots span {
-            width: 6px;
-            height: 6px;
-            background-color: #666;
-            border-radius: 50%;
-            animation: loading 1.4s infinite;
-        }
-
-        .loading-dots span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .loading-dots span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes loading {
-            0%, 100% {
-                transform: scale(0.5);
-                opacity: 0.5;
-            }
-            50% {
-                transform: scale(1);
-                opacity: 1;
-            }
         }
     </style>
 </head>
 <body>
-<div class="chat-container" style="height: 100vh; margin: 0; max-width: none;">
+<div class="chat-container">
     <div class="chat-header">
-        <h2>데이터베이스 검색</h2>
+        <h2>SmartCare 의료 상담 도우미</h2>
+        <p>진료 기록 조회 서비스</p>
     </div>
 
-    <div id="chat-messages">
-        <!-- 시작 메시지 -->
-        <div class="message ai">
-            <div class="message-content">
-                안녕하세요. 데이터베이스 검색 AI 입니다. 검색하실 내용을 입력해주세요.
-            </div>
+    <div class="chat-messages" id="chatMessages">
+        <!-- 초기 메시지 -->
+        <div class="message ai-message">
+            <div class="provider-tag">SmartCare AI</div>
+            <p>안녕하세요! SmartCare 의료 상담 도우미입니다.</p>
+            <p>환자 기록 카드에 대해 문의를 해주시면 답변해드리겠습니다.</p>
+            <p>환자기록카드 데이터 변경시 즉시 변경됩니다..</p>
+            <p>예시 질문:</p>
+            <ul>
+                <li>당뇨병으로 진단 받은 환자가 있어? </li>
+                <li>진료과가 INTERNAL_MEDICINE인 진료가 있어?</li>
+            </ul>
         </div>
     </div>
 
-    <div class="input-container">
-        <textarea
-                id="newsQuery"
-                placeholder="질문을 입력하세요..."
-                rows="1"
-        ></textarea>
-        <button id="searchBtn">검색</button>
+    <div class="typing-indicator" id="typingIndicator">
+        AI가 응답을 생성하고 있습니다...
+    </div>
+
+    <div class="chat-input-container">
+        <div class="input-group">
+            <input type="text"
+                   id="messageInput"
+                   placeholder="질문을 입력해주세요..."
+                   aria-label="메시지 입력">
+            <button id="sendButton" onclick="sendMessage()">전송</button>
+        </div>
     </div>
 </div>
 
 <script>
-    document.getElementById("searchBtn").addEventListener("click", async function() {
-        const query = document.getElementById("newsQuery").value.trim();
-        if (!query) {
-            alert("질문을 입력해 주세요.");
-            return;
-        }
+    let sessionId = generateSessionId();
+
+    function generateSessionId() {
+        return 'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('messageInput');
+        const message = input.value.trim();
+        if (!message) return;
 
         // 사용자 메시지 표시
-        appendMessage(query, true);
-        document.getElementById("newsQuery").value = '';
+        appendMessage('user', message);
+        input.value = '';
 
-        // 로딩 메시지 표시
-        const loadingMsg = showLoadingMessage();
+        // 입력 비활성화 및 타이핑 표시기 보이기
+        toggleInputState(false);
 
         try {
-            const response = await fetch('/ai/sql', {
+            const response = await fetch('/medical/chat', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
                 },
-                body: new URLSearchParams({ question: query })
+                body: JSON.stringify({
+                    message: message,
+                    sessionId: sessionId,
+                    metadata: {}
+                })
             });
 
             const data = await response.json();
 
-            // 로딩 메시지 제거
-            loadingMsg.remove();
-
-            // AI 응답 메시지와 함께 결과 표시
-            let responseContent = data.naturalResponse || "검색 결과가 없습니다.";
-
-            // 결과가 있으면 테이블 추가
-            if (data.results && data.results.length > 0) {
-                responseContent += createTableHTML(data.results);
+            if (data.status === 'success') {
+                appendMessage('ai', data.message, data.provider);
+            } else {
+                appendMessage('ai', '죄송합니다. 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
             }
-
-            appendMessage(responseContent, false);
-
         } catch (error) {
-            loadingMsg.remove();
-            appendMessage("오류가 발생했습니다. 다시 시도해주세요.", false);
-            console.error("Error:", error);
+            console.error('Error:', error);
+            appendMessage('ai', '죄송합니다. 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+        } finally {
+            // 입력 활성화 및 타이핑 표시기 숨기기
+            toggleInputState(true);
         }
-    });
+    }
 
-    function appendMessage(content, isUser) {
-        const messagesContainer = document.getElementById('chat-messages');
+    function appendMessage(type, content, provider = null) {
+        const messagesDiv = document.getElementById('chatMessages');
         const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+        messageDiv.className = `message ${type}-message`;
 
-        const contentDiv = document.createElement('div');
-        contentDiv.className = 'message-content';
-
-        if (content.includes('<table>')) {
-            // HTML 테이블이 포함된 경우
-            contentDiv.innerHTML = content;
-        } else {
-            contentDiv.textContent = content;
+        if (type === 'ai' && provider) {
+            const providerTag = document.createElement('div');
+            providerTag.className = 'provider-tag';
+            providerTag.textContent = `AI Provider: ${provider}`;
+            messageDiv.appendChild(providerTag);
         }
 
-        messageDiv.appendChild(contentDiv);
-        messagesContainer.appendChild(messageDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        const contentP = document.createElement('p');
+        contentP.textContent = content;
+        messageDiv.appendChild(contentP);
+
+        messagesDiv.appendChild(messageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
 
-    function showLoadingMessage() {
-        const messagesContainer = document.getElementById('chat-messages');
-        const loadingDiv = document.createElement('div');
-        loadingDiv.className = 'message ai';
-        loadingDiv.innerHTML = `
-            <div class="loading-message">
-                검색 중
-                <div class="loading-dots">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </div>
-        `;
-        messagesContainer.appendChild(loadingDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        return loadingDiv;
-    }
+    function toggleInputState(enabled) {
+        const input = document.getElementById('messageInput');
+        const button = document.getElementById('sendButton');
+        const indicator = document.getElementById('typingIndicator');
 
-    function createTableHTML(results) {
-        return `
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            ${Object.keys(results[0]).map(key => `<th>${key}</th>`).join('')}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${results.map(row => `
-                            <tr>
-                                ${Object.values(row).map(value => `<td>${value}</td>`).join('')}
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            </div>
-        `;
+        input.disabled = !enabled;
+        button.disabled = !enabled;
+        indicator.style.display = enabled ? 'none' : 'block';
     }
 
     // Enter 키 이벤트 처리
-    document.getElementById("newsQuery").addEventListener("keypress", function(e) {
-        if (e.key === "Enter" && !e.shiftKey) {
+    document.getElementById('messageInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            document.getElementById("searchBtn").click();
+            sendMessage();
         }
     });
 </script>
