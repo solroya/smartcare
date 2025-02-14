@@ -78,7 +78,7 @@ public class FoodPlaceController {
 	
 	@GetMapping("/detail/{fno}")
 	public String getFoodPlaceDetail(@PathVariable("fno") Long fno, Model model) {
-		log.info("FoodPlaceDetail에 들어왔나?");
+		log.info("FoodPlaceDetail에 들어왔나? fno={}", fno);
 		
 		iFoodPlaceService.incrementViews(fno);
 		FoodPlaceDTO foodPlace = iFoodPlaceService.getFoodPlaceById(fno);
