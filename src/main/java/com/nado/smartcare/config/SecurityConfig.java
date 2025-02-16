@@ -1,5 +1,6 @@
 package com.nado.smartcare.config;
 
+import com.nado.smartcare.config.service.CustomUserDetailService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +19,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @Log4j2
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private final CustomUserDetailService userDetailsService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -31,22 +33,26 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain filter(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests((request) -> request.requestMatchers("/**").permitAll()
-                        .requestMatchers("/css/**", "/js/**").permitAll()
+        http
+                .userDetailsService(userDetailsService)
+                .authorizeHttpRequests((request) -> request
+                        .requestMatchers("/css/**", "/js/**", "/img/**", "/assets/**").permitAll()
+                        .requestMatchers("/main", "/member/**").permitAll()
+                        .requestMatchers("/employee/**").permitAll()
                         .requestMatchers("/api/check-login-status").permitAll()
                         .requestMatchers("/oauth2/authorization/kakao").permitAll()
                         .requestMatchers("/auth/kakao/**").permitAll()
+                        .requestMatchers("/redis/test", "/sms/**").permitAll()
                         .requestMatchers("/erp/**").hasRole("EMPLOYEE")
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
-                                .loginPage("/member/login")
-                                .usernameParameter("username")
-                                .passwordParameter("password")
-//                        .defaultSuccessUrl("/main", true)
-                                .successHandler(authenticationSuccessHandler()) // 리다이렉트 경로 지정(Role 기반으로 코드 작성함)
-                                .failureUrl("/member/login?error")
-                                .permitAll()
+                        .loginPage("/member/login")
+                        .usernameParameter("username")
+                        .passwordParameter("password")
+                        .successHandler(authenticationSuccessHandler())
+                        .failureUrl("/member/login?error")
+                        .permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/member/login")
@@ -59,7 +65,6 @@ public class SecurityConfig {
                         })
                         .permitAll()
                 )
-                .csrf(csrf -> csrf.disable())
                 .logout((logout) -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/main")
@@ -67,13 +72,11 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                         .permitAll()
                 )
-                // Floating Action Button 의 Same-Origin Policy 문제 패스
+                .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers
-                        .frameOptions(frameOptions -> frameOptions
-                                .sameOrigin()));
+                        .frameOptions(frameOptions -> frameOptions.sameOrigin())
+                );
 
         return http.build();
     }
-
-
 }

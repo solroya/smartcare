@@ -16,8 +16,11 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         // 현재 로그인한 사용자 정보 가져오기
-        User user = (User) authentication.getPrincipal();
-        String username = user.getUsername();
+        // CustomUserDetails로 캐스팅
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername();
+        String memberName = userDetails.getMemberName(); // memberName
+
 
         // 사용자의 역할(Role) 확인
         boolean isEmployee = authentication.getAuthorities().stream()
@@ -27,7 +30,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             log.info("직원 로그인 : {}, ERP로 이동", username);
             response.sendRedirect("/erp");
         } else {
-            log.info("일반 사용자 로그인 : {}, 메인 페이지로 이동", username);
+            log.info("일반 사용자 로그인 : {}, 메인 페이지로 이동", username, memberName);
             response.sendRedirect("/main");
         }
     }
