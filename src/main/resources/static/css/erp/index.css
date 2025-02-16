@@ -199,230 +199,61 @@ body {
     }
 }
 
-
-/**************** 사이드바 *******************/
-
-/* 사이드바 스타일 */
-.sidebar {
-    width: var(--sidebar-width);
-    background-color: var(--primary-color);
-    position: fixed;
-    height: 100vh;
-    padding: 20px 0;
-    overflow-y: auto;
-}
-
-/* 사이드바 헤더 및 로고 */
-.sidebar-header {
-    padding: 0 20px;
-    margin-bottom: 30px;
-}
-
-.sidebar-title {
-    margin: 0;
-    padding: 0;
-}
-
-.logo-link {
-    color: var(--text-light);
-    text-decoration: none;
-    font-size: 1.5em;
-    font-weight: bold;
-    display: block;
-    text-align: center;
-    padding: 10px;
-    transition: color 0.3s;
-}
-
-.logo-link:hover {
-    color: var(--secondary-color);
-}
-
-.logo-link.active {
-    color: var(--secondary-color);
-}
-
-/* 섹션 타이틀 */
-.section-title {
-    color: var(--secondary-color);
-    font-size: 1em;
-    padding: 10px 20px;
-    margin: 10px 0 5px;
-}
-
-/* 네비게이션 메뉴 */
-.nav-menu {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-/* 메인 메뉴 아이템 (스마트케어, 대시보드, 공지사항, 마이페이지) */
-.menu-item {
-    display: block;
-    padding: 12px 25px;
-    color: var(--text-light);
-    text-decoration: none;
-    transition: all 0.3s ease;
-    font-weight: 500;
+/* 테이블 기본 스타일 확장 */
+.table td[data-label] {
     position: relative;
-    margin: 4px 0;
 }
 
-.menu-item:hover {
-    background-color: var(--primary-light);
-    color: var(--secondary-color);
-    padding-left: 30px;
+/* 태블릿 대응 (768px ~ 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .table {
+        font-size: 0.95em;
+    }
+
+    .table-scroll-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table th,
+    .table td {
+        white-space: nowrap;
+        padding: 10px 8px;
+    }
 }
 
-.menu-item.active {
-    background-color: var(--secondary-color);
-    color: var(--text-light);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.menu-item.active::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 4px;
-    background-color: var(--text-light);
-}
-
-/* 서브메뉴 섹션 */
-.menu-section {
-    margin: 20px 0;
-}
-
-/* 서브메뉴 컨테이너 */
-.submenu {
-    list-style: none;
-    padding-left: 25px;
-    margin: 5px 0;
-}
-
-/* 서브메뉴 아이템 */
-.submenu-item {
-    display: block;
-    padding: 8px 15px;
-    color: var(--text-light);
-    text-decoration: none;
-    transition: all 0.3s ease;
-    font-size: 0.95em;
-    opacity: 0.9;
-    margin: 2px 0;
-}
-
-.submenu-item:hover {
-    background-color: var(--primary-light);
-    color: var(--secondary-color);
-    padding-left: 20px;
-    opacity: 1;
-}
-
-/* 사용자 프로필 영역 */
-.user-profile-sidebar {
-    padding: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    margin-bottom: 20px;
-}
-
-.user-info-container {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 15px;
-}
-
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    background-color: var(--secondary-color);
-    color: var(--text-light);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 1.2em;
-}
-
-.user-details {
-    flex: 1;
-}
-
-.user-name {
-    color: var(--text-light);
-    font-weight: 500;
-    margin-bottom: 4px;
-}
-
-/* 로그아웃 버튼 */
-.logout-btn-sidebar {
-    width: 100%;
-    padding: 8px 12px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border: none;
-    border-radius: 4px;
-    color: var(--text-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.logout-btn-sidebar:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-.logout-icon {
-    font-size: 1.1em;
-}
-
-/* 개발 모드 스타일 */
-.dev-login-info {
-    padding: 15px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-    margin-bottom: 20px;
-}
-
-.dev-status {
-    color: #ffd700;
-    font-size: 0.9em;
-    margin-bottom: 10px;
-}
-
-.dev-login-btn {
-    display: inline-block;
-    padding: 8px 16px;
-    background-color: var(--secondary-color);
-    color: var(--text-light);
-    text-decoration: none;
-    border-radius: 4px;
-    font-size: 0.9em;
-    transition: background-color 0.3s;
-}
-
-.dev-login-btn:hover {
-    background-color: #4ca5c3;
-}
-
-/* 반응형 사이드바 */
+/* 모바일 대응 (768px 이하) */
 @media (max-width: 768px) {
-    .sidebar {
-        width: 200px;
+    /* 테이블 헤더 숨기기 */
+    .table thead {
+        display: none;
+    }
+
+    /* 행을 카드 형태로 변환 */
+    .table tbody tr {
+        display: block;
+        margin-bottom: 1rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 1rem;
+    }
+
+    /* 셀을 그리드로 변환 */
+    .table td[data-label] {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 1rem;
+        padding: 0.5rem 0;
+        border: none;
+    }
+
+    /* data-label 속성을 사용한 레이블 표시 */
+    .table td[data-label]::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: var(--primary-color);
     }
 }
 
-@media (max-width: 576px) {
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-    }
-}
+

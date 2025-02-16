@@ -2,7 +2,8 @@ package com.nado.smartcare.member.service;
 
 import com.nado.smartcare.member.domain.Member;
 import com.nado.smartcare.member.domain.dto.MemberDto;
-import org.springframework.data.domain.Page;
+import com.nado.smartcare.member.domain.dto.SearchMemberDto;
+import com.nado.smartcare.page.PageResponse;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
@@ -21,11 +22,11 @@ public interface MemberService {
 
     MemberDto saveMember(MemberDto memberDto);
 
-    List<MemberDto> findByNameAndMemberBirthday(String memberName, LocalDate memberBirthday);
+    PageResponse<SearchMemberDto> findByNameAndMemberBirthday(String memberName, LocalDate memberBirthday, Pageable pageable);
     
     Member login(String memberId, String memberPass);
 
-    Page<MemberDto> getAllMembers(Pageable pageable);
+    PageResponse<SearchMemberDto> getAllMembers(Pageable pageable);
     
     List<MemberDto> findByPhoneNumber(String memberPhoneNumber);
     

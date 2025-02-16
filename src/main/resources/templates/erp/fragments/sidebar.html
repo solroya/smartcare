@@ -1,105 +1,109 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="sidebarFragment">
-  <aside class="sidebar">
-    <!-- 사이트 타이틀 -->
-    <div class="sidebar-header">
-      <h4 class="sidebar-title">
-        <a th:href="@{/erp}" class="logo-link">
-          스마트 케어
-        </a>
-      </h4>
-    </div>
-
-    <!-- 사용자 프로필 영역 -->
-    <div class="user-profile-sidebar">
-      <!-- 로그인 상태일 때 -->
-      <div class="user-info-container" th:if="${employee != null}">
-        <div class="user-avatar" th:text="${#strings.substring(employee.employeeName, 0, 1)}">K</div>
-        <div class="user-details">
-          <div class="user-name" th:text="${employee.employeeName}">김의사</div>
-
+    <!-- 햄버거 메뉴 버튼 (sidebar 시작 부분) -->
+    <button class="mobile-menu-toggle">
+        <span class="menu-icon">☰</span>
+    </button>
+    <aside class="sidebar">
+        <!-- 사이트 타이틀 -->
+        <div class="sidebar-header">
+            <h4 class="sidebar-title">
+                <a th:href="@{/erp}" class="logo-link">
+                    스마트 케어
+                </a>
+            </h4>
         </div>
-        <form th:action="@{/logout}" method="post" class="logout-form-sidebar">
-          <button type="submit" class="logout-btn-sidebar">
-            <span class="logout-icon">⇥</span> 로그아웃
-          </button>
-        </form>
-      </div>
 
-      <!-- 비로그인 상태일 때 -->
-      <div class="dev-login-info" th:unless="${employee != null}">
-        <div class="dev-status">개발 모드: 비로그인</div>
-        <a th:href="@{/member/login}" class="dev-login-btn">로그인하기</a>
-      </div>
-    </div>
+        <!-- 사용자 프로필 영역 -->
+        <div class="user-profile-sidebar">
+            <!-- 로그인 상태일 때 -->
+            <div class="user-info-container" th:if="${employee != null}">
+                <div class="user-avatar" th:text="${#strings.substring(employee.employeeName, 0, 1)}">K</div>
+                <div class="user-details">
+                    <div class="user-name" th:text="${employee.employeeName}">김의사</div>
 
-    <!-- 네비게이션 메뉴 -->
-    <nav class="sidebar-nav">
-      <ul class="nav-menu">
-        <li class="menu-section">
-          <h4 class="section-title">접수</h4>
-          <ul class="submenu">
-            <li>
-              <a th:href="@{/erp/patients/register}" class="submenu-item">환자 등록</a>
-            </li>
-            <li>
-              <a th:href="@{/erp/patients/list}" class="submenu-item">접수 목록</a>
-            </li>
-          </ul>
-        </li>
+                </div>
+                <form th:action="@{/logout}" method="post" class="logout-form-sidebar">
+                    <button type="submit" class="logout-btn-sidebar">
+                        <span class="logout-icon">⇥</span> 로그아웃
+                    </button>
+                </form>
+            </div>
 
-        <li class="menu-section">
-          <h4 class="section-title">예약</h4>
-          <ul class="submenu">
-            <li>
-              <a th:href="@{/apply/apply}" class="submenu-item">예약</a>
-            </li>
-            <li>
-              <a th:href="@{/erp/record/list}" class="submenu-item">예약 목록</a>
-            </li>
+            <!-- 비로그인 상태일 때 -->
+            <div class="dev-login-info" th:unless="${employee != null}">
+                <div class="dev-status">개발 모드: 비로그인</div>
+                <a th:href="@{/member/login}" class="dev-login-btn">로그인하기</a>
+            </div>
+        </div>
 
-<!--            <li>
-              <a th:href="@{/apply/list}" class="submenu-item">예약관리</a>
-            </li>-->
-          </ul>
-        </li>
+        <!-- 네비게이션 메뉴 -->
+        <nav class="sidebar-nav">
+            <ul class="nav-menu">
+                <li class="menu-section">
+                    <h4 class="section-title">접수</h4>
+                    <ul class="submenu">
+                        <li>
+                            <a th:href="@{/erp/patients/register}" class="submenu-item">환자 등록</a>
+                        </li>
+                        <li>
+                            <a th:href="@{/erp/patients/list}" class="submenu-item">접수 목록</a>
+                        </li>
+                    </ul>
+                </li>
 
-        <li class="menu-section">
-          <h4 class="section-title">진료 결과</h4>
-          <ul class="submenu">
-            <li>
-              <a th:href="@{/erp/patients/result}" class="submenu-item">진료 결과</a>
-            </li>
-          </ul>
-        </li>
+                <li class="menu-section">
+                    <h4 class="section-title">예약</h4>
+                    <ul class="submenu">
+                        <li>
+                            <a th:href="@{/apply/apply}" class="submenu-item">예약</a>
+                        </li>
+                        <li>
+                            <a th:href="@{/erp/record/list}" class="submenu-item">예약 목록</a>
+                        </li>
 
-        <li class="menu-section">
-          <h4 class="section-title">홈페이지</h4>
-          <ul class="submenu">
-            <li>
-              <a th:href="@{/notice}" class="submenu-item">
-                공지사항
-              </a>
-            </li>
-            <li>
-              <a th:href="@{/erp/profile}" class="submenu-item">
-                마이페이지
-              </a>
-            </li>
-            <li>
-              <a th:href="@{/erp/aisetting}" class="submenu-item">
-                AI Settings
-              </a>
-            </li>
-            <li>
-              <a th:href="@{/erp/ai-analytics}" class="submenu-item">
-                AI 통계
-              </a>
-            </li>
-          </ul>
-      </ul>
-    </nav>
-  </aside>
+                        <!--            <li>
+                                      <a th:href="@{/apply/list}" class="submenu-item">예약관리</a>
+                                    </li>-->
+                    </ul>
+                </li>
+
+                <li class="menu-section">
+                    <h4 class="section-title">진료 결과</h4>
+                    <ul class="submenu">
+                        <li>
+                            <a th:href="@{/erp/patients/result}" class="submenu-item">진료 결과</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="menu-section">
+                    <h4 class="section-title">홈페이지</h4>
+                    <ul class="submenu">
+                        <li>
+                            <a th:href="@{/notice}" class="submenu-item">
+                                공지사항
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/erp/profile}" class="submenu-item">
+                                마이페이지
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/erp/aisetting}" class="submenu-item">
+                                AI Settings
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/erp/ai-analytics}" class="submenu-item">
+                                AI 통계
+                            </a>
+                        </li>
+                    </ul>
+            </ul>
+        </nav>
+    </aside>
 </th:block>
 </html>

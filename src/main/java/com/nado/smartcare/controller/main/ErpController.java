@@ -57,12 +57,15 @@ public class ErpController {
         // DashBoard
 
         // 접수 환자
-        List<ReceptionDto> receptions = receptionService.getAllReceptions();
+//        List<ReceptionDto> receptions = receptionService.getAllReceptions();
+//        model.addAttribute("receptions", receptions);
+        List<ReceptionDto> receptions = receptionService.getActiveReceptionsForDashBoard();
         model.addAttribute("receptions", receptions);
 
+
         // 예약 환자
-        List<ReservationDto> reservations = reservationService.findAllReservations();
-        log.info("reservations: {} ", reservations);
+        List<ReservationDto> reservations = reservationService.findReservationsStatusNot();
+//        log.info("reservations: {} ", reservations);
         model.addAttribute("reservations", reservations);
 
         // DashBoard : 공지사항

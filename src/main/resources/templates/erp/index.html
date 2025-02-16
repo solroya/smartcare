@@ -60,9 +60,9 @@
                     </thead>
                     <tbody>
                     <tr th:each="reception : ${receptions}">
-                        <td th:text="${reception.receptionNo}"></td>
-                        <td th:text="${reception.member().getMemberName()}"></td>
-                        <td>
+                        <td data-label=">접수 번호" th:text="${reception.receptionNo}"></td>
+                        <td data-label=">환자명" th:text="${reception.member().getMemberName()}"></td>
+                        <td data-label=">진료과">
                             <span th:switch="${reception.employee().getDepartment().getDepartmentName()}">
                                 <span th:case="'INTERNAL_MEDICINE'">내과</span>
                                 <span th:case="'SURGERY'">외과</span>
@@ -71,8 +71,8 @@
                                 <span th:case="*">Error</span>
                             </span>
                         </td>
-                        <td th:text="${reception.employee().getEmployeeName()}"></td>
-                        <td th:text="${#temporals.format(reception.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                        <td data-label=">담당 의사" th:text="${reception.employee().getEmployeeName()}"></td>
+                        <td data-label=">접수 일시" th:text="${#temporals.format(reception.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
                     </tr>
                     <!--예외 처리-->
                     <tr th:if="${#lists.isEmpty(receptions)}">
@@ -100,9 +100,9 @@
                     </thead>
                     <tbody>
                     <tr th:each="reservation : ${reservations}">
-                        <td th:text="${reservation.reservationNo}"></td>
-                        <td th:text="${reservation.memberNo().memberName}"></td>
-                        <td>
+                        <td data-label=">접수 번호" th:text="${reservation.reservationNo}"></td>
+                        <td data-label="환자명" th:text="${reservation.memberNo().memberName}"></td>
+                        <td data-label="진료과">
                             <span th:switch="${reservation.employeeNo().department.getDepartmentName()}">
                                 <span th:case="'INTERNAL_MEDICINE'">내과</span>
                                 <span th:case="'SURGERY'">외과</span>
@@ -111,9 +111,9 @@
                                 <span th:case="*">오류</span>
                             </span>
                         </td>
-                        <td th:text="${reservation.employeeNo().employeeName}"></td>
-                        <td th:text="${#temporals.format(reservation.reservationDate(), 'yyyy-MM-dd')}"></td>
-                        <td>
+                        <td data-label="담당 의사" th:text="${reservation.employeeNo().employeeName}"></td>
+                        <td data-label="예약 일시" th:text="${#temporals.format(reservation.reservationDate(), 'yyyy-MM-dd')}"></td>
+                        <td data-label="시간">
                             <span th:switch="${reservation.timeSlot().name()}">
                                 <span th:case="'MORNING'">오전</span>
                                 <span th:case="'AFTERNOON'">오후</span>
@@ -145,12 +145,12 @@
                     </thead>
                     <tbody>
                     <tr th:each="notice : ${latestNotices}">
-                        <td>
+                        <td data-label="제목">
                             <a th:href="@{/notice/{id}(id=${notice.noticeNo})}" th:text="${notice.title}"></a>
                         </td>
-                        <td th:text="${notice.employee.getEmployeeName()}"></td>
-                        <td th:text="${notice.viewCount}"></td>
-                        <td th:text="${#temporals.format(notice.createdAt, 'yyyy년 M월 d일')}"></td>
+                        <td data-label="작성자" th:text="${notice.employee.getEmployeeName()}"></td>
+                        <td data-label="조회수" th:text="${notice.viewCount}"></td>
+                        <td data-label="등록일" th:text="${#temporals.format(notice.createdAt, 'yyyy년 M월 d일')}"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -177,22 +177,22 @@
 </main>
 <!-- 플로팅 채팅 버튼 -->
 <th:block th:replace="~{erp/fragments/floating-chat :: floatingChatFragment}"></th:block>
+    <script>
+        function openSearchPopup() {
+            const name = document.getElementById('memberName').value;
 
-<script>
-    function openSearchPopup() {
-        const name = document.getElementById('memberName').value;
+            if (!name) {
+                alert("이름을 입력해주세요.");
+                return false;
+            }
 
-        if (!name) {
-            alert("이름을 입력해주세요.");
+            const popup = window.open(`/erp/patients/searchByName?memberName=${name}`, 'popup', 'width=800,height=600');
+            popup.focus();
             return false;
         }
 
-        const popup = window.open(`/erp/patients/searchByName?memberName=${name}`, 'popup', 'width=800,height=600');
-        popup.focus();
-        return false;
-    }
 
-
-</script>
+    </script>
+    <script th:src="@{/js/sidebar/sidebar.js}"></script>
 </body>
 </html>

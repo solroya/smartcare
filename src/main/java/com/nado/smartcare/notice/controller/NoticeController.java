@@ -2,10 +2,13 @@ package com.nado.smartcare.notice.controller;
 
 import com.nado.smartcare.notice.dto.NoticeDto;
 import com.nado.smartcare.notice.service.NoticeService;
+import com.nado.smartcare.page.PageResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,30 +31,15 @@ public class NoticeController {
     private final NoticeService noticeService;
 
     @GetMapping
-    public String getAllNotices(@RequestParam(defaultValue = "0") int page,
-                                @RequestParam(defaultValue = "10") int size,
-                                @RequestParam(defaultValue = "DESC") String sortDirection,
-                                @RequestParam(required = false) String searchTerm,
+    public String getAllNotices(@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                                 Model model) {
 
-        // 정렬 방향 처리
-        Sort.Direction direction = Sort.Direction.fromString(sortDirection);
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(direction, "createdAt"));
+        PageResponse<NoticeDto> noticeList = noticeService.getAllNotices(pageable);
 
-        // 검색 조건에 따른 공지사항 조회
-        List<NoticeDto> noticeList;
-        if (searchTerm != null && !searchTerm.trim().isEmpty()) {
-            noticeList = noticeService.findByTitleContaining(searchTerm, pageRequest);
-        } else {
-            noticeList = noticeService.findAll(pageRequest);
-        }
-
-        model.addAttribute("noticeList", noticeList);
-        model.addAttribute("page", page);
-        model.addAttribute("size", size);
-        model.addAttribute("totalElements", noticeList.size());
-        model.addAttribute("searchTerm", searchTerm);
-        model.addAttribute("sortDirection", sortDirection);
+        model.addAttribute("noticeList", noticeList.getContent());
+        model.addAttribute("currentPage", noticeList.getPageNumber());
+        model.addAttribute("totalPages", noticeList.getTotalPages());
+        model.addAttribute("totalElements", noticeList.getTotalElements());
 
         return "notice/list";
     }

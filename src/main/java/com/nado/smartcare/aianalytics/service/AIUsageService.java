@@ -1,6 +1,8 @@
 package com.nado.smartcare.aianalytics.service;
 
 import com.nado.smartcare.aianalytics.entity.AIUsageStats;
+import com.nado.smartcare.aianalytics.entity.dto.AIUsageStatsDto;
+import com.nado.smartcare.page.PageResponse;
 import com.nado.smartcare.aianalytics.repository.AIUsageStatsRepository;
 import com.nado.smartcare.openai.service.AIModelService;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +10,9 @@ import lombok.extern.log4j.Log4j2;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -247,15 +252,17 @@ public class AIUsageService {
         return analysis;
     }
 
-    public List<AIUsageStats> getConversations(LocalDateTime start, LocalDateTime end) {
-        log.info("대화 내역 조회 - 시작: {}, 종료: {}", start, end);
+    public PageResponse<AIUsageStatsDto> getAIUsageStats(int page, int size) {
+        // 페이지는 0부터 시작이므로 -1
+        Pageable pageable = PageRequest.of(page - 1, size);
 
-        // 페이지네이션이 필요할 수 있으므로, 일단 최근 100건으로 제한하여 조회
-        return usageStatsRepository.findByCreatedAtBetweenOrderByCreatedAtDesc(
-                start,
-                end
-        );
+        // 내역을 조회하고 DTO로 변환
+        Page<AIUsageStats> pages = usageStatsRepository.findAllByOrderByCreatedAtDesc(pageable);
+
+        // Entity -> Dto
+        Page<AIUsageStatsDto> dtos = pages.map(AIUsageStatsDto::from);
+
+        return PageResponse.from(dtos);
     }
-
 
 }

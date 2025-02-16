@@ -6,6 +6,7 @@
     <title>SmartCare - 공지사항</title>
     <link rel="stylesheet" th:href="@{/css/erp/index.css}">
     <link rel="stylesheet" th:href="@{/css/erp/fragments/floatingBtn.css}">
+    <link rel="stylesheet" th:href="@{/css/erp/fragments/sidebar.css}">
     <style>
         /* 검색 컨트롤 스타일 */
         .search-controls {
@@ -75,6 +76,43 @@
             background-color: #f8d7da;
             border-color: #f5c6cb;
         }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            margin-top: 10px;
+            padding: 10px 0;
+            font-size: 0.9em;
+        }
+
+        .pagination a {
+            padding: 4px 8px;
+            text-decoration: none;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 3px;
+            transition: background-color 0.2s, color 0.2s;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .pagination a:hover {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+        }
+
+        .pagination .active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .pagination .disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -88,26 +126,6 @@
         <h1>공지사항</h1>
         <div class="dashboard-date"
              th:text="${#temporals.format(T(java.time.LocalDate).now(), 'yyyy년 MM월 dd일 EEEE')}"></div>
-    </div>
-
-    <!-- 검색 컨트롤 -->
-    <div class="search-controls">
-        <form method="get" th:action="@{/notice}" style="display: flex; gap: 15px; align-items: center;">
-            <div class="search-group">
-                <select class="form-control" name="sortDirection">
-                    <option value="DESC" th:selected="${sortDirection == 'DESC'}">최신순</option>
-                    <option value="ASC" th:selected="${sortDirection == 'ASC'}">오래된순</option>
-                </select>
-            </div>
-
-            <div class="search-group">
-                <label>검색어</label>
-                <input type="text" class="form-control" name="searchTerm" th:value="${searchTerm}"
-                       placeholder="제목 검색">
-            </div>
-
-            <button type="submit" class="btn btn-secondary">검색</button>
-        </form>
     </div>
 
     <div th:if="${errorMessage}" class="alert alert-danger">
@@ -135,15 +153,15 @@
                 </thead>
                 <tbody>
                 <tr th:each="notice : ${noticeList}">
-                    <td th:text="${notice.noticeNo}"></td>
-                    <td>
+                    <td data-label="번호" th:text="${notice.noticeNo}"></td>
+                    <td data-label="제목">
                         <a th:href="@{/notice/{id}(id=${notice.noticeNo})}"
                            th:text="${notice.title}"
                            style="text-decoration: none; color: var(--text-dark);"></a>
                     </td>
-                    <td th:text="${notice.employee.getEmployeeName()}"></td>
-                    <td th:text="${#temporals.format(notice.createdAt, 'yyyy년 M월 d일')}"></td>
-                    <td th:text="${notice.viewCount}"></td>
+                    <td data-label="작성자" th:text="${notice.employee.getEmployeeName()}"></td>
+                    <td data-label="등록일" th:text="${#temporals.format(notice.createdAt, 'yyyy년 M월 d일')}"></td>
+                    <td data-label="조회수" th:text="${notice.viewCount}"></td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(noticeList)}">
                     <td colspan="5" style="text-align: center;">등록된 공지사항이 없습니다.</td>
@@ -152,7 +170,25 @@
             </table>
         </div>
 
-        <div th:replace="~{fragments/pagination :: pagination(${page}, ${size}, ${totalElements}, '/notice/list')}"></div>
+        <!-- 페이징 컨트롤 -->
+        <div class="pagination" th:if="${totalElements > 0}">
+            <a th:href="@{/erp/notice(
+            page=0,
+            size=${size})}"
+               th:class="${currentPage == 0 ? 'disabled' : ''}">&laquo; 처음</a>
+
+            <a th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+               th:href="@{/erp/notice(
+            page=${pageNum},
+            size=${size})}"
+               th:text="${pageNum + 1}"
+               th:class="${pageNum == currentPage ? 'active' : ''}"></a>
+
+            <a th:href="@{/erp/notice(
+            page=${totalPages - 1},
+            size=${size})}"
+               th:class="${currentPage == totalPages - 1 ? 'disabled' : ''}">마지막 &raquo;</a>
+        </div>
     </div>
 </main>
 
@@ -185,5 +221,6 @@
         }
     });
 </script>
+<script th:src="@{/js/sidebar/sidebar.js}"></script>
 </body>
 </html>

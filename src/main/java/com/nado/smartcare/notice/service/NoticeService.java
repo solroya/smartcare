@@ -1,7 +1,9 @@
 package com.nado.smartcare.notice.service;
 
 import com.nado.smartcare.notice.dto.NoticeDto;
+import com.nado.smartcare.page.PageResponse;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -17,5 +19,7 @@ public interface NoticeService {
     NoticeDto findById(Long noticeNo);
 
     NoticeDto saveNotice(NoticeDto noticeDto);
+
+    PageResponse<NoticeDto> getAllNotices(Pageable pageable);
 
 }

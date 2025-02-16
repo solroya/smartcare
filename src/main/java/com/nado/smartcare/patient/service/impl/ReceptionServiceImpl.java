@@ -1,40 +1,27 @@
 package com.nado.smartcare.patient.service.impl;
 
-import com.nado.smartcare.employee.domain.Department;
 import com.nado.smartcare.employee.domain.Employee;
-import com.nado.smartcare.employee.domain.dto.EmployeeDto;
 import com.nado.smartcare.employee.repository.EmployeeRepository;
-import com.nado.smartcare.employee.service.EmployeeService;
 import com.nado.smartcare.member.domain.Member;
-import com.nado.smartcare.member.domain.dto.MemberDto;
 import com.nado.smartcare.member.repository.MemberRepository;
-import com.nado.smartcare.member.service.MemberService;
+import com.nado.smartcare.page.PageResponse;
 import com.nado.smartcare.patient.domain.Reception;
-import com.nado.smartcare.patient.domain.dto.PatientRecordCardDto;
-import com.nado.smartcare.patient.domain.dto.type.ClinicStatus;
 import com.nado.smartcare.patient.domain.type.ReceptionStatus;
 import com.nado.smartcare.patient.domain.dto.ReceptionDto;
-import com.nado.smartcare.patient.repository.PatientRecordCardRepository;
 import com.nado.smartcare.patient.repository.ReceptionRepository;
 import com.nado.smartcare.patient.service.ReceptionService;
 import com.nado.smartcare.reservation.domain.Reservation;
-import com.nado.smartcare.reservation.domain.dto.ReservationDto;
 import com.nado.smartcare.reservation.repository.ReservationRepository;
-import com.nado.smartcare.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.query.Page;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
-import javax.swing.text.html.Option;
-import java.awt.print.Pageable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -74,10 +61,27 @@ public class ReceptionServiceImpl implements ReceptionService {
     }
 
     @Override
-    public List<ReceptionDto> getAllReceptions() {
-        return receptionRepository.findAll().stream()
-                .map(ReceptionDto::from)
-                .collect(Collectors.toList());
+    public PageResponse<ReceptionDto> getAllReceptions(Pageable pageable) {
+        Page<Reception> receptionPage = receptionRepository.findAll(pageable);
+
+        Page<ReceptionDto> receptionDtoPage = receptionPage.map(ReceptionDto::from);
+
+        return PageResponse.from(receptionDtoPage);
+    }
+
+    @Override
+    public PageResponse<ReceptionDto> getActiveReceptions(Pageable pageable) {
+
+        Page<Reception> receptionPage = receptionRepository.findByStatusNot(ReceptionStatus.COMPLETED, pageable);
+
+        return PageResponse.from(receptionPage.map(ReceptionDto::from));
+    }
+
+    @Override
+    public List<ReceptionDto> getActiveReceptionsForDashBoard() {
+        List<Reception> reception = receptionRepository.findByStatusNot(ReceptionStatus.COMPLETED);
+
+        return reception.stream().map(ReceptionDto::from).collect(Collectors.toList());
     }
 
     @Override
@@ -143,11 +147,6 @@ public class ReceptionServiceImpl implements ReceptionService {
                     receptionRepository.save(newReception);
                     return ReceptionDto.from(newReception);
                 });
-    }
-
-    @Override
-    public ReceptionDto findByReceptionId(Long receptionId) {
-        return receptionRepository.findById(receptionId).map(ReceptionDto::from).orElse(null);
     }
 
     // 예약 시점에는 Reservation만 저장하고, 실제 방문(접수) 시에 Reception을 생성하는 컨셉
