@@ -20,12 +20,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByMemberEmail(String memberEmail);
 
-    List<MemberDto> findByMemberNameAndMemberBirthday(String memberName, LocalDate memberBirthday);
+    Page<Member> findByMemberNameAndMemberBirthday(String memberName, LocalDate memberBirthday, Pageable pageable);
     
     List<Member> findByMemberPhoneNumber(String phoneNumber);
     
     Optional<Member> findByMemberIdAndMemberPhoneNumber(String memberId, String memberPhoneNumber);
 
-    Page<Member> findByMemberNameContaining(String memberName, Pageable pageable);
-    
 }

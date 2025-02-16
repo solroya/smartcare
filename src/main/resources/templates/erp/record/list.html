@@ -6,6 +6,7 @@
     <title>진료 예약 목록</title>
     <link rel="stylesheet" th:href="@{/css/erp/index.css}">
     <link rel="stylesheet" th:href="@{/css/erp/fragments/pagination.css}">
+    <link rel="stylesheet" th:href="@{/css/erp/fragments/sidebar.css}">
 
     <style>
         /* 예약 목록 페이지 특정 스타일 */
@@ -113,7 +114,7 @@
 <main class="main-content">
     <div class="reservation-header">
         <h1>진료 예약 목록</h1>
-        <a th:href="@{/apply/apply}" class="new-reception-btn">새 진료 접수 등록</a>
+        <a th:href="@{/apply/apply}" class="new-reception-btn">예약 등록</a>
     </div>
 
     <!-- 진료 예약 목록 테이블 -->
@@ -133,14 +134,14 @@
             </thead>
             <tbody>
             <tr th:each="reservation : ${reservations}">
-                <td th:text="${reservation.reservationNo()}"></td>
-                <td th:text="${reservation.memberNo().getMemberName()}"></td>
-                <td th:text="${reservation.employeeNo().getDepartment().getDepartmentName()}"></td>
-                <td th:text="${reservation.employeeNo().getEmployeeName()}"></td>
-                <td th:text="${#temporals.format(reservation.reservationDate())}"></td>
-                <td th:text="${reservation.timeSlot().getDisplayName()}"></td>
-                <td th:text="${#temporals.format(reservation.createdAt(), 'yyy-MM-dd HH:mm')}"></td>
-                <td>
+                <td data-label="예약번호" th:text="${reservation.reservationNo()}"></td>
+                <td data-label="환자명" th:text="${reservation.memberNo().getMemberName()}"></td>
+                <td data-label="진료과" th:text="${reservation.employeeNo().getDepartment().getDepartmentName()}"></td>
+                <td data-label="진료의" th:text="${reservation.employeeNo().getEmployeeName()}"></td>
+                <td data-label="예약일시" th:text="${#temporals.format(reservation.reservationDate())}"></td>
+                <td data-label="진료시간" th:text="${reservation.timeSlot().getDisplayName()}"></td>
+                <td data-label="예약접수일" th:text="${#temporals.format(reservation.createdAt(), 'yyy-MM-dd HH:mm')}"></td>
+                <td data-label="접수하기">
                     <a th:href="@{'/erp/patients/reservation/' + ${reservation.reservationNo()} + '/register'}"
                        class="btn btn-secondary">접수하기</a>
                 </td>
@@ -157,5 +158,6 @@
     <th:block th:replace="~{erp/fragments/floating-chat :: floatingChatFragment}"></th:block>
 
 </main>
+<script th:src="@{/js/sidebar/sidebar.js}"></script>
 </body>
 </html>

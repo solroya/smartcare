@@ -5,11 +5,6 @@ import com.nado.smartcare.openai.repository.AIProviderSettingRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.ai.chat.model.ChatModel;
-import org.springframework.ai.chat.model.ChatResponse;
-import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.chat.prompt.PromptTemplate;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

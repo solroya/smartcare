@@ -4,9 +4,12 @@ import com.nado.smartcare.notice.domain.Notice;
 import com.nado.smartcare.notice.dto.NoticeDto;
 import com.nado.smartcare.notice.repository.NoticeRepository;
 import com.nado.smartcare.notice.service.NoticeService;
+import com.nado.smartcare.page.PageResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +62,14 @@ public class NoticeServiceImpl implements NoticeService {
     public NoticeDto saveNotice(NoticeDto noticeDto) {
         Notice notice = noticeDto.to();
         return NoticeDto.from(noticeRepository.save(notice));
+    }
+
+    @Override
+    public PageResponse<NoticeDto> getAllNotices(Pageable pageable) {
+
+        Page<Notice> notices = noticeRepository.findAll(pageable);
+
+        return PageResponse.from(notices.map(NoticeDto::from));
     }
 
 }

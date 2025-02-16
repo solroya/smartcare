@@ -6,6 +6,7 @@
     <title>진료 결과 관리 - 스마트케어</title>
     <link rel="stylesheet" th:href="@{/css/erp/index.css}">
     <link rel="stylesheet" th:href="@{/css/erp/fragments/pagination.css}">
+    <link rel="stylesheet" th:href="@{/css/erp/fragments/sidebar.css}">
 
     <style>
         /* 공통 컨테이너 스타일 */
@@ -97,6 +98,81 @@
             background-color: #fff3cd;
             border-color: #ffeeba;
         }
+
+        /* 기존 스타일 유지하면서 아래 스타일 추가 */
+        <style>
+         .search-controls {
+             display: flex;
+             gap: 15px;
+             align-items: center;
+             background: white;
+             padding: 20px;
+             border-radius: 8px;
+             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+             margin-bottom: 20px;
+         }
+
+        .search-controls form {
+            width: 100%;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* 모바일 대응을 위한 미디어 쿼리 */
+        @media (max-width: 768px) {
+            .search-controls {
+                padding: 15px;
+            }
+
+            .search-controls form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-group {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            /* 날짜 입력 그룹 특별 처리 */
+            .search-group.date-group {
+                display: grid;
+                grid-template-columns: auto 1fr;
+                gap: 8px;
+                align-items: center;
+            }
+
+            .date-range {
+                display: grid;
+                grid-template-columns: 1fr auto 1fr;
+                gap: 8px;
+                align-items: center;
+                grid-column: 1 / -1;
+            }
+
+            .form-control {
+                width: 100%;
+            }
+
+            /* 버튼 그룹 */
+            .button-group {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
     </style>
 </head>
 <body>
@@ -113,12 +189,14 @@
 
     <!-- 검색 컨트롤 -->
     <div class="search-controls">
-        <form method="get" th:action="@{/erp/patients/result}" style="display: flex; gap: 15px; align-items: center;">
-            <div class="search-group">
+        <form method="get" th:action="@{/erp/patients/result}">
+            <div class="search-group date-group">
                 <label>조회기간</label>
-                <input type="date" id="startDate" class="form-control" name="startDate" th:value="${startDate}">
-                <span>~</span>
-                <input type="date" id="endDate" class="form-control" name="endDate" th:value="${endDate}">
+                <div class="date-range">
+                    <input type="date" id="startDate" class="form-control" name="startDate" th:value="${startDate}">
+                    <span>~</span>
+                    <input type="date" id="endDate" class="form-control" name="endDate" th:value="${endDate}">
+                </div>
             </div>
 
             <div class="search-group">
@@ -133,8 +211,10 @@
                 <input type="text" class="form-control" name="searchTerm" th:value="${searchTerm}" placeholder="환자명 또는 진료명">
             </div>
 
-            <button type="submit" class="btn btn-secondary">검색</button>
-            <button type="button" class="btn btn-outline-secondary" id="resetButton">초기화</button>
+            <div class="button-group">
+                <button type="submit" class="btn btn-secondary">검색</button>
+                <button type="button" class="btn btn-outline-secondary" id="resetButton">초기화</button>
+            </div>
         </form>
     </div>
 
@@ -159,14 +239,14 @@
             </thead>
             <tbody>
             <tr th:each="record : ${records}">
-                <td th:text="${record.patientRecordNo}"></td>
-                <td th:text="${record.member.memberName}"></td>
-                <td th:text="${record.employee.department.departmentName}"></td>
-                <td th:text="${record.employee.employeeName}"></td>
-                <td th:text="${record.diseaseList.diseaseName ?: '미등록'}"></td>
-                <td th:text="${record.clinicName}"></td>
-                <td th:text="${#temporals.format(record.clinicDate, 'yyyy-MM-dd')}"></td>
-                <td>
+                <td data-label="진료 번호" th:text="${record.patientRecordNo}"></td>
+                <td data-label="환자명" th:text="${record.member.memberName}"></td>
+                <td data-label="진료과" th:text="${record.employee.department.departmentName}"></td>
+                <td data-label="담당의" th:text="${record.employee.employeeName}"></td>
+                <td data-label="질병명" th:text="${record.diseaseList.diseaseName ?: '미등록'}"></td>
+                <td data-label="진료명" th:text="${record.clinicName}"></td>
+                <td data-label="진료일시" th:text="${#temporals.format(record.clinicDate, 'yyyy-MM-dd')}"></td>
+                <td data-label="상세보기">
                     <a th:href="@{/erp/record/{id}(id=${record.patientRecordNo})}" class="detail-button">상세보기</a>
                 </td>
             </tr>
@@ -210,5 +290,6 @@
         }
     });
 </script>
+<script th:src="@{/js/sidebar/sidebar.js}"></script>
 </body>
 </html>

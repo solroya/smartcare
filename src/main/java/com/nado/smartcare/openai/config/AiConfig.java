@@ -15,17 +15,15 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 public class AiConfig {
 
 /*    @Bean
-    public ChatClient chatClient(ChatClient.Builder chatClientBuilder) {
-        return chatClientBuilder.defaultAdvisors(
-                new MessageChatMemoryAdvisor(new InMemoryChatMemory())
-        ).build();
-    }*/
-
-    @Bean
     public ChatClient openAiChatClient(ChatClient.Builder openAiChatClientBuilder) {
         return openAiChatClientBuilder.defaultAdvisors(
                 new MessageChatMemoryAdvisor(new InMemoryChatMemory())
         ).build();
+    }*/
+    // InMemory 기능 제거 버전
+    @Bean
+    public ChatClient openAiChatClient(ChatClient.Builder openAiChatClientBuilder) {
+        return openAiChatClientBuilder.build();
     }
 
     @Bean

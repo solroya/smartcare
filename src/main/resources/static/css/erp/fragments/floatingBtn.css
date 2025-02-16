@@ -1,45 +1,83 @@
-/* 플로팅 버튼과 모달 스타일 */
+/* floatingBtn.css */
+
+/* 1. CSS 변수 정의 - 재사용성과 일관성을 위해 */
+:root {
+    --floating-btn-size-desktop: 60px;
+    --floating-btn-size-mobile: 50px;
+    --floating-btn-spacing: 30px;
+    --floating-btn-spacing-mobile: 20px;
+    --modal-width-desktop: 800px;
+    --modal-width-tablet: 350px;
+    --modal-height-desktop: 800px;
+    --modal-height-tablet: 500px;
+}
+
+/* 2. 플로팅 버튼 컨테이너 기본 스타일 */
+.floating-chat-container {
+    position: relative;
+    z-index: 1000;
+}
+
+/* 3. 플로팅 버튼 기본 스타일 */
 .floating-button {
     position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 60px;
-    height: 60px;
+    bottom: var(--floating-btn-spacing);
+    right: var(--floating-btn-spacing);
+    width: var(--floating-btn-size-desktop);
+    height: var(--floating-btn-size-desktop);
     background-color: var(--primary-color);
     border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+/* 4. 플러스 아이콘 스타일 */
+.plus-icon {
+    position: relative;
+    width: calc(var(--floating-btn-size-desktop) * 0.33);
+    height: calc(var(--floating-btn-size-desktop) * 0.33);
+}
+
+.plus-icon::before,
+.plus-icon::after {
+    content: '';
+    position: absolute;
+    background-color: white;
     transition: transform 0.3s ease;
 }
 
-.floating-button:hover {
-    transform: scale(1.1);
+.plus-icon::before {
+    width: 100%;
+    height: 2px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
-.floating-button i {
-    color: white;
-    font-size: 24px;
+.plus-icon::after {
+    width: 2px;
+    height: 100%;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
-/* 모달 스타일 */
+/* 5. 채팅 모달 기본 스타일 */
 .chat-modal {
     display: none;
     position: fixed;
-    bottom: 100px;
-    right: 30px;
-    width: 400px;
-    height: 600px;
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     z-index: 1001;
     overflow: hidden;
+    opacity: 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
+/* 6. 모달 오버레이 */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -49,20 +87,96 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-/* 모달 애니메이션 */
-.chat-modal.show {
-    animation: slideIn 0.3s ease-out;
-}
-
-@keyframes slideIn {
-    from {
-        transform: translateY(100px);
-        opacity: 0;
+/* 7. 반응형 스타일 */
+/* 데스크톱 (1025px 이상) */
+@media (min-width: 1025px) {
+    .chat-modal {
+        bottom: 100px;
+        right: 50px;
+        width: var(--modal-width-desktop);
+        height: var(--modal-height-desktop);
+        border-radius: 16px;
     }
-    to {
+}
+
+/* 태블릿 (769px ~ 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .chat-modal {
+        bottom: var(--floating-btn-spacing);
+        right: var(--floating-btn-spacing);
+        width: var(--modal-width-tablet);
+        height: var(--modal-height-tablet);
+        border-radius: 12px;
+    }
+}
+
+/* 모바일 (768px 이하) */
+@media (max-width: 768px) {
+    .floating-button {
+        width: var(--floating-btn-size-mobile);
+        height: var(--floating-btn-size-mobile);
+        bottom: var(--floating-btn-spacing-mobile);
+        right: var(--floating-btn-spacing-mobile);
+    }
+
+    .plus-icon {
+        width: calc(var(--floating-btn-size-mobile) * 0.33);
+        height: calc(var(--floating-btn-size-mobile) * 0.33);
+    }
+
+    .chat-modal {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+        margin: 0;
         transform: translateY(0);
-        opacity: 1;
     }
+
+    /* 모바일에서 스크롤 방지 */
+    body.modal-open {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+    }
+}
+
+/* 8. iOS Safari 대응 */
+@supports (-webkit-touch-callout: none) {
+    .chat-modal {
+        height: -webkit-fill-available;
+    }
+}
+
+/* 9. 상태 및 애니메이션 클래스 */
+.floating-button:hover {
+    transform: scale(1.1);
+    background-color: var(--primary-light);
+}
+
+.floating-button.active .plus-icon::before,
+.floating-button.active .plus-icon::after {
+    transform: rotate(45deg);
+}
+
+.chat-modal.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.modal-overlay.show {
+    opacity: 1;
+}
+
+/* 10. iframe 스타일 */
+.chat-modal iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: white;
 }

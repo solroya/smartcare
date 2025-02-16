@@ -39,4 +39,5 @@ public interface ReservationService {
 
     void updateReservationStatus(Long reservationNo);
 
+    List<ReservationDto> findReservationsStatusNot();
 }

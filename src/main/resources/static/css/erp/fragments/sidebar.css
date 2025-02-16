@@ -1,0 +1,419 @@
+/* sidebar.css */
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--primary-color);
+    position: fixed;
+    height: 100vh;
+    padding: 20px 0;
+    overflow-y: auto;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* 사이드바 헤더 및 로고 */
+.sidebar-header {
+    padding: 0 20px;
+    margin-bottom: 30px;
+}
+
+.sidebar-title {
+    margin: 0;
+    padding: 0;
+}
+
+.logo-link {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 1.5em;
+    font-weight: bold;
+    display: block;
+    text-align: center;
+    padding: 10px;
+    transition: color 0.3s;
+}
+
+.logo-link:hover {
+    color: var(--secondary-color);
+}
+
+.logo-link.active {
+    color: var(--secondary-color);
+}
+
+/* 섹션 타이틀 */
+.section-title {
+    color: var(--secondary-color);
+    font-size: 1em;
+    padding: 10px 20px;
+    margin: 10px 0 5px;
+}
+
+/* 네비게이션 메뉴 */
+.nav-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* 메인 메뉴 아이템 (스마트케어, 대시보드, 공지사항, 마이페이지) */
+.menu-item {
+    display: block;
+    padding: 12px 25px;
+    color: var(--text-light);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    position: relative;
+    margin: 4px 0;
+}
+
+.menu-item:hover {
+    background-color: var(--primary-light);
+    color: var(--secondary-color);
+    padding-left: 30px;
+}
+
+.menu-item.active {
+    background-color: var(--secondary-color);
+    color: var(--text-light);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.menu-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background-color: var(--text-light);
+}
+
+/* 서브메뉴 섹션 */
+.menu-section {
+    margin: 20px 0;
+}
+
+/* 서브메뉴 컨테이너 */
+.submenu {
+    list-style: none;
+    padding-left: 25px;
+    margin: 5px 0;
+}
+
+/* 서브메뉴 아이템 */
+.submenu-item {
+    display: block;
+    padding: 8px 15px;
+    color: var(--text-light);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 0.95em;
+    opacity: 0.9;
+    margin: 2px 0;
+}
+
+.submenu-item:hover {
+    background-color: var(--primary-light);
+    color: var(--secondary-color);
+    padding-left: 20px;
+    opacity: 1;
+}
+
+/* 사용자 프로필 영역 */
+.user-profile-sidebar {
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 20px;
+}
+
+.user-info-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: var(--secondary-color);
+    color: var(--text-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.user-details {
+    flex: 1;
+}
+
+.user-name {
+    color: var(--text-light);
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+/* 로그아웃 버튼 */
+.logout-btn-sidebar {
+    width: 100%;
+    padding: 8px 12px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 4px;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.logout-btn-sidebar:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.logout-icon {
+    font-size: 1.1em;
+}
+
+/* 개발 모드 스타일 */
+.dev-login-info {
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.dev-status {
+    color: #ffd700;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+.dev-login-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: var(--secondary-color);
+    color: var(--text-light);
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.9em;
+    transition: background-color 0.3s;
+}
+
+.dev-login-btn:hover {
+    background-color: #4ca5c3;
+}
+
+/* 반응형 사이드바 */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+}
+
+@media (max-width: 576px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+}
+
+
+
+
+.mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+@media (max-width: 576px) {
+    .mobile-menu-toggle {
+        display: block;
+    }
+
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        z-index: 999;
+        width: 250px;
+        height: 100vh;
+        overflow-y: auto;
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .sidebar-backdrop {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 998;
+    }
+
+    .sidebar-backdrop.active {
+        display: block;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding-top: 60px;
+    }
+}
+
+/* 사용자 프로필 영역 기본 스타일 */
+.user-profile-sidebar {
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 20px;
+}
+
+.user-info-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.user-profile-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: var(--secondary-color);
+    color: var(--text-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2em;
+    flex-shrink: 0;
+}
+
+.user-details {
+    flex: 1;
+    min-width: 0; /* 텍스트 오버플로우 방지 */
+}
+
+.user-name {
+    color: var(--text-light);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 로그아웃 버튼 스타일 */
+.logout-btn-sidebar {
+    width: 100%;
+    padding: 8px 12px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 4px;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.logout-btn-sidebar:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.logout-icon {
+    font-size: 1.1em;
+}
+
+/* 개발 모드 로그인 스타일 */
+.dev-login-info {
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+}
+
+.dev-status {
+    color: #ffd700;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+.dev-login-btn {
+    display: block;
+    width: 100%;
+    padding: 8px 16px;
+    background-color: var(--secondary-color);
+    color: var(--text-light);
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.9em;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.dev-login-btn:hover {
+    background-color: #4ca5c3;
+}
+
+/* 모바일 대응 */
+@media (max-width: 576px) {
+    .user-profile-sidebar {
+        padding: 15px;
+    }
+
+    .user-info-container {
+        gap: 10px;
+    }
+
+    .user-profile-content {
+        gap: 10px;
+    }
+
+    .user-avatar {
+        width: 35px;
+        height: 35px;
+        font-size: 1.1em;
+    }
+
+    .logout-btn-sidebar {
+        padding: 10px;
+        font-size: 0.95em;
+    }
+
+    .dev-login-info {
+        padding: 12px;
+    }
+
+    .dev-login-btn {
+        padding: 10px;
+    }
+}

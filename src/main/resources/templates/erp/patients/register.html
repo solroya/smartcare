@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>환자 접수</title>
     <link rel="stylesheet" th:href="@{/css/erp/index.css}">
+    <link rel="stylesheet" th:href="@{/css/erp/fragments/sidebar.css}">
     <style>
         /* 기본 레이아웃 스타일은 index.css에서 상속 */
 
@@ -295,14 +296,14 @@
             return false;
         }
 
-        const popup = window.open(`/erp/patients/search?memberName=${name}&memberBirthday=${birthday}`, 'popup', 'width=800,height=600');
+        const popup = window.open(`/erp/patients/search?memberName=${name}&memberBirthday=${birthday}`, 'popup', 'width=1000,height=800');
         popup.focus();
         return false; // 폼 제출 방지
     }
 
     // 모든 환자 검색
     function openAllMembersPopup() {
-        const popup = window.open('/erp/patients/all', 'popup', 'width=800,height=600');
+        const popup = window.open('/erp/patients/all', 'popup', 'width=1000,height=800');
         popup.focus();
     }
 
@@ -408,5 +409,6 @@
         }
     });
 </script>
+<script th:src="@{/js/sidebar/sidebar.js}"></script>
 </body>
 </html>
