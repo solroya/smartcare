@@ -355,8 +355,8 @@
             <tr>
                 <td data-label="시간">${formatDateTime(conv.createdAt)}</td>
                 <td data-label="제공자">${conv.provider}</td>
-                <td data-label="사용자 메시지">${truncateText(conv.userMessage, 50)}</td>
-                <td data-label="AI 응답">${truncateText(conv.aiResponse, 50)}</td>
+                <td data-label="사용자 메시지">${truncateText(conv.userMessage, 20)}</td>
+                <td data-label="AI 응답">${truncateText(conv.aiResponse, 20)}</td>
                 <td data-label="토큰">${conv.tokenCount}</td>
                 <td data-label="응답시간">${conv.responseTime}ms</td>
                 <td data-label="상태">
