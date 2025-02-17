@@ -17,7 +17,7 @@ public class OpenAIService {
     private final ChatModel chatModel;
     private final ChatClient openAiChatClient;
 
-    public OpenAIService(@Qualifier("openAiChatModel") ChatModel chatModel, ChatClient openAiChatClient) {
+    public OpenAIService(@Qualifier("openAiChatModel") ChatModel chatModel, @Qualifier("openAiChatClient") ChatClient openAiChatClient) {
         this.chatModel = chatModel;
         this.openAiChatClient = openAiChatClient;
     }

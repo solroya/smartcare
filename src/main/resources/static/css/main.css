@@ -727,3 +727,206 @@
 	margin-top: 20px; /* 상단 여백 */
 	grid-column: span 3; /* 그리드의 전체 열을 차지 */
 }
+
+@media screen and (max-width: 500px) {
+  /* 전체 content 영역 */
+  .content {
+    margin-top: 120px; /* 기존과 동일 */
+    padding: 0 10px;
+  }
+
+  /* visual 영역 */
+  .visualwrap {
+    height: auto; /* 내용에 맞게 높이 자동 조절 */
+    margin-bottom: 30px;
+    position: relative;
+  }
+  /* 모바일에서는 첫번째 슬라이드만 표시 */
+  .slide-box.box02 {
+    display: none;
+  }
+  .visualbox {
+    margin: 15px auto; /* 좌우 중앙 정렬 및 여백 약간 증가 */
+    position: relative;
+    padding: 10px;
+  }
+  .titleText {
+    font-size: 28px;       /* 기존 24px → 28px */
+    line-height: 34px;      /* 약간 늘림 */
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .contentText {
+    font-size: 16px;       /* 기존 14px → 16px */
+    line-height: 22px;      /* 약간 늘림 */
+    margin-bottom: 22px;
+    text-align: center;
+  }
+  .showLineBar {
+    width: 100%;
+  }
+
+  /* service 영역 */
+  .service {
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 0;
+  }
+  .serviceText,
+  .serviceMenu {
+    width: 100%;
+    text-align: center;
+  }
+  .serviceTitle {
+    font-size: 22px;       /* 기존 20px → 22px */
+  }
+  .serviceMenu {
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .medicMenu {
+    margin: 8px;
+  }
+  .menuIcon {
+    width: 55px;           /* 기존 50px → 55px */
+    height: 55px;
+  }
+  .menuIcon img {
+    width: 22px;           /* 기존 20px → 22px */
+    height: 22px;
+  }
+  .menuText {
+    font-size: 13px;       /* 기존 12px → 13px */
+  }
+
+  /* medical 영역 */
+ .medicalwrap {
+    width: 100%;
+    margin-bottom: 80px; /* PC에서는 170px이었지만, 모바일에서는 간격을 줄임 */
+    padding: 0 10px;
+  }
+
+  /* medical 영역 : 이미지와 내용을 세로로 쌓음 */
+  .medical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: 100%; /* PC의 1620px 제한 해제 */
+    padding: 15px 0;
+  }
+  
+  /* 의료 이미지 영역 : 반응형 처리 및 하단 여백 추가 */
+  .medicalimg {
+    width: 100%;
+    height: auto;
+    box-shadow: none; /* 모바일에서는 그림자 효과 제거 */
+    margin-bottom: 15px;
+  }
+  
+  /* 의료 내용 영역 : 좌우 여백과 중앙 정렬 */
+  .medicalContent {
+    width: 100%;
+    padding: 0 10px;
+    margin: 0 auto;
+  }
+  
+  /* 의료 텍스트 (제목, 부제목, 버튼) */
+  .medicalTitle {
+    font-size: 26px;       /* PC의 40px에서 축소 */
+    line-height: 1.3;
+    margin-bottom: 10px;
+    color: #fff;           /* 제목 색상 유지 */
+  }
+  
+  .medicalSubText {
+    font-size: 16px;       /* PC의 20px에서 축소 */
+    line-height: 1.5;
+    margin-bottom: 15px;
+    color: #fff;
+  }
+  
+  .medicalBtn {
+    display: inline-block;
+    width: 140px;          /* PC 대비 약간 축소 */
+    height: 38px;
+    line-height: 38px;     /* 텍스트를 수직 중앙 정렬 */
+    background-color: #5BC0DE;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;    /* 둥근 모서리 적용 */
+    margin: 0 auto;        /* 중앙 정렬 */
+  }
+
+  /* department 영역 */
+  .departmentContentwrap {
+    flex-direction: column;
+    gap: 15px;
+    margin: 0 auto;
+  }
+  .departmentContent {
+    width: 100%;
+    height: auto;
+  }
+  .departmentContent-img {
+    height: 150px;
+    background-size: cover;
+  }
+  .departmentContent-text {
+    margin: 15px;
+    position: relative; /* 절대 위치 대신 자연스럽게 배치 */
+  }
+  .departmentContent-text p {
+    font-size: 22px;       /* 기존 20px → 22px */
+  }
+  .departmentContent-text a {
+    font-size: 15px;       /* 기존 14px → 15px */
+    padding: 6px 10px;
+  }
+
+  /* smartCare 영역 */
+  .smartCare {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 15px 0;
+  }
+  .smartCare-Text {
+    padding: 15px 10px;
+  }
+  .smartCare-img {
+    width: 100%;
+    height: auto;
+    position: static;
+    margin-top: 15px;
+    box-shadow: none;
+  }
+  .smartCare-img img {
+    width: 100%;
+    height: auto;
+  }
+
+  /* showTextBar 영역 */
+  .showTextBar span {
+    font-size: 65px;       /* 기존 60px → 65px */
+  }
+
+  /* notice 영역 */
+  .noticeText span {
+    font-size: 18px;       /* 기존 16px → 18px */
+  }
+  .noticeText p {
+    font-size: 26px;       /* 기존 24px → 26px */
+  }
+  .news-grid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    gap: 10px;
+  }
+  .news-item {
+    padding: 15px;
+  }
+}

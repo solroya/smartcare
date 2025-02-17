@@ -130,3 +130,24 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .catch(error => console.error("로그인 상태 확인 실패:", error));
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+   const hamburger = document.querySelector('.hamburger');
+   const expandedContent = document.querySelector('.expanded-content');
+
+   hamburger.addEventListener('click', function() {
+     // 햄버거 버튼에 active 클래스 토글 (X 모양으로 변환)
+     hamburger.classList.toggle('active');
+     // 확장 메뉴 열기/닫기 토글
+     expandedContent.classList.toggle('active');
+   });
+
+   // 만약 확장 메뉴 내부에 별도의 닫기 버튼(.close-btn)이 있다면:
+   const closeBtn = document.querySelector('.close-btn');
+   if (closeBtn) {
+     closeBtn.addEventListener('click', function() {
+       hamburger.classList.remove('active');
+       expandedContent.classList.remove('active');
+     });
+   }
+ });

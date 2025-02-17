@@ -1,5 +1,8 @@
 package com.nado.smartcare.tmap.controller;
 
+import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +31,17 @@ public class TMapController {
         log.info("추천경로 요청: start=({}, {}), end=({}, {})", startX, startY, endX, endY);
         String routes = itMapService.getTransitRoutes(startX, startY, endX, endY);
         return routes;
+	}
+	
+	@GetMapping("/walking")
+	public String walkingRoutes(
+			@RequestParam("startX") String startX,
+			@RequestParam("startY") String startY,
+			@RequestParam("endX") String endX,
+			@RequestParam("endY") String endY) {
+		log.info("도로 경로 요청 : start=({}, {}), end=({}, {})", startX, startY, endX, endY);
+		String walkingRoutes = itMapService.getWalkingRoutes(startX, startY, endX, endY);
+		return walkingRoutes;
 	}
 	
 }
