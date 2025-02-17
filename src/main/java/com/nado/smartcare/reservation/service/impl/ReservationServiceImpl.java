@@ -217,4 +217,11 @@ public class ReservationServiceImpl implements ReservationService {
         reservationRepository.save(reservation);
     }
 
+    @Override
+    public List<ReservationDto> findReservationsStatusNot() {
+        List<Reservation> reservations = reservationRepository.findByReservationStatus(ReservationStatus.CONFIRMED);
+
+        return reservations.stream().map(ReservationDto::from).collect(Collectors.toList());
+    }
+
 }

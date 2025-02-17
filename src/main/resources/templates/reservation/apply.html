@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>진료 예약 - 스마트 케어</title>
   <link rel="stylesheet" th:href="@{/css/erp/index.css}">
+  <link rel="stylesheet" th:href="@{/css/erp/fragments/sidebar.css}">
   <style>
     .reservation-container {
       max-width: 800px;
@@ -204,6 +205,103 @@
         margin-bottom: 20px;
       }
 
+    }
+    .steps {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      padding: 20px 0;
+      position: relative;
+    }
+
+    /* 단계 사이를 연결하는 선 추가 */
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 35px;  /* step-number의 중앙에 맞춤 */
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: var(--background-light);
+      z-index: 0;
+    }
+
+    .step {
+      flex: 1;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-number {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: white;
+      border: 2px solid var(--background-light);
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 10px;
+      font-weight: bold;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .step.active .step-number {
+      background-color: var(--secondary-color);
+      border-color: var(--secondary-color);
+      color: white;
+    }
+
+    .step-label {
+      font-size: 0.9em;
+      color: var(--text-dark);
+      transition: all 0.3s;
+    }
+
+    .step.active .step-label {
+      color: var(--secondary-color);
+      font-weight: 500;
+    }
+
+    /* 모바일 대응 */
+    @media (max-width: 768px) {
+      .steps {
+        flex-direction: column;
+        padding: 0 20px;
+      }
+
+      /* 세로 연결선으로 변경 */
+      .steps::before {
+        top: 0;
+        bottom: 0;
+        left: 35px;  /* step-number의 중앙에 맞춤 */
+        width: 2px;
+        height: auto;
+      }
+
+      .step {
+        display: flex;
+        align-items: center;
+        padding: 15px 0;
+        text-align: left;
+      }
+
+      .step-number {
+        margin: 0 20px 0 0;
+        flex-shrink: 0;
+      }
+
+      .step-label {
+        margin-left: 15px;
+      }
+
+      /* 마지막 단계는 아래 여백 제거 */
+      .step:last-child {
+        padding-bottom: 0;
+      }
     }
   </style>
 </head>
@@ -493,5 +591,6 @@
   }
 
 </script>
+<script th:src="@{/js/sidebar/sidebar.js}"></script>
 </body>
 </html>

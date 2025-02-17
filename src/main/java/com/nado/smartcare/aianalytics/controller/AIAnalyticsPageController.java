@@ -1,21 +1,18 @@
 package com.nado.smartcare.aianalytics.controller;
 
-import com.nado.smartcare.aianalytics.entity.AIUsageStats;
+import com.nado.smartcare.aianalytics.entity.dto.AIUsageStatsDto;
+import com.nado.smartcare.page.PageResponse;
 import com.nado.smartcare.aianalytics.repository.AIUsageStatsRepository;
 import com.nado.smartcare.aianalytics.service.AIUsageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -28,7 +25,7 @@ public class AIAnalyticsPageController {
 
     // 통계 페이지 뷰
     @GetMapping
-    public String showAnalytics(Model model) {
+    public String showAnalytics() {
         return "erp/ai/ai-analytics";
     }
 
@@ -48,9 +45,12 @@ public class AIAnalyticsPageController {
     // 전체 대화 내역 조회 API
     @GetMapping("/api/conversations")
     @ResponseBody
-    public ResponseEntity<List<AIUsageStats>> getConversations() {
+    public ResponseEntity<PageResponse<AIUsageStatsDto>> getConversations(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
         try {
-            List<AIUsageStats> conversations = aiUsageService.getAllConversations();
+            PageResponse<AIUsageStatsDto> conversations = aiUsageService.getAIUsageStats(page, size);
 //            log.info("호출된 conversations: {}", conversations.toString());
             return ResponseEntity.ok(conversations);
         } catch (Exception e) {

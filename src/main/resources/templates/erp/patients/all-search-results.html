@@ -109,6 +109,85 @@
             pointer-events: none;
         }
 
+        /* 반응형 테이블 스타일 */
+        @media (max-width: 768px) {
+            /* 기본 여백 조정 */
+            body {
+                padding: 5px;
+            }
+
+            /* 테이블 헤더 숨기기 */
+            .popup-table thead {
+                display: none;
+            }
+
+            /* 행을 카드 형태로 변경 */
+            .popup-table tbody tr {
+                display: block;
+                margin-bottom: 15px;
+                background: white;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+                border-radius: 8px;
+                padding: 10px;
+            }
+
+            /* 셀을 세로로 배치 */
+            .popup-table td {
+                display: grid;
+                grid-template-columns: 90px auto;
+                padding: 8px 5px;
+                border: none;
+                align-items: center;
+            }
+
+            /* 셀에 라벨 추가 */
+            .popup-table td::before {
+                content: attr(data-label);
+                font-weight: bold;
+                color: var(--primary-color);
+            }
+
+            /* 선택 버튼 컨테이너 */
+            .popup-table td:last-child {
+                grid-template-columns: 1fr;
+                margin-top: 10px;
+            }
+
+            /* 선택 버튼 스타일 */
+            .btn-select {
+                width: 100%;
+                padding: 10px;
+                font-size: 1em;
+            }
+
+            /* 페이지네이션 조정 */
+            .pagination {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .pagination a {
+                padding: 8px 12px;
+                font-size: 1em;
+            }
+
+            /* 제목 크기 조정 */
+            h1 {
+                font-size: 1.3em;
+                margin: 15px 0;
+            }
+        }
+
+        /* 더 작은 화면에 대한 추가 대응 */
+        @media (max-width: 480px) {
+            .popup-table td {
+                grid-template-columns: 1fr;
+            }
+
+            .popup-table td::before {
+                margin-bottom: 4px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -161,25 +240,19 @@
 
     <!-- 페이징 컨트롤 -->
     <div class="pagination" th:if="${totalElements > 0}">
-        <a th:href="@{/erp/patients/search(
-            memberName=${param.memberName},
-            memberBirthday=${param.memberBirthday},
+        <a th:href="@{/erp/patients/all(
             page=0,
             size=${size})}"
            th:class="${currentPage == 0 ? 'disabled' : ''}">&laquo; 처음</a>
 
         <a th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
-           th:href="@{/erp/patients/search(
-            memberName=${param.memberName},
-            memberBirthday=${param.memberBirthday},
+           th:href="@{/erp/patients/all(
             page=${pageNum},
             size=${size})}"
            th:text="${pageNum + 1}"
            th:class="${pageNum == currentPage ? 'active' : ''}"></a>
 
-        <a th:href="@{/erp/patients/search(
-            memberName=${param.memberName},
-            memberBirthday=${param.memberBirthday},
+        <a th:href="@{/erp/patients/all(
             page=${totalPages - 1},
             size=${size})}"
            th:class="${currentPage == totalPages - 1 ? 'disabled' : ''}">마지막 &raquo;</a>
@@ -187,6 +260,7 @@
 </div>
 
 <script>
+
     // 창 크기 설정
     window.onload = function() {
         // 모바일 환경인지 확인
@@ -195,6 +269,7 @@
             window.resizeTo(800, 600);
         }
     }
+
     function selectMember(button) {
         const memberNo = button.getAttribute('data-member-no');
         const memberName = button.getAttribute('data-member-name');

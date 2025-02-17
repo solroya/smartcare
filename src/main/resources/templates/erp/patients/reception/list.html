@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>진료 접수 목록 - 스마트 케어</title>
     <link rel="stylesheet" th:href="@{/css/erp/index.css}">
+    <link rel="stylesheet" th:href="@{/css/erp/fragments/sidebar.css}">
     <style>
         /* 접수 목록 페이지 추가 스타일 */
         .reception-header {
@@ -64,6 +65,43 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             color: var(--text-dark);
         }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            margin-top: 10px;
+            padding: 10px 0;
+            font-size: 0.9em;
+        }
+
+        .pagination a {
+            padding: 4px 8px;
+            text-decoration: none;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 3px;
+            transition: background-color 0.2s, color 0.2s;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .pagination a:hover {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+        }
+
+        .pagination .active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .pagination .disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -75,7 +113,7 @@
     <div class="dashboard-header">
         <div class="reception-header">
             <h1>진료 접수 목록</h1>
-            <a th:href="@{/erp/patients/register}" class="new-reception-btn">새 진료 접수 등록</a>
+            <a th:href="@{/erp/patients/register}" class="new-reception-btn">접수 등록</a>
         </div>
     </div>
 
@@ -102,38 +140,58 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="receptions : ${receptions}" th:if="${receptions.status.name() != 'COMPLETED'}">
-                <td th:text="${receptions.receptionNo()}"></td>
-                <td th:text="${receptions.member().memberNo}"></td>
-                <td th:text="${receptions.member().memberName}"></td>
-                <td th:text="${#temporals.format(receptions.receptionTime, 'yyyy-MM-dd HH:mm')}"></td>
-                <td>
-                            <span th:class="${'status ' + (receptions.status == 'WAITING' ? 'status-waiting' : 'status-active')}"
-                                  th:text="${receptions.status}">
+            <tr th:each="reception : ${receptions.getContent()}">
+                <td data-label="접수 번호" th:text="${reception.receptionNo}"></td>
+                <td data-label="환자 번호" th:text="${reception.member.memberNo}"></td>
+                <td data-label="환자 이름" th:text="${reception.member.memberName}"></td>
+                <td data-label="접수 시간" th:text="${#temporals.format(reception.receptionTime, 'yyyy-MM-dd HH:mm')}"></td>
+                <td data-label="상태">
+                            <span th:class="${'status ' + (reception.status == 'WAITING' ? 'status-waiting' : 'status-active')}"
+                                  th:text="${reception.status}">
                             </span>
                 </td>
-                <td th:text="${receptions.employee().getDepartment().getDepartmentName()}"></td>
-                <td th:text="${receptions.employee().employeeName}"></td>
-                <td>
-                    <a th:href="@{/erp/patients/{receptionNo}/register(receptionNo=${receptions.receptionNo()})}"
+                <td data-label="진료과" th:text="${reception.employee.getDepartment.getDepartmentName}"></td>
+                <td data-label="담당의사" th:text="${reception.employee.employeeName}"></td>
+                <td data-label="진료">
+                    <a th:href="@{/erp/patients/{receptionNo}/register(receptionNo=${reception.receptionNo})}"
                        class="treatment-btn">진료</a>
                 </td>
-                <td>
-                    <form th:action="@{/erp/patients/{receptionNo}/cancel(receptionNo=${receptions.receptionNo()})}"
+                <td data-label="취소">
+                    <form th:action="@{/erp/patients/{receptionNo}/cancel(receptionNo=${reception.receptionNo})}"
                           method="post"
                           onsubmit="return confirm('정말 취소하시겠습니까?');">
                         <button type="submit" class="cancel-btn">접수 취소</button>
                     </form>
                 </td>
-                <td></td>
+                <td data-label="비고"></td>
             </tr>
             </tbody>
         </table>
+    </div>
+
+    <!-- 페이징 컨트롤 -->
+    <div class="pagination" th:if="${totalElements > 0}">
+        <a th:href="@{/erp/patients/list(
+            page=0,
+            size=${size})}"
+           th:class="${currentPage == 0 ? 'disabled' : ''}">&laquo; 처음</a>
+
+        <a th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+           th:href="@{/erp/patients/list(
+            page=${pageNum},
+            size=${size})}"
+           th:text="${pageNum + 1}"
+           th:class="${pageNum == currentPage ? 'active' : ''}"></a>
+
+        <a th:href="@{/erp/patients/list(
+            page=${totalPages - 1},
+            size=${size})}"
+           th:class="${currentPage == totalPages - 1 ? 'disabled' : ''}">마지막 &raquo;</a>
     </div>
 </main>
 
 <!-- 플로팅 채팅 버튼 -->
 <th:block th:replace="~{erp/fragments/floating-chat :: floatingChatFragment}"></th:block>
-
+<script th:src="@{/js/sidebar/sidebar.js}"></script>
 </body>
 </html>

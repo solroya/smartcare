@@ -17,12 +17,10 @@ import java.util.Map;
 @Log4j2
 public class OllamaService {
     private final ChatModel chatModel;
-    private final ChatClient ollamaChatClient;
 
 
-    public OllamaService(@Qualifier("ollamaChatModel") ChatModel chatModel, ChatClient ollamaChatClient) {
+    public OllamaService(@Qualifier("ollamaChatModel") ChatModel chatModel) {
         this.chatModel = chatModel;
-        this.ollamaChatClient = ollamaChatClient;
     }
 
     public String getResponse(String message) {

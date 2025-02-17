@@ -16,8 +16,8 @@ import org.springframework.context.annotation.Primary;
 public class AiConfig {
 
 /*    @Bean
-    public ChatClient chatClient(ChatClient.Builder chatClientBuilder) {
-        return chatClientBuilder.defaultAdvisors(
+    public ChatClient openAiChatClient(ChatClient.Builder openAiChatClientBuilder) {
+        return openAiChatClientBuilder.defaultAdvisors(
                 new MessageChatMemoryAdvisor(new InMemoryChatMemory())
         ).build();
     }*/
@@ -28,6 +28,9 @@ public class AiConfig {
         return openAiChatClientBuilder.defaultAdvisors(
                 new MessageChatMemoryAdvisor(new InMemoryChatMemory())
         ).build();
+// InMemory 기능 제거 버전
+//    public ChatClient openAiChatClient(ChatClient.Builder openAiChatClientBuilder) {
+//        return openAiChatClientBuilder.build();
     }
 
     @Bean

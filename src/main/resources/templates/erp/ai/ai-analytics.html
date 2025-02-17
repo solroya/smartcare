@@ -105,11 +105,6 @@
             color: #cc0000;
         }
 
-        @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-        }
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -135,6 +130,80 @@
             color: #666;
             margin-top: 5px;
         }
+
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .page-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--secondary-color);
+            background-color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background-color: var(--background-light);
+        }
+
+        .page-btn:disabled {
+            background-color: #eee;
+            cursor: not-allowed;
+            border-color: #ddd;
+        }
+
+        .page-numbers {
+            display: flex;
+            gap: 5px;
+        }
+
+        .page-number {
+            padding: 8px 12px;
+            border: 1px solid var(--secondary-color);
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: white;
+        }
+
+        .page-number.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--secondary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .conversation-table-container {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        /* 모바일 대응을 위한 미디어 쿼리 */
+        @media (max-width: 768px) {
+            .conversation-table-container {
+                margin: 10px -15px;  /* 네거티브 마진으로 전체 너비 확보 */
+                width: calc(100% + 30px);
+                border-left: none;
+                border-right: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -156,7 +225,7 @@
             <p>전체 AI 서비스 사용 현황을 확인할 수 있습니다.</p>
         </div>
 
-        <div class="stats-grid">
+        <div class="dashboard-stats">
             <div class="stat-box">
                 <h3>총 요청 수</h3>
                 <div class="number" id="totalRequests">-</div>
@@ -194,21 +263,31 @@
             <p>최근 AI 대화 내역을 확인할 수 있습니다.</p>
         </div>
 
-        <table class="conversations-table">
-            <thead>
-            <tr>
-                <th>시간</th>
-                <th>제공자</th>
-                <th>사용자 메시지</th>
-                <th>AI 응답</th>
-                <th>토큰</th>
-                <th>응답시간</th>
-                <th>상태</th>
-            </tr>
-            </thead>
-            <tbody id="conversationsTableBody">
-            </tbody>
-        </table>
+        <div class="conversation-table-container">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>시간</th>
+                    <th>제공자</th>
+                    <th>사용자 메시지</th>
+                    <th>AI 응답</th>
+                    <th>토큰</th>
+                    <th>응답시간</th>
+                    <th>상태</th>
+                </tr>
+                </thead>
+                <tbody id="conversationsTableBody">
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 페이지네이션 UI -->
+        <div class="pagination">
+            <button id="prevPage" class="page-btn">&lt; 이전</button>
+            <div class="page-numbers" id="pageNumbers"></div>
+            <button id="nextPage" class="page-btn">다음 &gt;</button>
+        </div>
+
     </div>
 </main>
 
@@ -216,7 +295,22 @@
     // 페이지 로드 시 통계 데이터 조회
     document.addEventListener('DOMContentLoaded', () => {
         loadStats();
-        loadConversations();
+        loadConversations(1);  // 첫 페이지 로드
+
+        // 페이지네이션 버튼 이벤트 리스너
+        document.getElementById('prevPage').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                loadConversations(currentPage);
+            }
+        });
+
+        document.getElementById('nextPage').addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                loadConversations(currentPage);
+            }
+        });
     });
 
     // 통계 데이터 로드
@@ -240,31 +334,40 @@
     }
 
     // 대화 내역 로드
-    async function loadConversations() {
+    async function loadConversations(page = 1) {
         try {
-            const response = await fetch('/erp/ai-analytics/api/conversations');
-            const conversations = await response.json();
+            showLoading();
+            const response = await fetch(`/erp/ai-analytics/api/conversations?page=${page}&size=${itemsPerPage}`);
+            const data = await response.json();
 
-            const tableBody = document.getElementById('conversationsTableBody');
-            tableBody.innerHTML = conversations.map(conv => `
-                <tr>
-                    <td>${formatDateTime(conv.createdAt)}</td>
-                    <td>${conv.provider}</td>
-                    <td>${truncateText(conv.userMessage, 50)}</td>
-                    <td>${truncateText(conv.aiResponse, 50)}</td>
-                    <td>${conv.tokenCount}</td>
-                    <td>${conv.responseTime}ms</td>
-                    <td>
-                        <span class="status-badge ${conv.isSuccess ? 'status-success' : 'status-error'}">
-                            ${conv.isSuccess ? '성공' : '실패'}
-                        </span>
-                    </td>
-                </tr>
-            `).join('');
+            displayConversations(data.content);
+            updatePagination(data);
+            hideLoading();
         } catch (error) {
             console.error('대화 내역 로드 중 오류 발생:', error);
+            hideLoading();
         }
     }
+
+    function displayConversations(conversations) {
+        const tableBody = document.getElementById('conversationsTableBody');
+        tableBody.innerHTML = conversations.map(conv => `
+            <tr>
+                <td data-label="시간">${formatDateTime(conv.createdAt)}</td>
+                <td data-label="제공자">${conv.provider}</td>
+                <td data-label="사용자 메시지">${truncateText(conv.userMessage, 20)}</td>
+                <td data-label="AI 응답">${truncateText(conv.aiResponse, 20)}</td>
+                <td data-label="토큰">${conv.tokenCount}</td>
+                <td data-label="응답시간">${conv.responseTime}ms</td>
+                <td data-label="상태">
+                    <span class="status-badge ${conv.isSuccess ? 'status-success' : 'status-error'}">
+                        ${conv.isSuccess ? '성공' : '실패'}
+                    </span>
+                </td>
+            </tr>
+        `).join('');
+    }
+
 
     // 날짜 포맷팅 함수
     function formatDateTime(dateStr) {
@@ -278,7 +381,85 @@
         return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
     }
 
+    // 페이징 관련 상태
+    let currentPage = 1;
+    const itemsPerPage = 10;
+    let totalPages = 0;
+
+    // 페이지네이션 업데이트
+    function updatePagination(pageData) {
+        totalPages = pageData.totalPages;
+        const pageNumbers = document.getElementById('pageNumbers');
+
+        // 페이지 번호 생성
+        let numbersHtml = '';
+        for (let i = 1; i <= totalPages; i++) {
+            if (shouldShowPageNumber(i, currentPage, totalPages)) {
+                numbersHtml += `
+                <button class="page-number ${i === currentPage ? 'active' : ''}"
+                        onclick="goToPage(${i})">
+                    ${i}
+                </button>
+            `;
+            } else if (i === 2 || i === totalPages - 1) {
+                numbersHtml += '<span>...</span>';
+            }
+        }
+        pageNumbers.innerHTML = numbersHtml;
+
+        // 이전/다음 버튼 상태 업데이트
+        document.getElementById('prevPage').disabled = currentPage === 1;
+        document.getElementById('nextPage').disabled = currentPage === totalPages;
+    }
+
+    // 페이지 번호 표시 여부 결정
+    function shouldShowPageNumber(pageNum, currentPage, totalPages) {
+        return pageNum === 1 || // 첫 페이지
+            pageNum === totalPages || // 마지막 페이지
+            (pageNum >= currentPage - 1 && pageNum <= currentPage + 1); // 현재 페이지 주변
+    }
+
+    // 특정 페이지로 이동
+    function goToPage(page) {
+        if (page !== currentPage) {
+            currentPage = page;
+            loadConversations(currentPage);
+        }
+    }
+
+    // 로딩 표시
+    function showLoading() {
+        const tableBody = document.getElementById('conversationsTableBody');
+        tableBody.innerHTML = `
+        <tr>
+            <td colspan="7" style="text-align: center; padding: 20px;">
+                <div class="loading-spinner"></div>
+                <p>데이터를 불러오는 중입니다...</p>
+            </td>
+        </tr>
+    `;
+    }
+
+    // 로딩 상태를 제거하는 함수입니다.
+    // 실제로는 새로운 데이터가 표시되면서 자동으로 로딩 표시가 사라지지만,
+    // 에러가 발생했을 때를 대비해 명시적으로 로딩을 제거하는 함수를 구현합니다.
+    function hideLoading() {
+        // 에러가 발생했을 때 테이블이 비어있는 상태로 남는 것을 방지하기 위해
+        // 데이터가 없는 경우에 대한 처리를 추가합니다.
+        const tableBody = document.getElementById('conversationsTableBody');
+        if (!tableBody.children.length || tableBody.querySelector('.loading-spinner')) {
+            tableBody.innerHTML = `
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 20px;">
+                    데이터가 없거나 로드하는 중 오류가 발생했습니다.
+                </td>
+            </tr>
+        `;
+        }
+    }
+
 
 </script>
+<script th:src="@{/js/sidebar/sidebar.js}"></script>
 </body>
 </html>

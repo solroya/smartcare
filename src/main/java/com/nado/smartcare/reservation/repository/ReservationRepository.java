@@ -1,7 +1,6 @@
 package com.nado.smartcare.reservation.repository;
 
 import com.nado.smartcare.reservation.domain.Reservation;
-import com.nado.smartcare.reservation.domain.dto.ReservationDto;
 import com.nado.smartcare.reservation.domain.type.ReservationStatus;
 import com.nado.smartcare.reservation.domain.type.TimeSlot;
 import org.springframework.data.domain.Page;
@@ -42,4 +41,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     );
 
     Page<Reservation> findAllByReservationStatus(ReservationStatus reservationStatus, Pageable pageable);
+
+    List<Reservation> findByReservationStatus(ReservationStatus reservationStatus);
+
 }

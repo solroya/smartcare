@@ -2,8 +2,10 @@ package com.nado.smartcare.member.service.impl;
 
 import com.nado.smartcare.member.domain.Member;
 import com.nado.smartcare.member.domain.dto.MemberDto;
+import com.nado.smartcare.member.domain.dto.SearchMemberDto;
 import com.nado.smartcare.member.repository.MemberRepository;
 import com.nado.smartcare.member.service.MemberService;
+import com.nado.smartcare.page.PageResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -56,8 +58,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberDto saveMember(MemberDto memberDto) {
-    	String encodedPassword = passwordEncoder.encode(memberDto.memberPass());
-    	
+        String encodedPassword = passwordEncoder.encode(memberDto.memberPass());
+
         Member member = Member.of(
                 memberDto.memberId(),
                 encodedPassword,
@@ -74,12 +76,30 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<MemberDto> findByNameAndMemberBirthday(String memberName, LocalDate memberBirthday) {
-        return memberRepository.findByMemberNameAndMemberBirthday(memberName, memberBirthday).stream()
-                .map(member -> new MemberDto(member.memberNo(), member.memberId(), member.memberPass(), member.memberName(), member.memberEmail(), member.memberGender(), member.memberPhoneNumber(), member.memberBirthday(), member.isSocial(), member.patientRecordCards(), member.createdAt(), member.updatedAt()))
-                .toList();
+    public PageResponse<SearchMemberDto> findByNameAndMemberBirthday(String memberName, LocalDate memberBirthday, Pageable pageable) {
+        // 페이징 검색 결과
+        Page<Member> memberPage = memberRepository.findByMemberNameAndMemberBirthday(memberName, memberBirthday, pageable);
+
+        // Entity -> Dto
+        Page<SearchMemberDto> dtoPage = memberPage.map(
+                member -> SearchMemberDto.builder()
+                        .memberNo(member.getMemberNo())
+                        .memberId(member.getMemberId())
+                        .memberPass(member.getMemberPass())
+                        .memberName(member.getMemberName())
+                        .memberEmail(member.getMemberEmail())
+                        .memberGender(member.isMemberGender())
+                        .memberPhoneNumber(member.getMemberPhoneNumber())
+                        .memberBirthday(member.getMemberBirthday())
+                        .isSocial(member.isSocial())
+                        .createdAt(member.getCreatedAt())
+                        .updatedAt(member.getUpdatedAt())
+                        .build()
+        );
+
+        return PageResponse.from(dtoPage);
     }
-    
+
     // 로그인
     @Override
     public Member login(String memberId, String memberPass) {
@@ -94,15 +114,33 @@ public class MemberServiceImpl implements MemberService {
         log.info("로그인 성공: 회원 이름 ==> {}", member.getMemberName());
         return member;
     }
-	
+
 
     @Override
-    public Page<MemberDto> getAllMembers(Pageable pageable) {
-        return memberRepository.findAll(pageable)
-                .map(MemberDto::from);
+    public PageResponse<SearchMemberDto> getAllMembers(Pageable pageable) {
+        // 페이징 검색 결과
+        Page<Member> memberPage = memberRepository.findAll(pageable);
+
+        // Entity -> Dto
+        Page<SearchMemberDto> dtoPage = memberPage.map(
+                member -> SearchMemberDto.builder()
+                        .memberNo(member.getMemberNo())
+                        .memberId(member.getMemberId())
+                        .memberPass(member.getMemberPass())
+                        .memberName(member.getMemberName())
+                        .memberEmail(member.getMemberEmail())
+                        .memberGender(member.isMemberGender())
+                        .memberPhoneNumber(member.getMemberPhoneNumber())
+                        .memberBirthday(member.getMemberBirthday())
+                        .isSocial(member.isSocial())
+                        .createdAt(member.getCreatedAt())
+                        .updatedAt(member.getUpdatedAt())
+                        .build()
+        );
+        return PageResponse.from(dtoPage);
     }
-    
-    
+
+
     // 아이디 찾기
     @Override
     public List<MemberDto> findByPhoneNumber(String memberPhoneNumber) {
@@ -111,21 +149,21 @@ public class MemberServiceImpl implements MemberService {
                 .map(MemberDto::from)
                 .toList();
     }
-    
-    // 비밀번호 찾기
-	@Override
-	public boolean verifyMember(String memberId, String memberPhoneNumber) {
-		String normalizedPhone = memberPhoneNumber.replaceAll("-", "");
-		return memberRepository.findByMemberIdAndMemberPhoneNumber(memberId, memberPhoneNumber).isPresent();
-	}
 
-	@Override
-	public void updatePassword(String memberId, String newPassword) {
-		Member member = memberRepository.findByMemberId(memberId)
-				.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
-		
-		member.setMemberPass(passwordEncoder.encode(newPassword));
-		memberRepository.save(member);
-	}
+    // 비밀번호 찾기
+    @Override
+    public boolean verifyMember(String memberId, String memberPhoneNumber) {
+        String normalizedPhone = memberPhoneNumber.replaceAll("-", "");
+        return memberRepository.findByMemberIdAndMemberPhoneNumber(memberId, memberPhoneNumber).isPresent();
+    }
+
+    @Override
+    public void updatePassword(String memberId, String newPassword) {
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+
+        member.setMemberPass(passwordEncoder.encode(newPassword));
+        memberRepository.save(member);
+    }
 
 }

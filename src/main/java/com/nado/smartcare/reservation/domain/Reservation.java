@@ -62,6 +62,10 @@ public class Reservation extends BaseEntity {
         this.employee = employee;
     }
 
+    public String getEmployeeName() {
+        return employee != null ? employee.getEmployeeName() : "Unknown";
+    }
+
     public Reservation() {
     }
 

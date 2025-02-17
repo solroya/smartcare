@@ -1,6 +1,8 @@
 package com.nado.smartcare.aianalytics.repository;
 
 import com.nado.smartcare.aianalytics.entity.AIUsageStats;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -8,29 +10,8 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public interface AIUsageStatsRepository extends JpaRepository<AIUsageStats, Long> {
-    // 특정 기간 동안의 총 요청 수 조회
-    long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
-
-    // 특정 기간 동안의 성공률 계산
-    @Query("SELECT CAST(COUNT(CASE WHEN a.isSuccess = true THEN 1 END) AS double) / " +
-            "CAST(COUNT(*) AS double) * 100 FROM AIUsageStats a " +
-            "WHERE a.createdAt BETWEEN :start AND :end")
-    double calculateSuccessRate(@Param("start") LocalDateTime start,
-                                @Param("end") LocalDateTime end);
-
-    // 특정 기간 동안의 평균 응답 시간 계산
-    @Query(value = """
-    SELECT DECODE(COUNT(*), 0, 0,
-        AVG(CAST(response_time AS FLOAT)))
-    FROM ai_usage_stats 
-    WHERE created_at BETWEEN :start AND :end 
-    AND is_success = 1
-    """, nativeQuery = true)
-    double calculateAverageResponseTime(@Param("start") LocalDateTime start,
-                                        @Param("end") LocalDateTime end);
 
     // 가장 자주 묻는 질문 찾기
     @Query(value = """
@@ -78,14 +59,6 @@ public interface AIUsageStatsRepository extends JpaRepository<AIUsageStats, Long
 
     List<AIUsageStats> findByCreatedAtBetweenOrderByCreatedAtDesc(LocalDateTime start, LocalDateTime end);
 
-
-    // 가장 최근 데이터 하나 조회
-    Optional<AIUsageStats> findTop1ByOrderByCreatedAtDesc();
-
-    // 모든 날짜 범위 확인용 쿼리
-    @Query("SELECT MIN(a.createdAt) as minDate, MAX(a.createdAt) as maxDate, COUNT(a) as total FROM AIUsageStats a")
-    Map<String, Object> getDateRangeInfo();
-
     // 전체 성공률 계산
     @Query(value = """
         SELECT DECODE(COUNT(*), 0, 0,
@@ -118,4 +91,7 @@ public interface AIUsageStatsRepository extends JpaRepository<AIUsageStats, Long
     // 최대 토큰 사용량 조회
     @Query("SELECT COALESCE(MAX(a.tokenCount), 0) FROM AIUsageStats a")
     long calculateMaxTokens();
+
+    // 페이징 처리(서버 사이드)
+    Page<AIUsageStats> findAllByOrderByCreatedAtDesc(Pageable pageable);
 }

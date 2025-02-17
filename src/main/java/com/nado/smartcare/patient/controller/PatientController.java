@@ -9,7 +9,9 @@ import com.nado.smartcare.employee.domain.dto.EmployeeDto;
 import com.nado.smartcare.employee.service.DepartmentService;
 import com.nado.smartcare.employee.service.EmployeeService;
 import com.nado.smartcare.member.domain.dto.MemberDto;
+import com.nado.smartcare.member.domain.dto.SearchMemberDto;
 import com.nado.smartcare.member.service.MemberService;
+import com.nado.smartcare.page.PageResponse;
 import com.nado.smartcare.patient.domain.PatientRecordCard;
 import com.nado.smartcare.patient.domain.Reception;
 import com.nado.smartcare.patient.domain.dto.PatientRecordCardDto;
@@ -25,17 +27,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @Log4j2
@@ -45,17 +51,11 @@ import java.util.List;
 public class PatientController {
 
     private final MemberService memberService;
-
     private final EmployeeService employeeService;
-
     private final ReceptionService receptionService;
-
     private final DiseaseService diseaseService;
-
     private final PatientRecordCardService patientRecordCardService;
-
     private final DepartmentService departmentService;
-
     private final ReservationService reservationService;
     private final ReceptionRepository receptionRepository;
 
@@ -93,18 +93,35 @@ public class PatientController {
     @GetMapping("/search")
     public String searchPatients(@RequestParam("memberName") String memberName,
                                  @RequestParam("memberBirthday") String memberBirthday,
-                                 @RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "10") int size,
+                                 @PageableDefault(size = 10) Pageable pageable,
                                  Model model) {
         log.info("Searching patients with name: {} and birthday: {}", memberName, memberBirthday);
-        List<MemberDto> members = memberService.findByNameAndMemberBirthday(memberName, LocalDate.parse(memberBirthday));
-        Page<MemberDto> memberPage = memberService.getAllMembers(PageRequest.of(page, size));
 
-        model.addAttribute("members", members);
-        model.addAttribute("page", memberPage.getNumber());
-        model.addAttribute("size", memberPage.getSize());
-        model.addAttribute("totalElements", memberPage.getTotalElements());
+        // 생년월일 파싱 (null 처리 포함)
+        LocalDate birthday = null;
+        if (StringUtils.hasText(memberBirthday)) {
+            try {
+                birthday = LocalDate.parse(memberBirthday);
+            } catch (DateTimeParseException e) {
+                log.warn("Invalid date format: {}", memberBirthday);
+            }
+        }
+        log.info("파싱 후 생년월일: {}", birthday);
 
+        PageResponse<SearchMemberDto> members = memberService.findByNameAndMemberBirthday(memberName, birthday, pageable);
+        log.info("검색된 회원 정보:  {}", members.toString());
+
+        // 모델에 필요한 데이터 추가
+        model.addAttribute("members", members.getContent());
+        log.info("검색결과 member: {}", members.getContent());
+        model.addAttribute("currentPage", members.getPageNumber());
+        log.info("currentPage: {}", members.getPageNumber());
+        model.addAttribute("totalPages", members.getTotalPages());
+        log.info("totalPages: {}", members.getTotalPages());
+        model.addAttribute("totalElements", members.getTotalElements());
+        log.info("totalElements: {}", members.getTotalElements());
+        model.addAttribute("memberName", memberName);
+        model.addAttribute("memberBirthday", memberBirthday);
         return "erp/patients/search-results";
     }
 
@@ -115,26 +132,29 @@ public class PatientController {
                                        Model model) {
         log.info("Searching patients with name: {}", memberName);
         List<MemberDto> members = memberService.searchByName(memberName);
-        Page<MemberDto> memberPage = memberService.getAllMembers(PageRequest.of(page, size));
+//        Page<MemberDto> memberPage = memberService.getAllMembers(PageRequest.of(page, size));
 
         model.addAttribute("members", members);
-        model.addAttribute("page", memberPage.getNumber());
-        model.addAttribute("size", memberPage.getSize());
-        model.addAttribute("totalElements", memberPage.getTotalElements());
+//        model.addAttribute("page", memberPage.getNumber());
+//        model.addAttribute("size", memberPage.getSize());
+//        model.addAttribute("totalElements", memberPage.getTotalElements());
 
         return "erp/dashboard/search-results";
     }
 
     @GetMapping("/all")
-    public String patientAll(@RequestParam(defaultValue = "0") int page,
-                             @RequestParam(defaultValue = "10") int size,
+    public String patientAll(@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                              Model model) {
-        Page<MemberDto> memberPage = memberService.getAllMembers(PageRequest.of(page, size));
-        model.addAttribute("members", memberPage.getContent());
-        model.addAttribute("page", memberPage.getNumber());
-        model.addAttribute("size", memberPage.getSize());
-        model.addAttribute("totalElements", memberPage.getTotalElements());
-        return "erp/patients/search-results";
+        PageResponse<SearchMemberDto> members = memberService.getAllMembers(pageable);
+        model.addAttribute("members", members.getContent());
+        log.info("검색결과 member: {}", members.getContent());
+        model.addAttribute("currentPage", members.getPageNumber());
+        log.info("currentPage: {}", members.getPageNumber());
+        model.addAttribute("totalPages", members.getTotalPages());
+        log.info("totalPages: {}", members.getTotalPages());
+        model.addAttribute("totalElements", members.getTotalElements());
+        log.info("totalElements: {}", members.getTotalElements());
+        return "erp/patients/all-search-results";
     }
 
     @GetMapping("/departments")
@@ -159,11 +179,16 @@ public class PatientController {
         return diseaseList;
     }
 
-    // 진료 접수 환자 목록
+    // 활성화(CONFIRMED) 된 환자만 조회
     @GetMapping("/list")
-    public String patientList(Model model) {
-        List<ReceptionDto> allReceptions = receptionService.getAllReceptions();
+    public String patientList(@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+                              Model model) {
+        PageResponse<ReceptionDto> allReceptions = receptionService.getActiveReceptions(pageable);
         model.addAttribute("receptions", allReceptions);
+        log.info("receptions 뷰 전달 데이터: {}", allReceptions.getContent());
+        model.addAttribute("currentPage", allReceptions.getPageNumber());
+        model.addAttribute("totalPages", allReceptions.getTotalPages());
+        model.addAttribute("totalElements", allReceptions.getTotalElements());
         return "erp/patients/reception/list";
     }
 
