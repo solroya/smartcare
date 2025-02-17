@@ -53,6 +53,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/kakao/**").permitAll()
                         .requestMatchers("/redis/test", "/sms/**").permitAll()
                         .requestMatchers("/erp/**").hasRole("EMPLOYEE") // ERP는 직원만 접근 가능
+                        .requestMatchers("/ai/**").permitAll()
                         .anyRequest().authenticated() // 그외는 인증된 사용자만
                 )
                 .formLogin((form) -> form
@@ -81,7 +82,11 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                         .permitAll()
                 )
+                /*
+                * CSRF: 사용자가 인증된 세션 정보를 이용하여 공격자가 의도하지 않은 요청을 서버로 보내게 하는 방법
+                * */
                 .csrf(csrf -> csrf.disable())
+                // 응답 헤더를 통해 브라우저에 보안 정책을 전달하여 여러 공격을 예방 가능
                 .headers(headers -> headers
                         .frameOptions(frameOptions -> frameOptions.sameOrigin())
                 );
