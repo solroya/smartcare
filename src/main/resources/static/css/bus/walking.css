@@ -94,19 +94,19 @@
 	margin-right : 20px;
 }
 
-.busText {
+.walkText {
 	display : flex;
 	flex-direction: column;
 }
 
-.busText-Text {
+.walkText-Text {
 	display : flex;
 	gap : 15px;
 	align-items: center;
 	margin-bottom : 7px;
 }
 
-.busText-Text p {
+.walkText-Text p {
 	font-size : 20px;
 	letter-spacing: -0.25px;
 	font-weight: bold;
@@ -119,20 +119,20 @@
 	background-color : #707070;
 }
 
-.busText-Text span {
+.walkText-Text span {
 	font-size : 20px;
 	letter-spacing: -0.25px;
 	color : #333;
 }
 
-.busText-subText {
+.walkText-subText {
 	font-size : 18px;
 	letter-spacing: -0.25px;
 	line-height: 26px;
 	color : #333;
 }
 
-.busText-subText b {
+.walkText-subText b {
 	font-weight: bold;
 }
 
@@ -170,6 +170,7 @@
     border-radius: 10px;
 }
 
+/* 개별 경로 아이템 */
 .routeItem {
     background: #ffffff;
     border-radius: 12px;
@@ -185,6 +186,7 @@
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
 }
 
+/* 🚶 도보 이동 요약 */
 .routeSummary {
     font-size: 16px;
     font-weight: bold;
@@ -219,6 +221,7 @@
     transform: scale(1.05);
 }
 
+/* 도보 경로 상세 */
 .routeDetails {
     list-style: none;
     padding: 0;
@@ -226,6 +229,7 @@
     display: none;
 }
 
+/* 🚶 도보 이동 구간 */
 .leg {
     padding: 10px;
     margin-bottom: 5px;
@@ -240,10 +244,9 @@
     padding: 10px;
 }
 
-.leg.bus {
-    background: #fff3e0;
-    border-left: 5px solid #ff9800;
-    padding: 10px;
+.leg.walk strong {
+    font-size: 16px;
+    color: #1C3D5A;
 }
 
 .leg p {
@@ -251,10 +254,7 @@
     color: #555;
 }
 
-.leg.bus strong {
-    font-size: 16px;
-}
-
+/* 지도 스타일 */
 #map-container {
     flex: 1;
     height: 100vh;

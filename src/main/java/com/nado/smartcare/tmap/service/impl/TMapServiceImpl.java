@@ -65,5 +65,49 @@ public class TMapServiceImpl implements ITMapService {
 			return "{\"error\":\"예상치 못한 오류 발생: }" + e.getMessage() + "\"}";
 		}
 	}
+
+	@Override
+	public String getWalkingRoutes(String startX, String startY, String endX, String endY) {
+		OkHttpClient client = new OkHttpClient();
+		
+		try {
+			MediaType mediaType = MediaType.parse("application/json");
+			String requestBodyJson = String.format("{\"startX\":%.6f,\"startY\":%.6f,\"endX\":%.6f,\"endY\":%.6f,"
+		            + "\"reqCoordType\":\"WGS84GEO\",\"resCoordType\":\"WGS84GEO\","
+		            + "\"startName\":\"출발\",\"endName\":\"도착\","
+		            + "\"searchOption\":\"0\",\"sort\":\"index\"}",
+					Double.parseDouble(startX), Double.parseDouble(startY), Double.parseDouble(endX), Double.parseDouble(endY));
+			
+			RequestBody body = RequestBody.create(requestBodyJson, mediaType);
+			log.info("body 안에 값은? ==> {}", body);
+			
+			String url = "https://apis.openapi.sk.com/tmap/routes/pedestrian";
+			
+			Request request = new Request.Builder()
+					.url(url)
+					.post(body)
+					.addHeader("accept", "application/json")
+					.addHeader("content-type", "application/json")
+					.addHeader("appKey", tmapApiKey)
+					.build();
+			log.info("request안의 값은? ==> {}", request);
+			
+			try(Response response = client.newCall(request).execute()){
+				log.info("response안의 값은? ==> {}", response);
+				
+				if (response.isSuccessful() && response.body() != null) {
+					String responseBody = response.body().string();
+					log.info("responseBody 값은? ==> {}", responseBody);
+					return responseBody;
+				} else {
+					log.error("도보 API 호출 실패 - 상태 코드 : {}", response.code());
+					return "\"error\":\"API 호출 실패 - 상태 코드: " + response.code() + "\"}";
+				}
+			} 
+		} catch (Exception e) {
+			log.error("도보 API 호출 중 예외 발생 : {}" , e.getMessage());
+			return "{\"error\":\"예상치 못한 오류 발생: }" + e.getMessage() + "\"}";
+		}
+	}
     
 }

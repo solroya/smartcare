@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Primary;
 
 @EnableAspectJAutoProxy
 @Configuration
@@ -20,14 +21,20 @@ public class AiConfig {
                 new MessageChatMemoryAdvisor(new InMemoryChatMemory())
         ).build();
     }*/
-    // InMemory 기능 제거 버전
+
     @Bean
-    public ChatClient openAiChatClient(ChatClient.Builder openAiChatClientBuilder) {
-        return openAiChatClientBuilder.build();
+    @Primary
+    public ChatClient openAiChatClient(@Qualifier("openAiChatClientBuilder") ChatClient.Builder openAiChatClientBuilder) {
+        return openAiChatClientBuilder.defaultAdvisors(
+                new MessageChatMemoryAdvisor(new InMemoryChatMemory())
+        ).build();
+// InMemory 기능 제거 버전
+//    public ChatClient openAiChatClient(ChatClient.Builder openAiChatClientBuilder) {
+//        return openAiChatClientBuilder.build();
     }
 
     @Bean
-    public ChatClient ollamaChatClient(ChatClient.Builder ollamaChatClientBuilder) {
+    public ChatClient ollamaChatClient(@Qualifier("ollamaChatClientBuilder") ChatClient.Builder ollamaChatClientBuilder) {
         return ollamaChatClientBuilder.defaultAdvisors(
                 new MessageChatMemoryAdvisor(new InMemoryChatMemory())
         ).build();
