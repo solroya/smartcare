@@ -20,6 +20,7 @@ public class MainController {
     @GetMapping("/main")
     public String mainForm(Model model) {
 
+        // 사용자 인증정보 획득
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.isAuthenticated()
@@ -29,6 +30,7 @@ public class MainController {
                 String username = userDetails.getUsername();
                 String memberName = userDetails.getMemberName();
 
+                model.addAttribute("username", username);
                 model.addAttribute("memberName", memberName); // memberName도 모델에 추가
                 model.addAttribute("loginStatus", "authenticated");
             } catch (Exception e) {

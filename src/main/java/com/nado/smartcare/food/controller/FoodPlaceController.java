@@ -80,7 +80,9 @@ public class FoodPlaceController {
 	public String getFoodPlaceDetail(@PathVariable("fno") Long fno, Model model) {
 		log.info("FoodPlaceDetail에 들어왔나? fno={}", fno);
 		
-		iFoodPlaceService.incrementViews(fno);
+//		iFoodPlaceService.incrementViews(fno);
+		log.info("조회수 증가 메서드 실행.....");
+
 		FoodPlaceDTO foodPlace = iFoodPlaceService.getFoodPlaceById(fno);
 		List<ComentDTO> coments = iComentService.getComentsByFoodPlace(fno);
 		double averageRating = iComentService.calculateAverageRating(fno);
@@ -97,6 +99,7 @@ public class FoodPlaceController {
 	@PostMapping("/views/{fno}")
 	@ResponseBody
 	public ResponseEntity<Void> incrementViews(@PathVariable("fno") Long fno) {
+		log.info("조회수 증가 API 컨트롤러 호출 - fno: {}", fno);
 		iFoodPlaceService.incrementViews(fno);
 		return ResponseEntity.ok().build();
 	}

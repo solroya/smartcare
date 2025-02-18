@@ -1,6 +1,5 @@
 package com.nado.smartcare.openai.service;
 
-import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -8,7 +7,6 @@ import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -16,7 +14,7 @@ public class OpenAIService {
 
     private final ChatModel chatModel;
 
-    public OpenAIService(@Qualifier("openAiChatModel") ChatModel chatModel, @Qualifier("openAiChatClient") ChatClient openAiChatClient) {
+    public OpenAIService(@Qualifier("openAiChatModel") ChatModel chatModel) {
     //public OpenAIService(@Qualifier("openAiChatModel") ChatModel chatModel) {
 
         this.chatModel = chatModel;

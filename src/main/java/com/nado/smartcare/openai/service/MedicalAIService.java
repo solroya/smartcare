@@ -266,7 +266,6 @@ public class MedicalAIService {
 
             } catch (Exception e) {
                 log.warn("문서 처리 중 오류 발생: {}", e.getMessage());
-                continue;
             }
         }
 

@@ -57,8 +57,6 @@ public interface AIUsageStatsRepository extends JpaRepository<AIUsageStats, Long
             @Param("end") LocalDateTime end
     );
 
-    List<AIUsageStats> findByCreatedAtBetweenOrderByCreatedAtDesc(LocalDateTime start, LocalDateTime end);
-
     // 전체 성공률 계산
     @Query(value = """
         SELECT DECODE(COUNT(*), 0, 0,

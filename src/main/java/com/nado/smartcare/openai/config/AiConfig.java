@@ -11,6 +11,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Primary;
 
+//Aspect-Oriented Programming 활성화: AI관련 로직의 부가 기능(로깅, 트랜젝션관리)
+/*
+* 횡단 관심사: 로깅, 보안, 트랜잭션 관리와 같이 애플리케이션에서 반복적으로 사용되는 기능
+* AOP를 통해 한번에 관리 가능 -> 횡단 관심사를 쉽게 분리 가능
+* */
 @EnableAspectJAutoProxy
 @Configuration
 public class AiConfig {

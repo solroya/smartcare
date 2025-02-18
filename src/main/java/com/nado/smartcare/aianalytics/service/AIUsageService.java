@@ -31,6 +31,12 @@ public class AIUsageService {
     private final AIModelService aiModelService; // 현재 AI 제공자 정보를 가져오기 위해 필요
 
     // AI 서비스의 모든 응답 메서드를 가로채서 사용량을 기록
+    /*
+    * @EnableAspectJAutoProxy 를 통해 프록시 객체를 생성하여 메서드 호출을 감싸고, 호출 시점에 전달되는 메서드정보
+    * 파라미터, 반환값, 예외 등의 정보를 Proceeding JoinPoint 객체를 통해 제공됨
+    * https://docs.spring.io/spring-framework/reference/core/aop.html
+    * https://www.baeldung.com/spring-aop
+    * */
     @Around("execution(* com.nado.smartcare.openai.service.AIModelService.getResponseWithPrompt(..))")
     public Object trackUsage(ProceedingJoinPoint joinPoint) throws Throwable {
         log.debug("AOP 시작: {}", joinPoint.getSignature().getName());
@@ -52,8 +58,14 @@ public class AIUsageService {
         String promptTemplate = "";
         Map<String, Object> parameters = new HashMap<>();
 
+        /*
+        * 전체 프롬프트 구성, 통계 정보 기록
+        * 첫 번째: 프롬프트 템플릿(질문형식, 기본 텍스트)
+        * 두 번째: 파라미터(Map 형식, 사용자 입력이나 추가 정보)를 분리 사용
+        * */
         if (args.length >= 2 && args[1] instanceof Map) {
             promptTemplate = args[0].toString();
+            // unchecked 경고 무시
             @SuppressWarnings("unchecked")
             Map<String, Object> params = (Map<String, Object>) args[1];
             parameters = params;
@@ -118,57 +130,6 @@ public class AIUsageService {
                         "unknown input");
 
         return fullPrompt.toString();
-    }
-
-    // 사용자 메시지 추출 메서드
-    private String extractUserMessage(Object[] args) {
-        if (args.length > 0 && args[0] != null) {
-            if (args[0] instanceof Map) {
-                Map<?, ?> map = (Map<?, ?>) args[0];
-                // input 파라미터가 있는 경우 이를 사용자 메시지로 간주
-                return map.containsKey("input") ?
-                        map.get("input").toString() :
-                        "unknown message";
-            }
-            // Map이 아닌 경우 첫 번째 인자를 사용자 메시지로 간주
-            return args[0].toString();
-        }
-        return "unknown message";
-    }
-
-    // 프롬프트 추출 메서드
-    private String extractPrompt(Object[] args) {
-        if (args.length > 0 && args[0] != null) {
-            if (args[0] instanceof Map) {
-                Map<?, ?> map = (Map<?, ?>) args[0];
-                StringBuilder fullPrompt = new StringBuilder();
-
-                // 시스템 프롬프트 추가 (있는 경우)
-                if (map.containsKey("documents")) {
-                    fullPrompt.append("Context:\n")
-                            .append(map.get("documents"))
-                            .append("\n\n");
-                }
-
-                // 기본 프롬프트 템플릿 추가 (있는 경우)
-                if (map.containsKey("prompt")) {
-                    fullPrompt.append("Template:\n")
-                            .append(map.get("prompt"))
-                            .append("\n\n");
-                }
-
-                // 사용자 입력 추가
-                fullPrompt.append("User Input:\n")
-                        .append(map.containsKey("input") ?
-                                map.get("input").toString() :
-                                "unknown input");
-
-                return fullPrompt.toString();
-            }
-            // Map이 아닌 경우 전체 내용을 프롬프트로 저장
-            return "Direct Input:\n" + args[0].toString();
-        }
-        return "unknown prompt";
     }
 
     // 토큰 수 계산 메서드

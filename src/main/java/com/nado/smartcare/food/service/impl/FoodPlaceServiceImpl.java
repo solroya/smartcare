@@ -82,7 +82,10 @@ public class FoodPlaceServiceImpl implements IFoodPlaceService {
 
 	@Override
 	public void incrementViews(Long fno) {
+		StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 		log.info("조회수 증가 요청 음식점 ID: {}", fno);
+		log.info("조회수 증가 호출: fno={}, 호출 위치={}", fno,
+				stackTrace.length > 3 ? stackTrace[2].toString() : "알 수 없음");
 		FoodPlace foodPlace = iFoodPlaceRepository.findById(fno)
 			.orElseThrow(() -> new IllegalArgumentException("음식점을 찾울 수 없습니다."));
 		foodPlace.setViews(foodPlace.getViews() + 1);

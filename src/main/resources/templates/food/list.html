@@ -35,7 +35,7 @@
 				    <a th:href="@{/main}">SmartCare</a>
 				</div>
 				<div class="aiRecommentBox">
-					<p class="aiText-title"><b>ooo님</b>을 위한 <b><span th:text="${currentCategory}"></span></b> 추천</p>
+					<p class="aiText-title"><span th:text="${#authentication.principal.memberName}"></span>님 을 위한 <b><span th:text="${currentCategory}"></span></b> 추천</p>
 					<div class="aiFoodBox">
 						<img th:src="${selectedCategory.categoryImage}" alt="카테고리 이미지">
 						<div class="foodText">
@@ -44,7 +44,7 @@
 								<div class="heightLine"></div>
 								<span th:text="${#lists.size(foodPlaces)} + '개'"></span>
 							</div>
-							<span class="foodText-subText"><b>ooo님</b>의 치료에 도움이 되는<br>
+							<span class="foodText-subText"><span th:text="${#authentication.principal.memberName}"></span>님의 치료에 도움이 되는<br>
 							음식으로 추천드립니다.</span>
 						</div>
 					</div>
@@ -58,25 +58,24 @@
 				                    th:data-fno="${foodPlace.fno}"
 				                    th:data-latitude="${foodPlace.latitude}"
 				                    th:data-longitude="${foodPlace.longitude}"
-				                    th:onclick="'loadDetail(' + ${foodPlace.fno} + ')'" >
+				                    th:onclick="'loadDetail(' + ${foodPlace.fno} + ')'"
+								>
                                     <p class="foodPlaceFno" th:text="${stat.index + 1}"></p>
                                     <img th:src="${foodPlace.imageUrl}" alt="음식점 이미지">
                                     <div class="foodListBox-Text">
                                         <h3 th:text="${foodPlace.foodName}"></h3>
                                         <p th:text="${foodPlace.foodAddressRoad}"></p>
                                     </div>
-                                    <button class="like-btn"
-								            type="button"
-								            th:data-fno="${foodPlace.fno}"
-								            th:data-likes="${foodPlace.likes}">
-                                        <span class="heart">
-                                            <img th:src="@{/img/health/heartOff.png}">
-                                        </span>
-                                        <span class="likes-count"
-									          th:text="${foodPlace.likes}"
-									          data-count="${foodPlace.likes}"
-									          style="display:none;"></span>
-                                    </button>
+									<div class="like-btn"
+										 th:data-fno="${foodPlace.fno}"
+										 th:data-likes="${foodPlace.likes}"
+										 style="pointer-events: none;">
+										<span class="heart">
+											<img th:src="${foodPlace.liked} ? @{/img/health/heartOn.png} : @{/img/health/heartOff.png}">
+										</span>
+										<span class="likes-count" th:text="${foodPlace.likes}" th:data-count="${foodPlace.likes}"
+										style="display: none"></span>
+									</div>
                                 </li>
 							</ul>
 						</div>

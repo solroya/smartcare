@@ -37,7 +37,7 @@ public class AIUsageStats {
     @Column(length = 4000)
     private String errorMessage;
 
-    // 사용된 프롬프트 (나중에 프롬프트 최적화에 활용)
+    // 사용된 프롬프트 (프롬프트 최적화에 활용 가능)
 /*    @Column(columnDefinition = "TEXT")*/
     @Column(columnDefinition = "CLOB") // 오라클 데이터 베이스용
     private String prompt;

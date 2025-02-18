@@ -21,7 +21,7 @@
 		                    <div class="clickBtnLine"></div>
 		                    <span>
 		                        <img th:src="@{/img/health/views.png}" alt="조회수">
-		                        <b data-count="${foodPlace.likes}" th:text="${foodPlace.likes}"></b>
+		                        <b data-count="${foodPlace.likes}" th:text="${foodPlace.views}"></b>
 		                    </span>
 		                </div>
 		                <button>지도로 보기</button>
@@ -82,7 +82,8 @@
 					        </div>
 					        <div class="writeBox">
 						        <textarea id="comentContent" name="content" placeholder="댓글을 입력하세요" required></textarea>
-						        <input type="text" id="comentAuthor" name="author" placeholder="작성자 이름" required>
+								<input type="text" id="comentAuthor" name="author" placeholder="작성자 이름"
+									   th:value="${#authentication.principal.memberName}" readonly>
 					        </div>
 					        <button type="submit">등록</button>
 					    </form>
