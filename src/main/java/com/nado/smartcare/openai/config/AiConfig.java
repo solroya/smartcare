@@ -30,9 +30,7 @@ public class AiConfig {
     @Bean
     @Primary
     public ChatClient openAiChatClient(@Qualifier("openAiChatClientBuilder") ChatClient.Builder openAiChatClientBuilder) {
-        return openAiChatClientBuilder.defaultAdvisors(
-                new MessageChatMemoryAdvisor(new InMemoryChatMemory())
-        ).build();
+        return openAiChatClientBuilder.build();
 // InMemory 기능 제거 버전
 //    public ChatClient openAiChatClient(ChatClient.Builder openAiChatClientBuilder) {
 //        return openAiChatClientBuilder.build();
